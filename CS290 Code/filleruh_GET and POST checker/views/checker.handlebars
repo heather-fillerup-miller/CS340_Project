@@ -1,0 +1,43 @@
+<h1>{{type}} Request Received</h1>
+
+	{{#if queryList}}
+	<table style= 'border: 1px solid black; border-collapse: collapse'>
+		<thead>
+			<tr>
+				<th style= 'border: 1px solid black'>URL Query Name</th>
+				<th style= 'border: 1px solid black'>URL Query Value</th>
+			</tr>
+		<thead>
+		<tbody>
+			{{#each queryList}}
+			<tr>
+				<td style= 'border: 1px solid black'>{{this.name}}</td>
+				<td style= 'border: 1px solid black'>{{this.value}}</td>
+			</tr>
+			{{/each}}
+		</tbody>
+	</table> <br>
+	{{else}}
+		<h3>URL query string was empty</h3>
+	{{/if}}
+	
+	{{#if bodyList}}
+	<table style= 'border: 1px solid black; border-collapse: collapse'>
+		<thead>
+			<tr>
+				<th style= 'border: 1px solid black'>Body Name</th>
+				<th style= 'border: 1px solid black'>Body Value</th>
+			</tr>
+		</thead>
+		<tbody>
+			{{#each bodyList}}
+			<tr>
+				<td style= 'border: 1px solid black'>{{this.name}}</td>
+				<td style= 'border: 1px solid black'>{{this.value}}</td>
+			</tr>
+			{{/each}}
+		</tbody>
+	</table>
+	{{else}}
+	<h3>Request body was empty</h3>
+	{{/if}}

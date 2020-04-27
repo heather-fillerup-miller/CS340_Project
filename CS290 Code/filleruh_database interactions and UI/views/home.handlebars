@@ -1,0 +1,28 @@
+<!--Exercise Form-->
+<form id='newExercise'>
+    <fieldset>
+        <legend>New Exercise Form</legend>
+        <label for='name'>Exercise Name:</label><br>
+        <input type='text' id='name' name='name'><br>
+        <label for='reps'>Repetitions:</label><br>
+        <input type='number' id='reps' name='reps' min='1'><br>
+        <label for='weight'>Weight:</label><br>
+        <input type='number' id='weight' name='weight'>
+        <label for="lbs">Choose a unit:</label>
+        <select id='lbs'>
+            <option value=1 selected>lbs</option>
+            <option value=0>kgs</option>
+        </select><br>
+        <label for='date'>Date</label><br>
+        <input type='date' id='date' name='date'><br><br>
+        <input type='submit' id='submitExercise' name='submitExercise' value='Add Exercise'><br>
+    </fieldset>
+
+</form>
+<br>
+
+<h2>Exercise Log</h2>
+<!--Results Table-->
+<div id='exerciseTable'></div>
+
+<script src='./script.js'></script>
