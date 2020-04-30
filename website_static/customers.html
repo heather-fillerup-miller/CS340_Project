@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset = 'UTF-8'>
+        <title>Manage Customers</title>
+        <link rel='stylesheet' href='style.css' type='text/css'>
+
+    </head>
+    <body>
+
+        <nav class='navbar'>
+            <ol>
+                <li class='navbar'><a href='index.html'>Home</a></li>
+                <li class='navbar'><a href='customerAdd.html'>Add Customer</a></li>
+                <li class='navbar'><a href='customerUpdate.html'>Update Customer</a></li>
+            </ol>
+        </nav>
+
+        <form id='searchCustomer'>
+            <fieldset>
+                <legend>Search Customers</legend>
+                <label for='f_name'>First Name:</label><br>
+                <input type='text' id='f_name' name='f_name'><br>
+                
+                <label for='l_name'>Last Name:</label><br>
+                <input type='text' id='l_name' name='l_name'><br>
+                
+                <label for='contact_no'>Contact Number:</label><br>
+                <input type='text' id='contact_no' name='contact_no'><br>
+                
+                <label for='email_address'>Email Address:</label><br>
+                <input type='email' id='email_address' name='email_address'><br><br>
+                
+                <input type='submit' id='submit' name='searchCustomer' value='Search'><br>
+            </fieldset>
+        </form>
+
+    </body>
+</html>

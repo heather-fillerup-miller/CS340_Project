@@ -1,0 +1,41 @@
+legend {
+    font-weight: bold;
+    font-size: larger;
+}
+
+table {
+    border-collapse: collapse;
+    text-align: center;
+}
+
+table, th, tr, td {
+    border: 1px solid black;
+    padding: 10px;
+}
+
+#rowHeader {
+    font-weight: bold;
+}
+
+/*https://developer.mozilla.org/en-US/docs/Web/HTML/Element/nav*/
+nav {
+    border-bottom: 1px solid black;
+}
+
+.navbar ol {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.navbar {
+    display: inline-block;
+}
+
+.navbar a::after {
+    display: inline-block;
+    color: #000;
+    content: '>';
+    font-size: 80%;
+    font-weight: bold;
+    padding: 0 3px;
+}

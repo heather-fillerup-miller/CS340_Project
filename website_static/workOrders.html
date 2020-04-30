@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset = 'UTF-8'>
+        <title>Manage Work Orders</title>
+        <link rel='stylesheet' href='style.css' type='text/css'>
+
+    </head>
+    <body>
+
+        <nav class='navbar'>
+            <ol>
+                <li class='navbar'><a href='index.html'>Home</a></li>
+                <li class='navbar'><a href='repairs.html'>Repairs</a></li>
+                <li class='navbar'><a href='workOrderAdd.html'>Add Work Order</a></li>
+                <li class='navbar'><a href='workOrderUpdate.html'>Update Work Order</a></li>
+                <li class='navbar'><a href='workTasks.html'>Manage Work Tasks</a></li>
+                <li class='navbar'><a href='mechanics.html'>Manage Mechanics</a></li>
+            </ol>
+        </nav>
+
+		<form id='searchWorkOrder'>
+            <fieldset>
+                <legend>Search Work Orders</legend>
+                <!--Dropdown from mechanics Table??-->
+                <label for='f_name'>Mechanic First Name:</label><br>
+                <input type='text' id='f_name' name='f_name'><br>
+                
+                <label for='l_name'>Mechanic Last Name:</label><br>
+                <input type='text' id='l_name' name='l_name'><br>
+                
+                <!--Dropdown from workTasks Table??-->
+                <label for='l_name'>Task Type:</label><br>
+                <input type='text' id='type' name='type'><br>
+                
+                <label for='start_date'>Start Date:</label><br>
+                <input type='date' id='start_date' name='start_date'><br>
+                
+                <label for='end_date'>End Date:</label><br>
+                <input type='date' id='end_date' name='end_date'><br><br>
+                    
+                <input type='submit' id='submit' name='searchWorkOrder' value='Search'><br>
+            </fieldset>
+            </form>
+
+    </body>
+</html>

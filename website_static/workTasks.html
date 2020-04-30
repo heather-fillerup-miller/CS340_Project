@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+		<title>Manage Work Task</title>
+		<link rel='stylesheet' href='style.css' type='text/css'>
+
+    </head>
+    <body>
+		<nav class='navbar'>
+            <ol>
+				<li class='navbar'><a href='index.html'>Home</a></li>
+				<li class='navbar'><a href='workOrders.html'>Work Orders</a></li>
+                <li class='navbar'><a href='workTaskAdd.html'>Add Work Task</a></li>
+                <li class='navbar'><a href='workTaskUpdate.html'>Update Work Task</a></li>
+            </ol>
+        </nav>
+
+		<!--Search Task Form-->
+		<form id='searchTask'>
+		<fieldset>
+			<legend>Search Work Tasks</legend>
+			<label for='license_plate'>License Plate Number:</label><br>
+			<input type='text' id='license_plate' name='license_plate'><br>
+
+			<label for='category'>Task Name:</label><br>
+			<input type='text' id='category' name='category'><br>
+			
+			<label for='description'>Task Description:</label><br>
+			<input type='text' id='description' name='description'><br><br>
+			
+			<input type='submit' id='submit' name='searchWorkTask' value='Search'><br>
+		</fieldset>
+		</form>
+    </body>
+</html>

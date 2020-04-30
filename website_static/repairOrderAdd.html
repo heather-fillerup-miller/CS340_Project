@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+		<title>Add Repair Order</title>
+		<link rel='stylesheet' href='style.css' type='text/css'>
+
+    </head>
+    <body>
+		<nav class='navbar'>
+            <ol>
+				<li class='navbar'><a href='index.html'>Home</a></li>
+				<li class='navbar'><a href='repairs.html'>Repairs</a></li>
+            </ol>
+		</nav>
+		
+		<!--Repair Order Form-->
+		<form id='newRepairOrder'>
+		<fieldset>
+			<legend>New Repair Order</legend>
+			<label for='date_received'>Date Received:</label><br>
+			<input type='date' id='date_received' name='date_received'><br>
+			
+			<label for='license_plate'>Car License Plate Number:</label><br>
+			<input type='text' id='license_plate' name='license_plate'><br>
+            
+            <label for='parts_needed'>Parts Needed?</label><br>
+			<select id='parts_needed'>
+                <option value=0 selected>No</option>
+                <option value=1 >Yes</option>
+
+            </select><br><br>
+		
+			<input type='submit' id='submit' name='addRepairOrder' value='Add'><br>
+		</fieldset>
+		</form>
+    </body>
+</html>
