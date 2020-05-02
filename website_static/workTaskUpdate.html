@@ -5,30 +5,30 @@
 		<link rel='stylesheet' href='style.css' type='text/css'>
 
     </head>
-    <body>
+    <body id='main'>
 		<nav class='navbar'>
             <ol>
 				<li class='navbar'><a href='index.html'>Home</a></li>
 				<li class='navbar'><a href='workTasks.html'>Work Tasks</a></li>
             </ol>
 		</nav>
-		
+
 		<!--Update Task-->
 		<form id='updateTask'>
 		<fieldset>
             <legend>Update Work Task</legend>
             <label for='id'>ID:</label><br>
             <input type='number' id='id' name='id'><br>
-            
+
 			<label for='license_plate'>License Plate Number:</label><br>
 			<input type='text' id='license_plate' name='license_plate'><br>
 
 			<label for='category'>Task Name:</label><br>
 			<input type='text' id='category' name='category'><br>
-			
+
 			<label for='description'>Task Description:</label><br>
 			<input type='text' id='description' name='description'><br><br>
-			
+
 			<input type='submit' id='submit' name='updateWorkTask' value='Update'><br><br>
 			<input type='submit' id='submit' name='deleteWorkTask' value='Delete'><br>
 		</fieldset>

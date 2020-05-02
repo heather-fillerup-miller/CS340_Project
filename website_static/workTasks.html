@@ -5,23 +5,23 @@
 		<link rel='stylesheet' href='style.css' type='text/css'>
 
     </head>
-    <body>
+    <body id='main'>
 		<nav class='navbar'>
-            <ol>
+      <ol>
 				<li class='navbar'><a href='index.html'>Home</a></li>
 				<li class='navbar'><a href='workOrders.html'>Work Orders</a></li>
-                <li class='navbar'><a href='workTaskAdd.html'>Add Work Task</a></li>
-                <li class='navbar'><a href='workTaskUpdate.html'>Update Work Task</a></li>
-            </ol>
+        <li class='navbar'><a href='workTaskAdd.html'>Add Work Task</a></li>
+        <li class='navbar'><a href='workTaskUpdate.html'>Update Work Task</a></li>
+      </ol>
 		</nav>
-		
-		<pr>
+
+		<p>
 			This is the work task management page.
 			<br>
 			A work task can be assigned to many work orders.
 			<br>
 			The navigation bar contains the links to add and update work tasks.
-		</pr>
+		</p>
 
 		<!--Search Task Form-->
 		<form id='searchTask'>
@@ -32,10 +32,10 @@
 
 			<label for='category'>Task Name:</label><br>
 			<input type='text' id='category' name='category'><br>
-			
+
 			<label for='description'>Task Description:</label><br>
 			<input type='text' id='description' name='description'><br><br>
-			
+
 			<input type='submit' id='submit' name='searchWorkTask' value='Search'><br>
 		</fieldset>
 		</form>

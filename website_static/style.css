@@ -1,3 +1,10 @@
+#main{
+  background-color: rgb(244, 244, 244);
+  /* background-color: white; */
+  /* background-color: #CFDFFE; */
+  overflow: visible;
+}
+
 legend {
     font-weight: bold;
     font-size: larger;
@@ -8,19 +15,33 @@ table {
     text-align: center;
 }
 
-.updateButton {
-    border: none;
+button {
+  transition-duration: 0.2s;
+}
+
+tr td button:hover {
+  background-color: #ccf4ff; /* Green */
+  color: black;
+  text-decoration: none;
+}
+
+#head, form legend{
+  font-family: Avenir Next;
+  font-weight: 600;
 }
 
 table, th, tr, td {
     border: 1px solid black;
     padding: 10px;
+    font-family: Avenir Next;
+    font-weight: normal;
 }
 
-
-#rowHeader {
-    font-weight: bold;
+input, form, p, h2{
+  font-family: Avenir Next;
+  font-weight: normal;
 }
+
 
 /*https://developer.mozilla.org/en-US/docs/Web/HTML/Element/nav*/
 nav {
@@ -37,11 +58,24 @@ nav {
     display: inline-block;
 }
 
+a{
+  color: black;
+  text-decoration: none;
+  font-family: Avenir Next;
+}
+a:visited{
+  text-decoration: none;
+}
+a:hover{
+  color: #666666;
+}
 .navbar a::after {
     display: inline-block;
+    text-decoration: none;
     color: #000;
     content: '>';
     font-size: 80%;
     font-weight: bold;
     padding: 0 3px;
+    font-family: Avenir Next;
 }

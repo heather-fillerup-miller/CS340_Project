@@ -6,7 +6,7 @@
         <link rel='stylesheet' href='style.css' type='text/css'>
 
     </head>
-    <body>
+    <body id='main'>
 
         <nav class='navbar'>
             <ol>
@@ -18,7 +18,7 @@
         </nav>
 
         <p>
-            This is the repairs management page. 
+            This is the repairs management page.
             <br>
             A repair order can have many work orders assigned to them.
 			<br>
@@ -30,10 +30,10 @@
                 <legend>Search Repair Orders</legend>
                 <label for='date_received'>Date Received:</label><br>
                 <input type='date' id='date_received' name='date_received'><br>
-                
+
                 <label for='license_plate'>Car License Plate Number:</label><br>
                 <input type='text' id='license_plate' name='license_plate'><br><br>
-                       
+
                 <input type='submit' id='submit' name='searchRepairOrder' value='Search'><br>
             </fieldset>
             </form>
