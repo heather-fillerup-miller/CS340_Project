@@ -4,16 +4,12 @@ id INT AUTO_INCREMENT UNIQUE PRIMARY KEY NOT NULL,
 f_name VARCHAR(255) NOT NULL,
 l_name VARCHAR(255) NOT NULL,
 contact_no VARCHAR(20) NOT NULL,
-email_address VARCHAR(255) NOT NULL,
-city VARCHAR(255) NOT NULL,
-state VARCHAR(255) NOT NULL,
-zip_code INT(5) NOT NULL
+email_address VARCHAR(255) NOT NULL
 );
 
 -- test insert INTo customers --
-INSERT INTO customers(f_name, l_name, contact_no, email_address, city,
-state, zip_code) VALUES ('chris', 'nelson', '555-394-0383', 
-'silly@goofy.com', 'Seattle', 'WA', '98109');
+INSERT INTO customers(f_name, l_name, contact_no, email_address) VALUES ('chris', 'nelson', '555-394-0383', 
+'silly@goofy.com');
 
 -- show the customer table --
 SELECT * FROM customers;
@@ -63,6 +59,26 @@ INSERT INTO repair_orders(car_id, date_received) VALUES (
 SELECT * FROM repair_orders;
 
 --------------------REPAIR ORDERS------------------------
+
+----------------------WORK_TASKS-------------------------
+CREATE TABLE work_tasks(
+id INT AUTO_INCREMENT UNIQUE PRIMARY KEY NOT NULL,
+name VARCHAR(255) NOT NULL
+);
+
+-- test insert into repair_orders --
+INSERT INTO work_tasks(name) VALUES ('diagnosis');
+INSERT INTO work_tasks(name) VALUES ('approval');
+INSERT INTO work_tasks(name) VALUES ('parts');
+INSERT INTO work_tasks(name) VALUES ('repair');
+INSERT INTO work_tasks(name) VALUES ('test');
+INSERT INTO work_tasks(name) VALUES ('contact');
+
+
+-- show the repair_orders table --
+SELECT * FROM repair_orders;
+
+----------------------WORK_TASKS-------------------------
 
 
 
