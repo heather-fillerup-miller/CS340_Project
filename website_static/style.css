@@ -8,10 +8,15 @@ table {
     text-align: center;
 }
 
+.updateButton {
+    border: none;
+}
+
 table, th, tr, td {
     border: 1px solid black;
     padding: 10px;
 }
+
 
 #rowHeader {
     font-weight: bold;
@@ -20,6 +25,7 @@ table, th, tr, td {
 /*https://developer.mozilla.org/en-US/docs/Web/HTML/Element/nav*/
 nav {
     border-bottom: 1px solid black;
+    font-size: x-large;
 }
 
 .navbar ol {

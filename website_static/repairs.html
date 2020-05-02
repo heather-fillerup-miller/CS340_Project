@@ -17,6 +17,14 @@
             </ol>
         </nav>
 
+        <p>
+            This is the repairs management page. 
+            <br>
+            A repair order can have many work orders assigned to them.
+			<br>
+			The navigation bar contains the links to add or update a repair order and manage work orders.
+		</p>
+
 		<form id='searchRepairOrder'>
             <fieldset>
                 <legend>Search Repair Orders</legend>
@@ -24,15 +32,8 @@
                 <input type='date' id='date_received' name='date_received'><br>
                 
                 <label for='license_plate'>Car License Plate Number:</label><br>
-                <input type='text' id='license_plate' name='license_plate'><br>
-                
-                <label for='parts_needed'>Parts Needed?</label><br>
-                <select id='parts_needed'>
-                    <option value=0 selected>No</option>
-                    <option value=1 >Yes</option>
-    
-                </select><br><br>
-            
+                <input type='text' id='license_plate' name='license_plate'><br><br>
+                       
                 <input type='submit' id='submit' name='searchRepairOrder' value='Search'><br>
             </fieldset>
             </form>
