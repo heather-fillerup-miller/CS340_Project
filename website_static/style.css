@@ -25,7 +25,11 @@ tr td button:hover {
   text-decoration: none;
 }
 
-#head, form legend{
+#title {
+  font-size: x-large;
+}
+
+.head, #form legend{
   font-family: Avenir Next;
   font-weight: 600;
 }

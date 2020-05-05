@@ -21,45 +21,48 @@
             The navigation bar contains the main pages for adding, searching and updating records.
         </p>
 
-        <h2>
-            Current Repairs
-        </h2>
         <table>
             <thead>
                 <tr>
-                    <th id='head'>Repair Order</th>
-                    <th id='head'>Customer</th>
-                    <th id='head'>Car Description</th>
-                    <th id='head'>Current Task</th>
-                    <th id='head'>Start Date</th>
-                    <th id='head'>End Date</th>
-                    <th id='head'>Mechanic</th>
-                    <th id='head'></th>
+                    <th class= 'head' id= 'title' colspan='10'>Mahinui Auto Shop</th>
+                </tr>
+                <tr>
+                    <th class='head'>Customer</th>
+                    <th class= 'head'>License Plate</th>
+                    <th class='head'>Car Description</th>
+                    <th class='head'>Current Task</th>
+                    <th class='head'>Start Date</th>
+                    <th class='head'>Mechanic</th>
+                    <th class='head'colspan= '2'><form class="form-inline">
+                        <div class="input-group">
+                            <input class="form-control" type="text" name="filter" id="filter">
+                            <button class="input-group-text" id="subscribe" type="button">Search</button>
+                        </div>
+                    </form></th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td id='ro1'>1</td>
                     <td id='cd1'>Jason Bateman</td>
+                    <td id='lp1'>487WCK</td>
                     <td id='cd1'>2015 Honda Accord</td>
                     <td id='ct1'>Diagnosis</td>
                     <td id='sd1'>03/1/2020</td>
-                    <td id='ed1'></td>
                     <td id='m1'>Johnny</td>
-                    <td id= 'button1' type= 'button'><button name= 'udpate1'>Update</button>
-                    <button id= 'delete1' type= 'button'>Delete</button></td>
+                    <td id= 'button1' type= 'button'><button name= 'udpate1'>Update</button></td>
+                    <td id= 'button1' type= 'button'><button id= 'delete1' type= 'button'>Delete</button></td>
                 </tr>
                 <tr>
-                    <td id='ro2'>2</td>
                     <td id='cd2'>Charlize Theron</td>
+                    <td id='lp1'>278PIL</td>
                     <td id='cd2'>2014 Toyota Civic</td>
                     <td id='ct2'>Customer Approval</td>
                     <td id='sd2'>3/2/2020</td>
-                    <td id='ed2'></td>
                     <td id='m2'>Ben</td>
-                    <td id= 'button2u' class='update' type='button'><button name= 'udpate2'>Update</button>
-                    <button id= 'delete2' type= 'button'>Delete</button></td>
+                    <td id= 'button2u' class='update' type='button'><button name= 'udpate2'>Update</button></td>
+                    <td id= 'button2u' class='update' type='button'><button id= 'delete2' type= 'button'>Delete</button></td>
                 </tr>
+
             </tbody>
         </table>
     </body>
