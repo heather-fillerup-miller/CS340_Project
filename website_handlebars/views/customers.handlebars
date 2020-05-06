@@ -1,0 +1,40 @@
+<table class="table table-bordered">
+    <thead>
+        <tr>
+        <th colspan='7'>Mahinui Auto Shop Customers</th>
+        </tr>
+
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">First Name</th>
+            <th scope="col">Last Name</th>
+            <th scope="col">Contact Number</th>
+            <th scope="col">Email Address</th>
+            <th scope="col" colspan= "2">
+            <form class="form-inline">
+            <div class="input-group">
+            <input type="text" name="filter" id="filter">
+            <button id="search" type="button">Search</button>
+            </div>
+            </form>
+            </th>
+        </tr>
+    </thead>
+
+    {{#if dataRows}}
+    <tbody>
+        {{#each dataRows}}
+        <tr id= "{{this.id}}">
+            <th scope="row">{{this.id}}</td>
+            <td>{{this.f_name}}</td>
+            <td>{{this.l_name}}</td>
+            <td>{{this.contact_no}}</td>
+            <td>{{this.email_address}}</td>
+            <td><button id= "{{this.id}}Update">Update</button>
+            <button id= "{{this.id}}Delete">Delete</button></td>
+        </tr>
+        {{/each}}
+    </tbody>
+    {{/if}}
+</table>
+<br>
