@@ -42,6 +42,66 @@ app.get('/cars', function(req, res, next) {
     }
 });
 
+app.get('/mechanics', function(req, res, next) {
+    var context = {};
+    mysql.pool.query('SELECT * FROM mechanics', function(err,rows){
+        if(err){
+            throw err;
+        }else {
+            renderMechanics(rows);
+        }
+    });
+    function renderMechanics(value) {
+        context.dataRows = value;
+        res.render('mechanics', context);
+    }
+});
+
+app.get('/repair_orders', function(req, res, next) {
+    var context = {};
+    mysql.pool.query('SELECT * FROM repair_orders', function(err,rows){
+        if(err){
+            throw err;
+        }else {
+            renderOrders(rows);
+        }
+    });
+    function renderOrders(value) {
+        context.dataRows = value;
+        res.render('repair_orders', context);
+    }
+});
+
+app.get('/work_tasks', function(req, res, next) {
+    var context = {};
+    mysql.pool.query('SELECT * FROM work_tasks', function(err,rows){
+        if(err){
+            throw err;
+        }else {
+            renderTasks(rows);
+        }
+    });
+    function renderTasks(value) {
+        context.dataRows = value;
+        res.render('work_tasks', context);
+    }
+});
+
+app.get('/work_orders', function(req, res, next) {
+    var context = {};
+    mysql.pool.query('SELECT * FROM work_orders', function(err,rows){
+        if(err){
+            throw err;
+        }else {
+            renderW_Orders(rows);
+        }
+    });
+    function renderW_Orders(value) {
+        context.dataRows = value;
+        res.render('work_orders', context);
+    }
+});
+
 app.use(function(req, res) {
     res.status(404);
     res.render('404');

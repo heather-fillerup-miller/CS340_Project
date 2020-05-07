@@ -1,16 +1,17 @@
 <table class="table table-bordered">
     <thead>
         <tr>
-        <th colspan='7'>Mahinui Auto Shop Cars</th>
+        <th colspan='9'>Mahinui Auto Shop Repair Orders</th>
         </tr>
 
         <tr>
             <th scope="col">ID</th>
-            <th scope="col">Customer ID</th>
-            <th scope="col">License Plate</th>
-            <th scope="col">Make</th>
-            <th scope="col">Model Name</th>
-            <th scope="col">Model Year</th>
+            <th scope="col">Car ID</th>
+            <th scope="col">Last Name</th>
+            <th scope="col">Date Received</th>
+            <th scope="col">Date Completed</th>
+            <th scope="col">Parts Needed</th>
+            <th scope="col">Current Status</th>
             <th scope="col" colspan= "2">
             <form class="form-inline">
             <div class="input-group">
@@ -27,11 +28,11 @@
         {{#each dataRows}}
         <tr id= "{{this.id}}">
             <th scope="row">{{this.id}}</td>
-             <th scope="row">{{this.customer_id}}</td>
-            <td>{{this.license_plate}}</td>
-            <td>{{this.make}}</td>
-            <td>{{this.model_name}}</td>
-            <td>{{this.model_year}}</td>
+            <td>{{this.car_id}}</td>
+            <td>{{this.date_received}}</td>
+            <td>{{this.date_needed}}</td>
+            <td>{{this.parts_needed}}</td>
+            <td>{{this.current_status}}</td>
             <td><button id= "{{this.id}}Update">Update</button>
             <button id= "{{this.id}}Delete">Delete</button></td>
         </tr>
