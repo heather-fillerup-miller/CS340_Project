@@ -9,7 +9,8 @@ email_address VARCHAR(255) NOT NULL
 
 -- test insert INTo customers --
 INSERT INTO customers(f_name, l_name, contact_no, email_address) VALUES ('chris', 'nelson', '555-394-0383', 
-'silly@goofy.com');
+'silly@goofy.com'), ('heather', 'fillerup', '808-234-5467', 
+'genius@smart.com');
 
 -- show the customer table --
 SELECT * FROM customers;
@@ -24,15 +25,19 @@ license_plate VARCHAR(255) NOT NULL,
 make VARCHAR(255) NOT NULL,
 model_name VARCHAR(255) NOT NULL,
 model_year YEAR NOT NULL,
-description VARCHAR(255),
 FOREIGN KEY (customer_id) REFERENCES customers(id)
 );
 
 -- test insert into cars --
 INSERT INTO cars(customer_id, license_plate, make, model_name,
-model_year, description) VALUES (
-(SELECT id FROM customers WHERE f_name = 'chris' AND l_name = 'nelson'), 
-'bgi-4589', 'Honda', 'Civic', '2006', "Daily driver");
+model_year) VALUES 
+((SELECT id FROM customers WHERE f_name = 'chris' AND l_name = 'nelson'), 
+'bgi-4589', 'Honda', 'Civic', '2006'),
+((SELECT id FROM customers WHERE f_name = 'heather' AND l_name = 'fillerup'), 
+'bgi-4589', 'Fiat', '500', '2014');
+
+--update--
+UPDATE cars SET license_plate = 'abc-123' WHERE cars.customer_id = (SELECT customers.id FROM customers WHERE customers.f_name = 'heather' AND customers.l_name = 'fillerup');
 
 -- show the cars table --
 SELECT * FROM cars;

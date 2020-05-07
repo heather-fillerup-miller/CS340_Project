@@ -14,23 +14,31 @@ app.use(express.static('public'));
 
 app.get('/customers', function(req, res, next) {
     var context = {};
-    /*mysql.pool.query('SELECT Column_name FROM Information_schema.columns WHERE Table_name = ' + tableName, function(err, rows, fields){
-        if(err) {
-            next(err);
-            return;
-        }
-        context.columnResults = rows;
-    });*/
-    mysql.pool.query('SELECT * FROM Customers', function(err,rows){
+    mysql.pool.query('SELECT * FROM customers', function(err,rows){
         if(err){
             throw err;
         }else {
-            renderPage(rows);
+            renderCustomers(rows);
         }
     });
-    function renderPage(value) {
+    function renderCustomers(value) {
         context.dataRows = value;
         res.render('customers', context);
+    }
+});
+
+app.get('/cars', function(req, res, next) {
+    var context = {};
+    mysql.pool.query('SELECT * FROM cars', function(err,rows){
+        if(err){
+            throw err;
+        }else {
+            renderCars(rows);
+        }
+    });
+    function renderCars(value) {
+        context.dataRows = value;
+        res.render('cars', context);
     }
 });
 
