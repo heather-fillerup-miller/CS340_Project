@@ -1,5 +1,5 @@
 {
-    "name": "workoutDatabase",
+    "name": "mechanicDatabase",
     "version": "1.0.0",
     "description": "Database Interactions and UI",
     "main": "app.js",
