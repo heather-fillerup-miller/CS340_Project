@@ -21,7 +21,7 @@ SELECT * FROM customers;
 -------------------------CARS---------------------------
 CREATE TABLE cars(
 id INT AUTO_INCREMENT UNIQUE PRIMARY KEY NOT NULL,
-customer_id INT NOT NULL,
+customer_id INT,
 license_plate VARCHAR(255) NOT NULL,
 make VARCHAR(255) NOT NULL,
 model_name VARCHAR(255) NOT NULL,
@@ -50,7 +50,7 @@ SELECT * FROM cars;
 --------------------REPAIR ORDERS------------------------
 CREATE TABLE repair_orders(
 id INT AUTO_INCREMENT UNIQUE PRIMARY KEY NOT NULL,
-car_id INT NOT NULL,
+car_id,
 date_received DATE,
 date_compeleted DATE,
 parts_needed TINYINT NOT NULL DEFAULT 0,
