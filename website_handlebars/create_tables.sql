@@ -133,6 +133,13 @@ VALUES ((SELECT id FROM repair_orders WHERE car_id = 1),
 AND l_name = 'TheSnake'),'2020-05-02'
 ); 
 
+INSERT INTO work_orders(repair_order_id, work_task_id, mechanic_id,
+start_date)
+VALUES ((SELECT id FROM repair_orders WHERE car_id = 1),
+(SELECT id FROM work_tasks WHERE name = 'Diagnosis'),
+(SELECT id FROM mechanics WHERE f_name = 'bob' 
+AND l_name = 'painter'),'2020-05-05'
+); 
 
 -- show the work_orders table --
 SELECT * FROM work_orders;
