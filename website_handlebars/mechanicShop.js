@@ -12,6 +12,12 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
+app.get('/home', function(req, res, next) {
+    var context = {};
+    context.title = 'Dashboard';
+    res.render('home', context);
+});
+
 app.get('/customers', function(req, res, next) {
     var context = {};
     context.title = 'Customers';

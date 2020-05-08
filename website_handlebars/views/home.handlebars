@@ -1,34 +1,35 @@
-<table>
+<h2>{{title}}</h2>
+
+<table class="table table-bordered table-hover">
     <thead>
         <tr>
-            <th class= "title" colspan={{columnNumber}}>Dashboard {{tableName}}</th>
-        </tr>
-        {{#if columnNames}}
-        <tr>
-            {{#each columnNames}}
-              <th>{{this}}</th>
-            {{/each}}
-            <th colspan= "2">
+            <th scope="col">Customer Name</th>
+            <th scope="col">License Plate</th>
+            <th scope="col">Current Task</th>
+            <th scope="col">Mechanic</th>
+            <th scope="col">Start Date</th>
+            <th scope="col" colspan= "2">
             <form class="form-inline">
                 <input class="form-control mr-sm-2" type="search" aria-label="Search">
                 <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
             </form>
             </th>
         </tr>
-        {{/if}}
     </thead>
 
-    {{#if dataResults}}
+    {{#if dataRows}}
     <tbody>
-      {{#each dataResults}}
-			  <tr id= "{{this}}">
-  			  <td style= "border: 1px solid black">{{this}}</td>
-            <td><button type="button" class="btn btn-outline-warning">Update</button>
-            <button type="button" class="btn btn-outline-danger">Delete</button></td>
-			  </tr>
-			{{/each}}
+        {{#each dataRows}}
+        <tr id= "{{this.id}}">
+            <th scope="row">{{this.id}}</td>
+            <td>{{this.customerName}}</td>
+            <td>{{this.license_plate}}</td>
+            <td>{{this.taskName}}</td>
+            <td>{{this.mechanicName}}</td>
+            <td>{{this.taskStartDate}}</td>
+        </tr>
+        {{/each}}
     </tbody>
     {{/if}}
-
 </table>
 <br>
