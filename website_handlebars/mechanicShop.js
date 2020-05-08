@@ -14,6 +14,7 @@ app.use(express.static('public'));
 
 app.get('/customers', function(req, res, next) {
     var context = {};
+    context.title = 'Customers';
     mysql.pool.query('SELECT * FROM customers', function(err,rows){
         if(err){
             throw err;
@@ -29,6 +30,7 @@ app.get('/customers', function(req, res, next) {
 
 app.get('/cars', function(req, res, next) {
     var context = {};
+    context.title = 'Cars';
     mysql.pool.query('SELECT * FROM cars', function(err,rows){
         if(err){
             throw err;
@@ -44,6 +46,7 @@ app.get('/cars', function(req, res, next) {
 
 app.get('/mechanics', function(req, res, next) {
     var context = {};
+    context.title = 'Mechanics'
     mysql.pool.query('SELECT * FROM mechanics', function(err,rows){
         if(err){
             throw err;
@@ -59,6 +62,7 @@ app.get('/mechanics', function(req, res, next) {
 
 app.get('/repair_orders', function(req, res, next) {
     var context = {};
+    context.title = 'Repair Orders';
     mysql.pool.query('SELECT * FROM repair_orders', function(err,rows){
         if(err){
             throw err;
@@ -74,6 +78,7 @@ app.get('/repair_orders', function(req, res, next) {
 
 app.get('/work_tasks', function(req, res, next) {
     var context = {};
+    context.title = 'Work Tasks'
     mysql.pool.query('SELECT * FROM work_tasks', function(err,rows){
         if(err){
             throw err;
@@ -89,6 +94,7 @@ app.get('/work_tasks', function(req, res, next) {
 
 app.get('/work_orders', function(req, res, next) {
     var context = {};
+    context.title = 'Work Orders'
     mysql.pool.query('SELECT * FROM work_orders', function(err,rows){
         if(err){
             throw err;
