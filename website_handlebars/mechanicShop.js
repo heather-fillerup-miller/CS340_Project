@@ -12,25 +12,105 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
+app.get('/home', function(req, res, next) {
+    var context = {};
+    context.title = 'Dashboard';
+    res.render('home', context);
+});
+
 app.get('/customers', function(req, res, next) {
     var context = {};
-    /*mysql.pool.query('SELECT Column_name FROM Information_schema.columns WHERE Table_name = ' + tableName, function(err, rows, fields){
-        if(err) {
-            next(err);
-            return;
-        }
-        context.columnResults = rows;
-    });*/
-    mysql.pool.query('SELECT * FROM Customers', function(err,rows){
+    context.title = 'Customers';
+    mysql.pool.query('SELECT * FROM customers', function(err,rows){
         if(err){
             throw err;
         }else {
-            renderPage(rows);
+            renderCustomers(rows);
         }
     });
-    function renderPage(value) {
+    function renderCustomers(value) {
         context.dataRows = value;
         res.render('customers', context);
+    }
+});
+
+app.get('/cars', function(req, res, next) {
+    var context = {};
+    context.title = 'Cars';
+    mysql.pool.query('SELECT * FROM cars', function(err,rows){
+        if(err){
+            throw err;
+        }else {
+            renderCars(rows);
+        }
+    });
+    function renderCars(value) {
+        context.dataRows = value;
+        res.render('cars', context);
+    }
+});
+
+app.get('/mechanics', function(req, res, next) {
+    var context = {};
+    context.title = 'Mechanics'
+    mysql.pool.query('SELECT * FROM mechanics', function(err,rows){
+        if(err){
+            throw err;
+        }else {
+            renderMechanics(rows);
+        }
+    });
+    function renderMechanics(value) {
+        context.dataRows = value;
+        res.render('mechanics', context);
+    }
+});
+
+app.get('/repair_orders', function(req, res, next) {
+    var context = {};
+    context.title = 'Repair Orders';
+    mysql.pool.query('SELECT * FROM repair_orders', function(err,rows){
+        if(err){
+            throw err;
+        }else {
+            renderOrders(rows);
+        }
+    });
+    function renderOrders(value) {
+        context.dataRows = value;
+        res.render('repair_orders', context);
+    }
+});
+
+app.get('/work_tasks', function(req, res, next) {
+    var context = {};
+    context.title = 'Work Tasks'
+    mysql.pool.query('SELECT * FROM work_tasks', function(err,rows){
+        if(err){
+            throw err;
+        }else {
+            renderTasks(rows);
+        }
+    });
+    function renderTasks(value) {
+        context.dataRows = value;
+        res.render('work_tasks', context);
+    }
+});
+
+app.get('/work_orders', function(req, res, next) {
+    var context = {};
+    context.title = 'Work Orders'
+    mysql.pool.query('SELECT * FROM work_orders', function(err,rows){
+        if(err){
+            throw err;
+        }else {
+            renderW_Orders(rows);
+        }
+    });
+    function renderW_Orders(value) {
+        context.dataRows = value;
+        res.render('work_orders', context);
     }
 });
 
