@@ -37,10 +37,10 @@ model_year) VALUES
 ((SELECT id FROM customers WHERE f_name = 'chris' AND l_name = 'nelson'), 
 'bgi-4589', 'Honda', 'Civic', '2006'),
 ((SELECT id FROM customers WHERE f_name = 'heather' AND l_name = 'fillerup'), 
-'bgi-4589', 'Fiat', '500', '2014');
+'bad-1234', 'Fiat', '500', '2014');
 
 --update--
-UPDATE cars SET license_plate = 'abc-123' WHERE cars.customer_id = (SELECT customers.id FROM customers WHERE customers.f_name = 'heather' AND customers.l_name = 'fillerup');
+UPDATE cars SET license_plate = 'bad-1234' WHERE cars.customer_id = (SELECT customers.id FROM customers WHERE customers.f_name = 'heather' AND customers.l_name = 'fillerup');
 
 -- show the cars table --
 SELECT * FROM cars;
@@ -50,18 +50,16 @@ SELECT * FROM cars;
 --------------------REPAIR ORDERS------------------------
 CREATE TABLE repair_orders(
 id INT AUTO_INCREMENT UNIQUE PRIMARY KEY NOT NULL,
-car_id,
+car_id INT,
 date_received DATE,
 date_compeleted DATE,
-parts_needed TINYINT NOT NULL DEFAULT 0,
-current_status INT NOT NULL DEFAULT 1,
 FOREIGN KEY (car_id) REFERENCES cars(id)
 );
 
 -- test insert into repair_orders --
-INSERT INTO repair_orders(car_id, date_received) VALUES ((
-(SELECT id FROM cars WHERE license_plate = 'bgi-4589'), '2020-05-02'),
-((SELECT id FROM cars WHERE license_plate = 'tbh-0012'), '2020-05-05'));
+INSERT INTO repair_orders(car_id, date_received) VALUES
+((SELECT id FROM cars WHERE license_plate = 'bgi-4589'), '2020-05-02'),
+((SELECT id FROM cars WHERE license_plate = 'tbh-0012'), '2020-05-05');
 
 
 
@@ -114,9 +112,10 @@ SELECT * FROM mechanics;
 
 ----------------------WORK_ORDERS------------------------
 CREATE TABLE work_orders(
+id INT AUTO_INCREMENT UNIQUE PRIMARY KEY NOT NULL, 
 repair_order_id INT NOT NULL,
 work_task_id INT NOT NULL,
-mechanic_id INT,
+mechanic_id INT NOT NULL,
 start_date DATE,
 end_date DATE,
 FOREIGN KEY (repair_order_id) REFERENCES repair_orders(id),
