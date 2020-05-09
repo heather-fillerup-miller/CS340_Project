@@ -20,97 +20,121 @@ app.get('/home', function(req, res, next) {
 
 app.get('/customers', function(req, res, next) {
     var context = {};
+    var tableName = 'customers'
     context.title = 'Customers';
-    mysql.pool.query('SELECT * FROM customers', function(err,rows){
+    var sql = 'SELECT * FROM ?? ; SELECT ?? FROM ?? WHERE ?? = ?';
+    var inserts = [tableName, 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
+    mysql.pool.query(sql, inserts, function(err, results){
         if(err){
             throw err;
         }else {
-            renderCustomers(rows);
+            renderCustomers(results);
         }
     });
-    function renderCustomers(value) {
-        context.dataRows = value;
-        res.render('customers', context);
+    function renderCustomers(results) {
+        context.dataRows = results[0];
+        context.dataColumns = results[1];
+        res.render('viewTable', context);
     }
 });
 
 app.get('/cars', function(req, res, next) {
     var context = {};
+    var tableName = 'cars'
     context.title = 'Cars';
-    mysql.pool.query('SELECT * FROM cars', function(err,rows){
+    var sql = 'SELECT * FROM ?? ; SELECT ?? FROM ?? WHERE ?? = ?';
+    var inserts = [tableName, 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
+    mysql.pool.query(sql, inserts, function(err, results){
         if(err){
             throw err;
         }else {
-            renderCars(rows);
+            renderCustomers(results);
         }
     });
-    function renderCars(value) {
-        context.dataRows = value;
-        res.render('cars', context);
+    function renderCustomers(results) {
+        context.dataRows = results[0];
+        context.dataColumns = results[1];
+        res.render('viewTable', context);
     }
 });
 
 app.get('/mechanics', function(req, res, next) {
     var context = {};
-    context.title = 'Mechanics'
-    mysql.pool.query('SELECT * FROM mechanics', function(err,rows){
+    var tableName = 'mechanics'
+    context.title = 'Mechanics';
+    var sql = 'SELECT * FROM ?? ; SELECT ?? FROM ?? WHERE ?? = ?';
+    var inserts = [tableName, 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
+    mysql.pool.query(sql, inserts, function(err, results){
         if(err){
             throw err;
         }else {
-            renderMechanics(rows);
+            renderCustomers(results);
         }
     });
-    function renderMechanics(value) {
-        context.dataRows = value;
-        res.render('mechanics', context);
+    function renderCustomers(results) {
+        context.dataRows = results[0];
+        context.dataColumns = results[1];
+        res.render('viewTable', context);
     }
 });
 
 app.get('/repair_orders', function(req, res, next) {
     var context = {};
+    var tableName = 'repair_orders'
     context.title = 'Repair Orders';
-    mysql.pool.query('SELECT * FROM repair_orders', function(err,rows){
+    var sql = 'SELECT * FROM ?? ; SELECT ?? FROM ?? WHERE ?? = ?';
+    var inserts = [tableName, 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
+    mysql.pool.query(sql, inserts, function(err, results){
         if(err){
             throw err;
         }else {
-            renderOrders(rows);
+            renderCustomers(results);
         }
     });
-    function renderOrders(value) {
-        context.dataRows = value;
-        res.render('repair_orders', context);
+    function renderCustomers(results) {
+        context.dataRows = results[0];
+        context.dataColumns = results[1];
+        res.render('viewTable', context);
     }
 });
 
 app.get('/work_tasks', function(req, res, next) {
     var context = {};
-    context.title = 'Work Tasks'
-    mysql.pool.query('SELECT * FROM work_tasks', function(err,rows){
+    var tableName = 'work_tasks'
+    context.title = 'Work Tasks';
+    var sql = 'SELECT * FROM ?? ; SELECT ?? FROM ?? WHERE ?? = ?';
+    var inserts = [tableName, 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
+    mysql.pool.query(sql, inserts, function(err, results){
         if(err){
             throw err;
         }else {
-            renderTasks(rows);
+            renderCustomers(results);
         }
     });
-    function renderTasks(value) {
-        context.dataRows = value;
-        res.render('work_tasks', context);
+    function renderCustomers(results) {
+        context.dataRows = results[0];
+        context.dataColumns = results[1];
+        res.render('viewTable', context);
     }
 });
 
 app.get('/work_orders', function(req, res, next) {
     var context = {};
-    context.title = 'Work Orders'
-    mysql.pool.query('SELECT * FROM work_orders', function(err,rows){
+    var tableName = 'work_orders'
+    context.title = 'Work Orders';
+    var sql = 'SELECT * FROM ?? ; SELECT ?? FROM ?? WHERE ?? = ?';
+    var inserts = [tableName, 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
+    mysql.pool.query(sql, inserts, function(err, results){
         if(err){
             throw err;
         }else {
-            renderW_Orders(rows);
+            renderCustomers(results);
         }
     });
-    function renderW_Orders(value) {
-        context.dataRows = value;
-        res.render('work_orders', context);
+    function renderCustomers(results) {
+        context.dataRows = results[0];
+        context.dataColumns = results[1];
+        res.render('viewTable', context);
     }
 });
 

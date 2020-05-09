@@ -5,7 +5,8 @@ var pool = mysql.createPool({
     host            :   'classmysql.engr.oregonstate.edu',
     user            :   'cs340_filleruh',
     password        :   '2733',
-    database        :   'cs340_filleruh' 
+    database        :   'cs340_filleruh',
+    multipleStatements: true
 });
 
 module.exports.pool = pool;
