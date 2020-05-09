@@ -1,0 +1,21 @@
+<h2>{{title}}</h2>
+    <div class = 'container'>
+        <form>
+            {{#if dataColumns}}
+                {{#each dataColumns}}
+                    <div class="form-group">
+                        <label for={{this.Column_name}}>{{this.Column_name}}</label>
+                        {{#if this.boolean}}
+                            <select class="form-control">
+                                <option>No</option>
+                                <option>Yes</option>
+                            </select>
+                        {{else}}
+                            <input type={{this.Data_type}} class="form-control" id={{this.Column_name}} aria-describedby="emailHelp" placeholder="Enter {{this.Column_name}}">
+                        {{/if}}
+                    </div>
+                {{/each}}
+                <button type='submit'class="btn btn-primary">Submit</button>
+            {{/if}}
+        </form>
+    </div>
