@@ -59,8 +59,12 @@ app.get('/addCustomer', function(req, res, next) {
     function renderPage(results) {
         results.forEach(getInputType);
         function getInputType(item) {
+            if(item.Column_name != 'id') {
+                item.notId = 1;
+            }
             if(item.Data_type == 'int') {
                 item.Data_type = 'number';
+                item.min = '0';
             }
             else if(item.Data_type == 'varchar') {
                 item.Data_type = 'text';
@@ -116,8 +120,12 @@ app.get('/addCar', function(req, res, next) {
     function renderPage(results) {
         results.forEach(getInputType);
         function getInputType(item) {
+            if(item.Column_name != 'id') {
+                item.notId = 1;
+            }
             if(item.Data_type == 'int') {
                 item.Data_type = 'number';
+                item.min = '0';
             }
             else if(item.Data_type == 'varchar') {
                 item.Data_type = 'text';
@@ -173,8 +181,12 @@ app.get('/addMechanic', function(req, res, next) {
     function renderPage(results) {
         results.forEach(getInputType);
         function getInputType(item) {
+            if(item.Column_name != 'id') {
+                item.notId = 1;
+            }
             if(item.Data_type == 'int') {
                 item.Data_type = 'number';
+                item.min = '0';
             }
             else if(item.Data_type == 'varchar') {
                 item.Data_type = 'text';
@@ -230,8 +242,12 @@ app.get('/addRepairOrder', function(req, res, next) {
     function renderPage(results) {
         results.forEach(getInputType);
         function getInputType(item) {
+            if(item.Column_name != 'id') {
+                item.notId = 1;
+            }
             if(item.Data_type == 'int') {
                 item.Data_type = 'number';
+                item.min = '0';
             }
             else if(item.Data_type == 'varchar') {
                 item.Data_type = 'text';
@@ -287,8 +303,12 @@ app.get('/addWorkTask', function(req, res, next) {
     function renderPage(results) {
         results.forEach(getInputType);
         function getInputType(item) {
+            if(item.Column_name != 'id') {
+                item.notId = 1;
+            }
             if(item.Data_type == 'int') {
                 item.Data_type = 'number';
+                item.min = '0';
             }
             else if(item.Data_type == 'varchar') {
                 item.Data_type = 'text';
@@ -344,8 +364,12 @@ app.get('/addWorkOrder', function(req, res, next) {
     function renderPage(results) {
         results.forEach(getInputType);
         function getInputType(item) {
+            if(item.Column_name != 'id') {
+                item.notId = 1;
+            }
             if(item.Data_type == 'int') {
                 item.Data_type = 'number';
+                item.min = '0';
             }
             else if(item.Data_type == 'varchar') {
                 item.Data_type = 'text';

@@ -1,17 +1,21 @@
-<h2>{{title}}</h2>
     <div class = 'container'>
+        <h3>{{title}}</h3>
         <form>
             {{#if dataColumns}}
                 {{#each dataColumns}}
                     <div class="form-group">
-                        <label for={{this.Column_name}}>{{this.Column_name}}</label>
-                        {{#if this.boolean}}
-                            <select class="form-control">
-                                <option>No</option>
-                                <option>Yes</option>
-                            </select>
-                        {{else}}
-                            <input type={{this.Data_type}} class="form-control" id={{this.Column_name}} aria-describedby="emailHelp" placeholder="Enter {{this.Column_name}}">
+                        {{#if this.notId}}
+                            <label for={{this.Column_name}}>{{this.Column_name}}</label>
+                            {{#if this.boolean}}
+                                <select class="form-control">
+                                    <option>No</option>
+                                    <option>Yes</option>
+                                </select>
+                            {{else if this.min}}
+                                <input type={{this.Data_type}} min={{this.min}} class="form-control" id={{this.Column_name}} aria-describedby="emailHelp" placeholder="Enter {{this.Column_name}}">
+                            {{else}}
+                                <input type={{this.Data_type}} class="form-control" id={{this.Column_name}} aria-describedby="emailHelp" placeholder="Enter {{this.Column_name}}">
+                            {{/if}}
                         {{/if}}
                     </div>
                 {{/each}}
