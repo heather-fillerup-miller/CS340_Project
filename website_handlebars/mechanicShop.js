@@ -28,10 +28,10 @@ app.get('/customers', function(req, res, next) {
         if(err){
             throw err;
         }else {
-            renderCustomers(results);
+            renderPage(results);
         }
     });
-    function renderCustomers(results) {
+    function renderPage(results) {
         context.dataRows = results[0];
         context.dataColumns = results[1];
         res.render('viewTable', context);
@@ -48,10 +48,10 @@ app.get('/cars', function(req, res, next) {
         if(err){
             throw err;
         }else {
-            renderCustomers(results);
+            renderPage(results);
         }
     });
-    function renderCustomers(results) {
+    function renderPage(results) {
         context.dataRows = results[0];
         context.dataColumns = results[1];
         res.render('viewTable', context);
@@ -68,10 +68,10 @@ app.get('/mechanics', function(req, res, next) {
         if(err){
             throw err;
         }else {
-            renderCustomers(results);
+            renderPage(results);
         }
     });
-    function renderCustomers(results) {
+    function renderPage(results) {
         context.dataRows = results[0];
         context.dataColumns = results[1];
         res.render('viewTable', context);
@@ -88,10 +88,10 @@ app.get('/repair_orders', function(req, res, next) {
         if(err){
             throw err;
         }else {
-            renderCustomers(results);
+            renderPage(results);
         }
     });
-    function renderCustomers(results) {
+    function renderPage(results) {
         context.dataRows = results[0];
         context.dataColumns = results[1];
         res.render('viewTable', context);
@@ -108,10 +108,10 @@ app.get('/work_tasks', function(req, res, next) {
         if(err){
             throw err;
         }else {
-            renderCustomers(results);
+            renderPage(results);
         }
     });
-    function renderCustomers(results) {
+    function renderPage(results) {
         context.dataRows = results[0];
         context.dataColumns = results[1];
         res.render('viewTable', context);
@@ -128,10 +128,10 @@ app.get('/work_orders', function(req, res, next) {
         if(err){
             throw err;
         }else {
-            renderCustomers(results);
+            renderPage(results);
         }
     });
-    function renderCustomers(results) {
+    function renderPage(results) {
         context.dataRows = results[0];
         context.dataColumns = results[1];
         res.render('viewTable', context);
@@ -139,6 +139,8 @@ app.get('/work_orders', function(req, res, next) {
 });
 
 app.use(function(req, res) {
+    var context = {};
+    context.status = 404;
     res.status(404);
     res.render('404');
 });
