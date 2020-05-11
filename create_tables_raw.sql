@@ -15,12 +15,6 @@ INSERT INTO customers(f_name, l_name, contact_no, email_address) VALUES ('heathe
 INSERT INTO customers(f_name, l_name, contact_no, email_address) VALUES ('ben', 'stiller', '493-322-9999', 
 'neb@rellits.com');
 
-
-
-
-
-SELECT * FROM customers;
-
 CREATE TABLE cars(
 id INT AUTO_INCREMENT UNIQUE PRIMARY KEY NOT NULL,
 customer_id INT NOT NULL,
@@ -54,9 +48,6 @@ model_year, description) VALUES (
 'vgd-1039', 'astin martin', 'DB9', '2019', "the beast");
 
 
-SELECT * FROM cars;
-
-
 CREATE TABLE repair_orders(
 id INT AUTO_INCREMENT UNIQUE PRIMARY KEY NOT NULL,
 car_id INT NOT NULL,
@@ -77,7 +68,6 @@ INSERT INTO repair_orders(car_id, date_received) VALUES (
 (SELECT id FROM cars WHERE license_plate = 'vgd-1039'), '2020-05-07');
 
 
-SELECT * FROM repair_orders;
 
 CREATE TABLE work_tasks(
 id INT AUTO_INCREMENT UNIQUE PRIMARY KEY NOT NULL,
@@ -91,7 +81,6 @@ INSERT INTO work_tasks(name) VALUES ('Repair');
 INSERT INTO work_tasks(name) VALUES ('Test Drive');
 INSERT INTO work_tasks(name) VALUES ('Contact Customer');
 
-SELECT * FROM work_tasks;
 
 CREATE TABLE mechanics(
 id INT AUTO_INCREMENT UNIQUE PRIMARY KEY NOT NULL,
@@ -103,7 +92,6 @@ INSERT INTO mechanics(f_name, l_name) VALUES ('Jake', 'TheSnake');
 INSERT INTO mechanics(f_name, l_name) VALUES ('grim', 'reaper');
 INSERT INTO mechanics(f_name, l_name) VALUES ('joe', 'rogan');
 
-SELECT * FROM mechanics;
 
 CREATE TABLE work_orders(
 repair_order_id INT NOT NULL,
@@ -140,16 +128,9 @@ VALUES ((SELECT id FROM repair_orders WHERE car_id = 3),
 AND l_name = 'rogan'),'2020-05-10'
 ); 
 
-SELECT * FROM work_orders;
 
 SELECT customers.f_name AS first_name, customers.l_name AS last_name, cars.description 
 AS car_description FROM customers JOIN cars ON customers.id = cars.customer_id; 
-
-
-
-
-
-
 
 
 SELECT customers.f_name AS first_name, customers.l_name AS last_name, cars.description 
@@ -161,46 +142,10 @@ JOIN work_orders ON repair_orders.id = work_orders.repair_order_id
 JOIN work_tasks ON work_orders.work_task_id = work_tasks.id
 JOIN mechanics ON work_orders.mechanic_id = mechanics.id;
 
-
-
-
-
-######
-SELECT category.name AS category_name,   
-COUNT(actor.actor_id) AS number_of_films FROM category
-JOIN film_category ON category.category_id = film_category.category_id
-JOIN film ON film_category.film_id = film.film_id
-JOIN film_actor ON film.film_id = film_actor.film_id
-LEFT JOIN actor ON film_actor.actor_id = actor.actor_id AND actor.actor_id = (SELECT actor_id from actor
-WHERE actor.first_name = "ED" AND actor.last_name = "CHASE")
-GROUP BY category.name ASC;
-#####
-
-
-SELECT customers.f_name AS first_name, customers.l_name AS last_name, cars.description 
-AS car_description, work_orders.work_task_id AS work_task, work_orders.start_date 
-AS start_date FROM customers JOIN cars.id ON customers.id = cars.id; 
-
-
-
-
 DROP TABLES work_orders;
 DROP TABLES mechanics;
 DROP TABLES work_tasks;
 DROP TABLES repair_orders;
 DROP TABLES cars;
 DROP TABLES customers;
-
-
-
-
-
-
-
-
-
-
-
-
-
 
