@@ -50,7 +50,7 @@ SELECT * FROM cars;
 --------------------REPAIR ORDERS------------------------
 CREATE TABLE repair_orders(
 id INT AUTO_INCREMENT UNIQUE PRIMARY KEY NOT NULL,
-car_id,
+car_id int NOT NULL,
 date_received DATE,
 date_compeleted DATE,
 parts_needed TINYINT NOT NULL DEFAULT 0,
@@ -59,9 +59,12 @@ FOREIGN KEY (car_id) REFERENCES cars(id)
 );
 
 -- test insert into repair_orders --
-INSERT INTO repair_orders(car_id, date_received) VALUES ((
-(SELECT id FROM cars WHERE license_plate = 'bgi-4589'), '2020-05-02'),
-((SELECT id FROM cars WHERE license_plate = 'tbh-0012'), '2020-05-05'));
+INSERT INTO repair_orders(car_id, date_received) VALUES(
+(SELECT id FROM cars WHERE license_plate = 'bgi-4589'), '2020-05-02');
+
+
+INSERT INTO repair_orders(car_id, date_received) VALUES(
+(SELECT id FROM cars WHERE license_plate = 'tbh-0012'), '2020-05-05');
 
 
 
@@ -154,7 +157,14 @@ DROP TABLES cars;
 DROP TABLES customers;
 
 
-
+SELECT customers.f_name AS first_name, customers.l_name AS last_name,
+work_tasks.name AS work_task, work_orders.start_date
+AS start_date, mechanics.f_name AS mechanic_f_name, mechanics.l_name AS mechanic_l_name
+FROM repair_orders JOIN cars ON repair_orders.car_id = cars.id
+JOIN customers ON cars.customer_id = customers.id
+JOIN work_orders ON repair_orders.id = work_orders.repair_order_id
+JOIN work_tasks ON work_orders.work_task_id = work_tasks.id
+JOIN mechanics ON work_orders.mechanic_id = mechanics.id;
 
 
 
