@@ -91,6 +91,7 @@ l_name VARCHAR(255) NOT NULL
 
 -- test insert int mechanics --
 INSERT INTO mechanics(f_name, l_name) VALUES ('Jake', 'TheSnake');
+INSERT INTO mechanics(f_name, l_name) VALUES ('grim', 'reaper');
 
 -- show the mechanics table --
 SELECT * FROM mechanics;
