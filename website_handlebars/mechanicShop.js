@@ -112,7 +112,7 @@ app.post('/addCustomer', function(req, res, next){
 app.get('/cars', function(req, res, next) {
     var context = {};
     var tableName = 'cars';
-    context.addHref = '/addCustomer';
+    context.addHref = '/addCar';
     context.title = 'Cars';
     var sql = 'SELECT * FROM ?? ; SELECT ?? FROM ?? WHERE ?? = ?';
     var inserts = [tableName, 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
