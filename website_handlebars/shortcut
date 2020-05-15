@@ -1,1 +1,2 @@
-source CS340/dbProject/CS340_Project/website_handlebars/create_tables.sql
+source CS340/dbProject/CS340_Project/website_handlebars/FINAL_create_populate_tables.sql
+source CS340/dbProject/CS340_Project/website_handlebars/FINAL_manipulate_tables.sql
