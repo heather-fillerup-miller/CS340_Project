@@ -26,7 +26,7 @@ app.get('/home', function(req, res, next) {
  * Customers
  * ************************************************************/
 
-//View customers
+//VIEW customers
 app.get('/customers', function(req, res, next) {
     var context = {};
     var tableName = 'customers'; 
@@ -48,7 +48,7 @@ app.get('/customers', function(req, res, next) {
     }
 });
 
-//Form Add customers
+//ADD FORM customers
 app.get('/addCustomer', function(req, res, next) {
     var context = {};
     var tableName = 'customers'
@@ -82,7 +82,7 @@ app.get('/addCustomer', function(req, res, next) {
     }
 });
 
-//Insert customers
+//INSERT customers
 app.post('/addCustomer', function(req, res, next){
     context = {};
     context.title = 'Customer';
@@ -130,7 +130,7 @@ app.get('/cars', function(req, res, next) {
     }
 });
 
-//Form add cars
+//ADD cars
 app.get('/addCar', function(req, res, next) {
     var context = {};
     var tableName = 'cars';
@@ -164,7 +164,7 @@ app.get('/addCar', function(req, res, next) {
     }
 });
 
-//Insert Cars
+//INSERT Cars
 app.post('/addCar', function(req, res, next){
     context = {};
     context.title = 'Car';
@@ -190,7 +190,7 @@ app.post('/addCar', function(req, res, next){
  * Mechanics
  * ************************************************************/
 
-//View mechanics
+//VIEW mechanics
 app.get('/mechanics', function(req, res, next) {
     var context = {};
     var tableName = 'mechanics';
@@ -212,7 +212,7 @@ app.get('/mechanics', function(req, res, next) {
     }
 });
 
-//Form add mechanics
+//ADD FORM mechanics
 app.get('/addMechanic', function(req, res, next) {
     var context = {};
     var tableName = 'mechanics';
@@ -246,7 +246,7 @@ app.get('/addMechanic', function(req, res, next) {
     }
 });
 
-//Insert mechanics
+//INSERT mechanics
 app.post('/addMechanic', function(req, res, next){
     context = {};
     context.title = 'Mechanic';
@@ -272,7 +272,7 @@ app.post('/addMechanic', function(req, res, next){
  * Work Tasks
  * ************************************************************/
 
- //View work_tasks
+ //VIEW work_tasks
  app.get('/workTasks', function(req, res, next) {
     var context = {};
     var tableName = 'work_tasks';
@@ -294,7 +294,7 @@ app.post('/addMechanic', function(req, res, next){
     }
 });
 
-//Form add work_tasks
+//ADD FORM work_tasks
 app.get('/addWorkTask', function(req, res, next) {
     var context = {};
     var tableName = 'work_tasks';
@@ -328,7 +328,7 @@ app.get('/addWorkTask', function(req, res, next) {
     }
 });
 
-//Insert work_tasks
+//INSERT work_tasks
 app.post('/addWorkTask', function(req, res, next){
     context = {};
     context.title = 'Work Task';
@@ -354,7 +354,7 @@ app.post('/addWorkTask', function(req, res, next){
  * Repair Orders
  * ************************************************************/
 
-//View repair_orders
+//VIEW repair_orders
 app.get('/repairOrders', function(req, res, next) {
     var context = {};
     var tableName = 'repair_orders';
@@ -376,7 +376,7 @@ app.get('/repairOrders', function(req, res, next) {
     }
 });
 
-//Form add repair_orders
+//ADD FORM repair_orders
 app.get('/addRepairOrder', function(req, res, next) {
     var context = {};
     var tableName = 'repair_orders';
@@ -410,7 +410,7 @@ app.get('/addRepairOrder', function(req, res, next) {
     }
 });
 
-//Insert repair_orders
+//INSERT repair_orders
 app.post('/addRepairOrder', function(req, res, next){
     context = {};
     context.title = 'Repair Order';
@@ -436,7 +436,7 @@ app.post('/addRepairOrder', function(req, res, next){
  * Work Orders
  * ************************************************************/
 
-//View work_orders
+//VIEW work_orders
 app.get('/workOrders', function(req, res, next) {
     var context = {};
     var tableName = 'work_orders';
@@ -458,7 +458,7 @@ app.get('/workOrders', function(req, res, next) {
     }
 });
 
-//Form add work_orders
+//ADD FORM work_orders
 app.get('/addWorkOrder', function(req, res, next) {
     var context = {};
     var tableName = 'work_orders';
@@ -492,7 +492,7 @@ app.get('/addWorkOrder', function(req, res, next) {
     }
 });
 
-//Insert work_orders
+//INSERT work_orders
 app.post('/addWorkOrder', function(req, res, next){
     context = {};
     context.title = 'Work Order';
