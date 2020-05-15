@@ -1,3 +1,25 @@
+
+-----------------------------------------------------
+-- Below is the special character data manipulation 
+-- queries.  Included at the end of this document
+-- is the actual sql commands for the manipulation
+-- if you would like to try it out on mariaDB.
+-----------------------------------------------------
+
+
+--many to many 
+--space to make look nice
+
+
+
+
+
+
+
+
+
+
+
 -----------------------MANIPULATE CUSTOMERS------------------------
 SELECT * FROM customers;
 INSERT INTO customers(f_name, l_name, contact_no, email_address) VALUES 
@@ -10,6 +32,7 @@ SELECT * FROM customers;
 
 -----------------------MANIPULATE CARS------------------------
 SELECT * FROM cars;
+--1 to MANY NULLABLE customer_id
 INSERT INTO cars(customer_id, license_plate, make, model_name, model_year) VALUES 
 ((SELECT id FROM customers WHERE id = 1), 'custom', 'Kia', 'Spectrum', '2016');
 SELECT * FROM cars;
@@ -54,6 +77,7 @@ SELECT * FROM mechanics GROUP BY id ASC;
 
 --------------------MANIPULATE WORK_ORDERS---------------------
 SELECT * FROM work_orders;
+--insert into MANY to MANY 
 INSERT INTO work_orders(repair_order_id, work_task_id, mechanic_id, start_date) VALUE
 ((SELECT id FROM repair_orders WHERE car_id = 3),
 (SELECT id FROM work_tasks WHERE name = 'Test Drive'),
@@ -63,5 +87,6 @@ AND l_name = 'Painter'),'2020-05-22'
 SELECT * FROM work_orders;
 UPDATE work_orders SET end_date = '2020-05-23' WHERE id = 8;
 SELECT * FROM work_orders;
-DELETE FROM work_orders WHERE work_task_id = 5;
+--delete MANY to MANY 
+DELETE FROM work_orders WHERE work_task_id = 5 AND repair_order_id = 3;
 SELECT * FROM work_orders;
