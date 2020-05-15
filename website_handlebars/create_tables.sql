@@ -108,7 +108,8 @@ start_date DATE,
 end_date DATE,
 FOREIGN KEY (repair_order_id) REFERENCES repair_orders(id),
 FOREIGN KEY (work_task_id) REFERENCES work_tasks(id),
-FOREIGN KEY (mechanic_id) REFERENCES mechanics(id)
+FOREIGN KEY (mechanic_id) REFERENCES mechanics(id),
+UNIQUE (repair_order_id, work_task_id)
 );
 
 -- test insert int work_orders --
@@ -155,9 +156,9 @@ AND l_name = 'Stump'),'2020-05-07'
 
 
 
-SELECT customers.f_name AS first_name, customers.l_name AS last_name,
+SELECT CONCAT(customers.f_name, ' ', customers.l_name) AS customer_name,
 work_tasks.name AS work_task, work_tasks.id AS work_task_id, work_orders.start_date
-AS start_date, mechanics.f_name AS mechanic_f_name, mechanics.l_name AS mechanic_l_name
+AS start_date, CONCAT(mechanics.f_name, ' ', mechanics.l_name) AS mechanic_name
 FROM repair_orders JOIN cars ON repair_orders.car_id = cars.id
 JOIN customers ON cars.customer_id = customers.id
 JOIN work_orders ON repair_orders.id = work_orders.repair_order_id
