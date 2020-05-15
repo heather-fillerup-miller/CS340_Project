@@ -31,6 +31,8 @@ app.get('/customers', function(req, res, next) {
     var context = {};
     var tableName = 'customers'; 
     context.addHref = '/addCustomer';
+    context.deleteHref = '/deleteCustomer';
+    //context.updateHref = '/updateCustomer';
     context.title = 'Customers';
     var sql = 'SELECT * FROM ?? ; SELECT ?? FROM ?? WHERE ?? = ?';
     var inserts = [tableName, 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
@@ -51,7 +53,7 @@ app.get('/customers', function(req, res, next) {
 //ADD FORM customers
 app.get('/addCustomer', function(req, res, next) {
     var context = {};
-    var tableName = 'customers'
+    var tableName = 'customers';
     context.title = 'Customer';
     context.postHref= '/addCustomer';
     var sql = 'SELECT ??, ?? FROM ?? WHERE ?? = ?';
@@ -102,6 +104,30 @@ app.post('/addCustomer', function(req, res, next){
             res.render('add',context);
         }
     });
+});
+
+//DELETE customers
+app.get('/deleteCustomer', function(req, res, next){
+    context = {};
+    context.title = 'Customer';
+    context.viewHref = '/customers';
+    var deleteId = req.query.id;
+    context.deleteId = deleteId;
+    var sql = 'DELETE FROM customers WHERE id = ?';
+    var inserts = [deleteId];
+    mysql.pool.query(sql, inserts, function(err, results) {
+        if(err){
+            next(err);
+            return;
+        }else {
+            renderPage(results);
+        }
+        function renderPage(results) {
+            context.affectedRows = results.affectedRows;
+            res.render('delete', context);
+        }
+    });
+
 });
 
 /**************************************************************
