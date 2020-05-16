@@ -32,7 +32,7 @@ app.get('/home', function(req, res, next) {
     var context = {};
     //var tableName = 'customers'; 
     context.addHref = '/home';
-    //context.title = 'Customers';
+    context.title = 'Dashboard';
     var conc_cust = "CONCAT(customers.f_name, ' ', customers.l_name)";
     var conc_car = "CONCAT(cars.make, ' ', cars.model_name, ' ', cars.model_year)";
     var conc_mech = "CONCAT(mechanics.f_name, ' ', mechanics.l_name)";
