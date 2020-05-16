@@ -14,10 +14,10 @@ SELECT * FROM customers;
 
 --insert into customers
 INSERT INTO customers(f_name, l_name, contact_no, email_address) VALUES 
-(::f_name_input, :l_name_input, :contact_no_input, :email_address)input);
+(::f_name_input, :l_name_input, ::contact_no_input, ::email_address)input);
 
 --update customers table
-UPDATE customers SET l_name = ::l_name_input WHERE id = :id_input;  
+UPDATE customers SET l_name = ::l_name_input WHERE id = ::id_input;  
 
 --delete from customers table
 DELETE FROM customers WHERE id = ::id_input;
@@ -29,8 +29,8 @@ SELECT * FROM cars;
 
 --1 to MANY NULLABLE customer_id
 INSERT INTO cars(customer_id, license_plate, make, model_name, model_year) VALUES 
-((SELECT id FROM customers WHERE id = ::id_input), :licence_plate_input,
-::make_input, :model_name_input, :model_year_input);
+((SELECT id FROM customers WHERE id = ::id_input), ::licence_plate_input,
+::make_input, ::model_name_input, ::model_year_input);
 
 --update cars table
 UPDATE cars SET make = ::make_input WHERE 
@@ -46,7 +46,7 @@ SELECT * FROM repair_orders;
 
 --insert into repair_orders table
 INSERT INTO repair_orders(car_id, date_received) VALUES
-((SELECT id FROM cars WHERE license_plate = ::license_plate_input), :date_input);
+((SELECT id FROM cars WHERE license_plate = ::license_plate_input), ::date_input);
 
 --update repair_orders table
 UPDATE repair_orders SET date_received = ::date_received_input WHERE car_id =
@@ -77,15 +77,15 @@ DELETE FROM work_tasks WHERE id = (SELECT id from work_tasks WHERE name = ::name
 SELECT * FROM mechanics GROUP BY id ASC;
 
 --insert into mechanics
-INSERT INTO mechanics(f_name, l_name) VALUES (::f_name_input, :l_name_input);
+INSERT INTO mechanics(f_name, l_name) VALUES (::f_name_input, ::l_name_input);
 
 --update mechanics tables
 UPDATE mechanics SET f_name = ::f_name_input WHERE id = 
-(SELECT id FROM mechanics WHERE f_name = ::f_name_input AND l_name = :l_name_input);
+(SELECT id FROM mechanics WHERE f_name = ::f_name_input AND l_name = ::l_name_input);
 
 --delete from mechanics table
 DELETE FROM mechanics WHERE id = 
-(SELECT id FROM mechanics WHERE f_name = ::f_name_input AND l_name = l_name_input);
+(SELECT id FROM mechanics WHERE f_name = ::f_name_input AND l_name = ::l_name_input);
 
 
 --------------------MANIPULATE WORK_ORDERS---------------------
@@ -97,11 +97,11 @@ INSERT INTO work_orders(repair_order_id, work_task_id, mechanic_id, start_date) 
 ((SELECT id FROM repair_orders WHERE car_id = ::id_input),
 (SELECT id FROM work_tasks WHERE name = ::name_input),
 (SELECT id FROM mechanics WHERE f_name = ::f_name_input  
-AND l_name = ::l_name_input), :start_date_input
+AND l_name = ::l_name_input), ::start_date_input
 );
 
 --update a row in our MANY to MANY
-UPDATE work_orders SET end_date = ::start_date_input WHERE id = :id_input;
+UPDATE work_orders SET end_date = ::start_date_input WHERE id = ::id_input;
 
 --delete MANY to MANY 
 DELETE FROM work_orders WHERE work_task_id = ::work_taks_id_input  
