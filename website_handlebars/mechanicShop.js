@@ -38,8 +38,12 @@ app.get('/customers', function(req, res, next) {
     var inserts = [tableName, 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
-            context.errorMessage = err.sqlMessage;
-            res.render('errors', context);
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
@@ -61,8 +65,12 @@ app.get('/addCustomer', function(req, res, next) {
     var inserts = ['Column_name', 'Data_type', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
-            context.errorMessage = err.sqlMessage;
-            res.render('errors', context);
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
@@ -96,8 +104,12 @@ app.post('/addCustomer', function(req, res, next){
     var inserts = [req.body.f_name, req.body.l_name, req.body.contact_no, req.body.email_address];
     mysql.pool.query(sql, inserts,function(err, results){
         if(err){
-            context.errorMessage = err.sqlMessage;
-            res.render('errors', context);
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
@@ -119,8 +131,12 @@ app.get('/deleteCustomer', function(req, res, next){
     var inserts = [deleteId];
     mysql.pool.query(sql, inserts, function(err, results) {
         if(err){
-            context.errorMessage = err.sqlMessage;
-            res.render('errors', context);
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
@@ -146,8 +162,12 @@ app.get('/cars', function(req, res, next) {
     var inserts = [tableName, 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
-            context.errorMessage = err.sqlMessage;
-            res.render('errors', context);
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
@@ -169,8 +189,12 @@ app.get('/addCar', function(req, res, next) {
     var inserts = ['Column_name', 'Data_type', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
-            context.errorMessage = err.sqlMessage;
-            res.render('errors', context);
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
@@ -204,8 +228,12 @@ app.post('/addCar', function(req, res, next){
     var inserts = [req.body.customer_id, req.body.license_plate, req.body.make, req.body.model_name, req.body.model_year];
     mysql.pool.query(sql, inserts,function(err, results){
         if(err){
-            context.errorMessage = err.sqlMessage;
-            res.render('errors', context);
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
@@ -227,8 +255,12 @@ app.get('/deleteCar', function(req, res, next){
     var inserts = [deleteId];
     mysql.pool.query(sql, inserts, function(err, results) {
         if(err){
-            context.errorMessage = err.sqlMessage;
-            res.render('errors', context);
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
@@ -253,8 +285,12 @@ app.get('/mechanics', function(req, res, next) {
     var inserts = [tableName, 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
-            context.errorMessage = err.sqlMessage;
-            res.render('errors', context);
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
@@ -276,8 +312,12 @@ app.get('/addMechanic', function(req, res, next) {
     var inserts = ['Column_name', 'Data_type', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
-            context.errorMessage = err.sqlMessage;
-            res.render('errors', context);
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
@@ -311,8 +351,12 @@ app.post('/addMechanic', function(req, res, next){
     var inserts = [req.body.f_name, req.body.l_name];
     mysql.pool.query(sql, inserts,function(err, results){
         if(err){
-            context.errorMessage = err.sqlMessage;
-            res.render('errors', context);
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
@@ -337,8 +381,12 @@ app.post('/addMechanic', function(req, res, next){
     var inserts = [tableName, 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
-            context.errorMessage = err.sqlMessage;
-            res.render('errors', context);
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
@@ -360,8 +408,12 @@ app.get('/addWorkTask', function(req, res, next) {
     var inserts = ['Column_name', 'Data_type', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
-            context.errorMessage = err.sqlMessage;
-            res.render('errors', context);
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
@@ -395,8 +447,12 @@ app.post('/addWorkTask', function(req, res, next){
     var inserts = [req.body.name];
     mysql.pool.query(sql, inserts,function(err, results){
         if(err){
-            context.errorMessage = err.sqlMessage;
-            res.render('errors', context);
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
@@ -421,8 +477,12 @@ app.get('/repairOrders', function(req, res, next) {
     var inserts = [tableName, 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
-            context.errorMessage = err.sqlMessage;
-            res.render('errors', context);
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
@@ -444,8 +504,12 @@ app.get('/addRepairOrder', function(req, res, next) {
     var inserts = ['Column_name', 'Data_type', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
-            context.errorMessage = err.sqlMessage;
-            res.render('errors', context);
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
@@ -479,8 +543,12 @@ app.post('/addRepairOrder', function(req, res, next){
     var inserts = [req.body.car_id, req.body.date_received, req.body.date_completed];
     mysql.pool.query(sql, inserts,function(err, results){
         if(err){
-            context.errorMessage = err.sqlMessage;
-            res.render('errors', context);
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
@@ -505,17 +573,21 @@ app.get('/workOrders', function(req, res, next) {
     var inserts = [tableName, 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
-            context.errorMessage = err.sqlMessage;
-            res.render('errors', context);
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
+        function renderPage(results) {
+            context.dataRows = results[0];
+            context.dataColumns = results[1];
+            res.render('viewTable', context);
+        }
     });
-    function renderPage(results) {
-        context.dataRows = results[0];
-        context.dataColumns = results[1];
-        res.render('viewTable', context);
-    }
 });
 
 //ADD FORM work_orders
@@ -528,8 +600,12 @@ app.get('/addWorkOrder', function(req, res, next) {
     var inserts = ['Column_name', 'Data_type', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
-            context.errorMessage = err.sqlMessage;
-            res.render('errors', context);
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
@@ -563,8 +639,12 @@ app.post('/addWorkOrder', function(req, res, next){
     var inserts = [req.body.repair_order_id, req.body.work_task_id, req.body.mechanic_id, req.body.start_date, req.body.end_date];
     mysql.pool.query(sql, inserts,function(err, results){
         if(err){
-            context.errorMessage = err.sqlMessage;
-            res.render('errors', context);
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
@@ -588,7 +668,7 @@ app.use(function(req, res) {
 app.use(function(err, req, res, next) {
     var context = {};
     context.status = '500 - Server Error';
-    //console.log(err.stack);
+    console.log(err.stack);
     res.status(500);
     res.render('errors', context);
 })
