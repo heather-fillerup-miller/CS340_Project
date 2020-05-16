@@ -56,12 +56,10 @@ app.get('/home', function(req, res, next) {
         if(err){
             throw err;
         }else {
-            console.log(results);
             renderPage(results);
         }
     });
     function renderPage(results) {
-        console.log(results);
         context.dataRows = results;
         res.render('home', context);
     }

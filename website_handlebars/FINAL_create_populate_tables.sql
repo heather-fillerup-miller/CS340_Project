@@ -131,39 +131,39 @@ INSERT INTO mechanics(f_name, l_name) VALUES ('Jake', 'Tiger'),
 
 
 ----------------------WORK_ORDERS------------------------
-INSERT INTO work_orders(repair_order_id, work_task_id, mechanic_id, start_date) VALUES 
+INSERT INTO work_orders(repair_order_id, work_task_id, mechanic_id, start_date, end_date) VALUES 
 ((SELECT id FROM repair_orders WHERE car_id = 1),
 (SELECT id FROM work_tasks WHERE name = 'Diagnosis'),
 (SELECT id FROM mechanics WHERE f_name = 'Jake' 
-AND l_name = 'Tiger'),'2020-05-02'
+AND l_name = 'Tiger'),'2020-05-02', '2020-05-03'
 ),
 ((SELECT id FROM repair_orders WHERE car_id = 2),
 (SELECT id FROM work_tasks WHERE name = 'Diagnosis'),
 (SELECT id FROM mechanics WHERE f_name = 'Tommy' 
-AND l_name = 'Boyd'),'2020-05-05'
+AND l_name = 'Boyd'),'2020-05-05', '2020-05-07'
 ),
 ((SELECT id FROM repair_orders WHERE car_id = 3),
 (SELECT id FROM work_tasks WHERE name = 'Diagnosis'),
 (SELECT id FROM mechanics WHERE f_name = 'Rob' 
-AND l_name = 'Stump'),'2020-05-07'
+AND l_name = 'Stump'),'2020-05-07', NULL
 ),
 ((SELECT id FROM repair_orders WHERE car_id = 4),
 (SELECT id FROM work_tasks WHERE name = 'Diagnosis'),
 (SELECT id FROM mechanics WHERE f_name = 'Jake' 
-AND l_name = 'Tiger'),'2020-05-02'
+AND l_name = 'Tiger'),'2020-05-02', NULL
 ),
 ((SELECT id FROM repair_orders WHERE car_id = 1),
 (SELECT id FROM work_tasks WHERE name = 'Customer Approval'),
 (SELECT id FROM mechanics WHERE f_name = 'Pam' 
-AND l_name = 'Simpson'),'2020-05-04'
+AND l_name = 'Simpson'),'2020-05-04', NULL
 ),
 ((SELECT id FROM repair_orders WHERE car_id = 1),
 (SELECT id FROM work_tasks WHERE name = 'Repair'),
 (SELECT id FROM mechanics WHERE f_name = 'Pam' 
-AND l_name = 'Simpson'),'2020-05-08'
+AND l_name = 'Simpson'),'2020-05-08', NULL
 ),
 ((SELECT id FROM repair_orders WHERE car_id = 2),
 (SELECT id FROM work_tasks WHERE name = 'Customer Approval'),
 (SELECT id FROM mechanics WHERE f_name = 'Rob' 
-AND l_name = 'Stump'),'2020-05-07'
+AND l_name = 'Stump'),'2020-05-07', NULL
 ); 
