@@ -1,4 +1,4 @@
------------------------CUSTOMERS------------------------
+-- ---------------------CUSTOMERS------------------------
 INSERT INTO customers(f_name, l_name, contact_no, email_address) VALUES 
 ('Chris', 'Nelson', '398-394-0383', 'cnelson@gmail.com'), 
 ('Heather', 'Fillerup', '398-234-5467', 'genius@ymail.com'), 
@@ -9,7 +9,7 @@ INSERT INTO customers(f_name, l_name, contact_no, email_address) VALUES
 ('Randy', 'Savage', '398-332-1817', 'macho@fakemail.com');
 
 
--------------------------CARS---------------------------
+-- -----------------------CARS---------------------------
 INSERT INTO cars(customer_id, license_plate, make, model_name, model_year) VALUES 
 ((SELECT id FROM customers WHERE id = 1), 'tbh-002', 'Ferrari', '488', '2019'),
 ((SELECT id FROM customers WHERE id = 2), 'bad-124', 'Fiat', '500', '2014'),
@@ -19,10 +19,10 @@ INSERT INTO cars(customer_id, license_plate, make, model_name, model_year) VALUE
 ((SELECT id FROM customers WHERE id = 6), 'amc-100', 'Lincoln', 'Navigator', '2002'),
 ((SELECT id FROM customers WHERE id = 7), 'mko-838', 'Lotus', 'Elise', '2011'),
 ((SELECT id FROM customers WHERE id = 1), 'xsq-283', 'Tesla', 'Model 3', '2019'),
-((SELECT id FROM customers WHERE id = 2), 'axx-223', 'Mazda', 'Miata', '204');
+((SELECT id FROM customers WHERE id = 2), 'axx-223', 'Mazda', 'Miata', '2014');
 
 
---------------------REPAIR ORDERS------------------------
+-- ------------------REPAIR ORDERS------------------------
 INSERT INTO repair_orders(car_id, date_received) VALUES
 ((SELECT id FROM cars WHERE license_plate = 'tbh-002'), '2020-05-02'),
 ((SELECT id FROM cars WHERE license_plate = 'bad-124'), '2020-05-10'),
@@ -31,16 +31,16 @@ INSERT INTO repair_orders(car_id, date_received) VALUES
 ((SELECT id FROM cars WHERE license_plate = 'axx-223'), '2020-05-13');
 
 
-----------------------WORK_TASKS-------------------------
+-- --------------------WORK_TASKS-------------------------
 INSERT INTO work_tasks(name) VALUES 
 ('Diagnosis'), ('Customer Approval'), ('Order Parts'), ('Repair'), ('Test Drive'), ('Contact     Customer');
 
 
------------------------MECHANICS-------------------------
+-- ---------------------MECHANICS-------------------------
 INSERT INTO mechanics(f_name, l_name) VALUES ('Jake', 'Tiger'), ('Bob', 'Painter'), ('Tommy', 'Boyd'), ('Rob', 'Stump'), ('Pam', 'Simpson');
 
 
-----------------------WORK_ORDERS------------------------
+-- --------------------WORK_ORDERS------------------------
 INSERT INTO work_orders(repair_order_id, work_task_id, mechanic_id, start_date) VALUES 
 ((SELECT id FROM repair_orders WHERE car_id = 1),
 (SELECT id FROM work_tasks WHERE name = 'Diagnosis'),
