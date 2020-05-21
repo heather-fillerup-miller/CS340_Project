@@ -34,8 +34,8 @@ app.get('/customers', function(req, res, next) {
     context.deleteHref = '/deleteCustomer';
     //context.updateHref = '/updateCustomer';
     context.title = 'Customers';
-    var sql = 'SELECT * FROM ?? ; SELECT ?? FROM ?? WHERE ?? = ?';
-    var inserts = [tableName, 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
+    var sql = 'SELECT * FROM ?? ORDER BY ?? ASC; SELECT ?? FROM ?? WHERE ?? = ?';
+    var inserts = [tableName, 'id', 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
             if(err.sqlMessage){
@@ -158,8 +158,8 @@ app.get('/cars', function(req, res, next) {
     context.addHref = '/addCar';
     context.deleteHref = '/deleteCar';
     context.title = 'Cars';
-    var sql = 'SELECT * FROM ?? ; SELECT ?? FROM ?? WHERE ?? = ?';
-    var inserts = [tableName, 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
+    var sql = 'SELECT * FROM ?? ORDER BY ?? ASC; SELECT ?? FROM ?? WHERE ?? = ?';
+    var inserts = [tableName, 'id', 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
             if(err.sqlMessage){
@@ -280,9 +280,10 @@ app.get('/mechanics', function(req, res, next) {
     var context = {};
     var tableName = 'mechanics';
     context.addHref = '/addMechanic';
+    context.deleteHref = '/deleteMechanic';
     context.title = 'Mechanics';
-    var sql = 'SELECT * FROM ?? ; SELECT ?? FROM ?? WHERE ?? = ?';
-    var inserts = [tableName, 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
+    var sql = 'SELECT * FROM ?? ORDER BY ?? ASC; SELECT ?? FROM ?? WHERE ?? = ?';
+    var inserts = [tableName, 'id', 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
             if(err.sqlMessage){
@@ -367,6 +368,33 @@ app.post('/addMechanic', function(req, res, next){
     });
 });
 
+//DELETE mechanics
+app.get('/deleteMechanic', function(req, res, next){
+    context = {};
+    context.title = 'Mechanic';
+    context.viewHref = '/mechanics';
+    var deleteId = req.query.id;
+    context.deleteId = deleteId;
+    var sql = 'DELETE FROM mechanics WHERE id = ?';
+    var inserts = [deleteId];
+    mysql.pool.query(sql, inserts, function(err, results) {
+        if(err){
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
+        }else {
+            renderPage(results);
+        }
+        function renderPage(results) {
+            context.affectedRows = results.affectedRows;
+            res.render('delete', context);
+        }
+    });
+});
+
 /**************************************************************
  * Work Tasks
  * ************************************************************/
@@ -376,9 +404,10 @@ app.post('/addMechanic', function(req, res, next){
     var context = {};
     var tableName = 'work_tasks';
     context.addHref = '/addWorkTask';
+    context.deleteHref = '/deleteWorkTask';
     context.title = 'Work Tasks';
-    var sql = 'SELECT * FROM ?? ; SELECT ?? FROM ?? WHERE ?? = ?';
-    var inserts = [tableName, 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
+    var sql = 'SELECT * FROM ??  ORDER BY ?? ASC; SELECT ?? FROM ?? WHERE ?? = ?';
+    var inserts = [tableName, 'id', 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
             if(err.sqlMessage){
@@ -463,6 +492,33 @@ app.post('/addWorkTask', function(req, res, next){
     });
 });
 
+//DELETE work_tasks
+app.get('/deleteWorkTask', function(req, res, next){
+    context = {};
+    context.title = 'Work Task';
+    context.viewHref = '/workTasks';
+    var deleteId = req.query.id;
+    context.deleteId = deleteId;
+    var sql = 'DELETE FROM work_tasks WHERE id = ?';
+    var inserts = [deleteId];
+    mysql.pool.query(sql, inserts, function(err, results) {
+        if(err){
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
+        }else {
+            renderPage(results);
+        }
+        function renderPage(results) {
+            context.affectedRows = results.affectedRows;
+            res.render('delete', context);
+        }
+    });
+});
+
 /**************************************************************
  * Repair Orders
  * ************************************************************/
@@ -472,9 +528,10 @@ app.get('/repairOrders', function(req, res, next) {
     var context = {};
     var tableName = 'repair_orders';
     context.addHref = '/addRepairOrder'
+    context.deleteHref = '/deleteRepairOrder'
     context.title = 'Repair Orders';
-    var sql = 'SELECT * FROM ?? ; SELECT ?? FROM ?? WHERE ?? = ?';
-    var inserts = [tableName, 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
+    var sql = 'SELECT * FROM ?? ORDER BY ?? ASC; SELECT ?? FROM ?? WHERE ?? = ?';
+    var inserts = [tableName, 'id', 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
             if(err.sqlMessage){
@@ -559,6 +616,33 @@ app.post('/addRepairOrder', function(req, res, next){
     });
 });
 
+//DELETE repair_orders
+app.get('/deleteRepairOrder', function(req, res, next){
+    context = {};
+    context.title = 'Repair Order';
+    context.viewHref = '/repairOrders';
+    var deleteId = req.query.id;
+    context.deleteId = deleteId;
+    var sql = 'DELETE FROM repair_orders WHERE id = ?';
+    var inserts = [deleteId];
+    mysql.pool.query(sql, inserts, function(err, results) {
+        if(err){
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
+        }else {
+            renderPage(results);
+        }
+        function renderPage(results) {
+            context.affectedRows = results.affectedRows;
+            res.render('delete', context);
+        }
+    });
+});
+
 /**************************************************************
  * Work Orders
  * ************************************************************/
@@ -568,9 +652,10 @@ app.get('/workOrders', function(req, res, next) {
     var context = {};
     var tableName = 'work_orders';
     context.addHref = '/addWorkOrder';
+    context.deleteHref = '/deleteWorkOrder'
     context.title = 'Work Orders';
-    var sql = 'SELECT * FROM ?? ; SELECT ?? FROM ?? WHERE ?? = ?';
-    var inserts = [tableName, 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
+    var sql = 'SELECT * FROM ?? ORDER BY ?? ASC; SELECT ?? FROM ?? WHERE ?? = ?';
+    var inserts = [tableName, 'id', 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
             if(err.sqlMessage){
@@ -651,6 +736,33 @@ app.post('/addWorkOrder', function(req, res, next){
         function renderPage(results) {
             context.idAdded = results.insertId;
             res.render('add',context);
+        }
+    });
+});
+
+//DELETE work_orders
+app.get('/deleteWorkOrder', function(req, res, next){
+    context = {};
+    context.title = 'Work Order';
+    context.viewHref = '/workOrders';
+    var deleteId = req.query.id;
+    context.deleteId = deleteId;
+    var sql = 'DELETE FROM work_orders WHERE id = ?';
+    var inserts = [deleteId];
+    mysql.pool.query(sql, inserts, function(err, results) {
+        if(err){
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
+        }else {
+            renderPage(results);
+        }
+        function renderPage(results) {
+            context.affectedRows = results.affectedRows;
+            res.render('delete', context);
         }
     });
 });
