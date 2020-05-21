@@ -1,1 +1,13 @@
-<h1>{{status}}</h1>
+<div class= 'container'>
+{{#if status}}
+    <h1>{{status}}</h1>
+{{/if}}
+
+{{#if errorMessage}}
+    {{errorMessage}}
+    {{#if viewHref}}
+        <br>
+        <a class="btn btn-outline-primary my-2 my-sm-0" href={{viewHref}} role="button">View {{title}}s</a>
+    {{/if}}
+{{/if}}
+</div>

@@ -76,12 +76,19 @@ app.get('/customers', function(req, res, next) {
     var context = {};
     var tableName = 'customers'; 
     context.addHref = '/addCustomer';
+    context.deleteHref = '/deleteCustomer';
+    //context.updateHref = '/updateCustomer';
     context.title = 'Customers';
-    var sql = 'SELECT * FROM ?? ; SELECT ?? FROM ?? WHERE ?? = ?';
-    var inserts = [tableName, 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
+    var sql = 'SELECT * FROM ?? ORDER BY ?? ASC; SELECT ?? FROM ?? WHERE ?? = ?';
+    var inserts = [tableName, 'id', 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
-            throw err;
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
@@ -96,14 +103,19 @@ app.get('/customers', function(req, res, next) {
 //ADD FORM customers
 app.get('/addCustomer', function(req, res, next) {
     var context = {};
-    var tableName = 'customers'
+    var tableName = 'customers';
     context.title = 'Customer';
     context.postHref= '/addCustomer';
     var sql = 'SELECT ??, ?? FROM ?? WHERE ?? = ?';
     var inserts = ['Column_name', 'Data_type', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
-            throw err;
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
@@ -137,14 +149,45 @@ app.post('/addCustomer', function(req, res, next){
     var inserts = [req.body.f_name, req.body.l_name, req.body.contact_no, req.body.email_address];
     mysql.pool.query(sql, inserts,function(err, results){
         if(err){
-            next(err);
-            return;
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
         function renderPage(results) {
             context.idAdded = results.insertId;
             res.render('add',context);
+        }
+    });
+});
+
+//DELETE customers
+app.get('/deleteCustomer', function(req, res, next){
+    context = {};
+    context.title = 'Customer';
+    context.viewHref = '/customers';
+    var deleteId = req.query.id;
+    context.deleteId = deleteId;
+    var sql = 'DELETE FROM customers WHERE id = ?';
+    var inserts = [deleteId];
+    mysql.pool.query(sql, inserts, function(err, results) {
+        if(err){
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
+        }else {
+            renderPage(results);
+        }
+        function renderPage(results) {
+            context.affectedRows = results.affectedRows;
+            res.render('delete', context);
         }
     });
 });
@@ -158,12 +201,18 @@ app.get('/cars', function(req, res, next) {
     var context = {};
     var tableName = 'cars';
     context.addHref = '/addCar';
+    context.deleteHref = '/deleteCar';
     context.title = 'Cars';
-    var sql = 'SELECT * FROM ?? ; SELECT ?? FROM ?? WHERE ?? = ?';
-    var inserts = [tableName, 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
+    var sql = 'SELECT * FROM ?? ORDER BY ?? ASC; SELECT ?? FROM ?? WHERE ?? = ?';
+    var inserts = [tableName, 'id', 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
-            throw err;
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
@@ -185,7 +234,12 @@ app.get('/addCar', function(req, res, next) {
     var inserts = ['Column_name', 'Data_type', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
-            throw err;
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
@@ -219,14 +273,45 @@ app.post('/addCar', function(req, res, next){
     var inserts = [req.body.customer_id, req.body.license_plate, req.body.make, req.body.model_name, req.body.model_year];
     mysql.pool.query(sql, inserts,function(err, results){
         if(err){
-            next(err);
-            return;
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
         function renderPage(results) {
             context.idAdded = results.insertId;
             res.render('add',context);
+        }
+    });
+});
+
+//DELETE cars
+app.get('/deleteCar', function(req, res, next){
+    context = {};
+    context.title = 'Car';
+    context.viewHref = '/cars';
+    var deleteId = req.query.id;
+    context.deleteId = deleteId;
+    var sql = 'DELETE FROM cars WHERE id = ?';
+    var inserts = [deleteId];
+    mysql.pool.query(sql, inserts, function(err, results) {
+        if(err){
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
+        }else {
+            renderPage(results);
+        }
+        function renderPage(results) {
+            context.affectedRows = results.affectedRows;
+            res.render('delete', context);
         }
     });
 });
@@ -240,12 +325,18 @@ app.get('/mechanics', function(req, res, next) {
     var context = {};
     var tableName = 'mechanics';
     context.addHref = '/addMechanic';
+    context.deleteHref = '/deleteMechanic';
     context.title = 'Mechanics';
-    var sql = 'SELECT * FROM ?? ; SELECT ?? FROM ?? WHERE ?? = ?';
-    var inserts = [tableName, 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
+    var sql = 'SELECT * FROM ?? ORDER BY ?? ASC; SELECT ?? FROM ?? WHERE ?? = ?';
+    var inserts = [tableName, 'id', 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
-            throw err;
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
@@ -267,7 +358,12 @@ app.get('/addMechanic', function(req, res, next) {
     var inserts = ['Column_name', 'Data_type', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
-            throw err;
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
@@ -301,14 +397,45 @@ app.post('/addMechanic', function(req, res, next){
     var inserts = [req.body.f_name, req.body.l_name];
     mysql.pool.query(sql, inserts,function(err, results){
         if(err){
-            next(err);
-            return;
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
         function renderPage(results) {
             context.idAdded = results.insertId;
             res.render('add',context);
+        }
+    });
+});
+
+//DELETE mechanics
+app.get('/deleteMechanic', function(req, res, next){
+    context = {};
+    context.title = 'Mechanic';
+    context.viewHref = '/mechanics';
+    var deleteId = req.query.id;
+    context.deleteId = deleteId;
+    var sql = 'DELETE FROM mechanics WHERE id = ?';
+    var inserts = [deleteId];
+    mysql.pool.query(sql, inserts, function(err, results) {
+        if(err){
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
+        }else {
+            renderPage(results);
+        }
+        function renderPage(results) {
+            context.affectedRows = results.affectedRows;
+            res.render('delete', context);
         }
     });
 });
@@ -322,12 +449,18 @@ app.post('/addMechanic', function(req, res, next){
     var context = {};
     var tableName = 'work_tasks';
     context.addHref = '/addWorkTask';
+    context.deleteHref = '/deleteWorkTask';
     context.title = 'Work Tasks';
-    var sql = 'SELECT * FROM ?? ; SELECT ?? FROM ?? WHERE ?? = ?';
-    var inserts = [tableName, 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
+    var sql = 'SELECT * FROM ??  ORDER BY ?? ASC; SELECT ?? FROM ?? WHERE ?? = ?';
+    var inserts = [tableName, 'id', 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
-            throw err;
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
@@ -349,7 +482,12 @@ app.get('/addWorkTask', function(req, res, next) {
     var inserts = ['Column_name', 'Data_type', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
-            throw err;
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
@@ -383,14 +521,45 @@ app.post('/addWorkTask', function(req, res, next){
     var inserts = [req.body.name];
     mysql.pool.query(sql, inserts,function(err, results){
         if(err){
-            next(err);
-            return;
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
         function renderPage(results) {
             context.idAdded = results.insertId;
             res.render('add',context);
+        }
+    });
+});
+
+//DELETE work_tasks
+app.get('/deleteWorkTask', function(req, res, next){
+    context = {};
+    context.title = 'Work Task';
+    context.viewHref = '/workTasks';
+    var deleteId = req.query.id;
+    context.deleteId = deleteId;
+    var sql = 'DELETE FROM work_tasks WHERE id = ?';
+    var inserts = [deleteId];
+    mysql.pool.query(sql, inserts, function(err, results) {
+        if(err){
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
+        }else {
+            renderPage(results);
+        }
+        function renderPage(results) {
+            context.affectedRows = results.affectedRows;
+            res.render('delete', context);
         }
     });
 });
@@ -404,12 +573,18 @@ app.get('/repairOrders', function(req, res, next) {
     var context = {};
     var tableName = 'repair_orders';
     context.addHref = '/addRepairOrder'
+    context.deleteHref = '/deleteRepairOrder'
     context.title = 'Repair Orders';
-    var sql = 'SELECT * FROM ?? ; SELECT ?? FROM ?? WHERE ?? = ?';
-    var inserts = [tableName, 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
+    var sql = 'SELECT * FROM ?? ORDER BY ?? ASC; SELECT ?? FROM ?? WHERE ?? = ?';
+    var inserts = [tableName, 'id', 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
-            throw err;
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
@@ -431,7 +606,12 @@ app.get('/addRepairOrder', function(req, res, next) {
     var inserts = ['Column_name', 'Data_type', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
-            throw err;
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
@@ -465,14 +645,45 @@ app.post('/addRepairOrder', function(req, res, next){
     var inserts = [req.body.car_id, req.body.date_received, req.body.date_completed];
     mysql.pool.query(sql, inserts,function(err, results){
         if(err){
-            next(err);
-            return;
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
         function renderPage(results) {
             context.idAdded = results.insertId;
             res.render('add',context);
+        }
+    });
+});
+
+//DELETE repair_orders
+app.get('/deleteRepairOrder', function(req, res, next){
+    context = {};
+    context.title = 'Repair Order';
+    context.viewHref = '/repairOrders';
+    var deleteId = req.query.id;
+    context.deleteId = deleteId;
+    var sql = 'DELETE FROM repair_orders WHERE id = ?';
+    var inserts = [deleteId];
+    mysql.pool.query(sql, inserts, function(err, results) {
+        if(err){
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
+        }else {
+            renderPage(results);
+        }
+        function renderPage(results) {
+            context.affectedRows = results.affectedRows;
+            res.render('delete', context);
         }
     });
 });
@@ -486,21 +697,27 @@ app.get('/workOrders', function(req, res, next) {
     var context = {};
     var tableName = 'work_orders';
     context.addHref = '/addWorkOrder';
+    context.deleteHref = '/deleteWorkOrder'
     context.title = 'Work Orders';
-    var sql = 'SELECT * FROM ?? ; SELECT ?? FROM ?? WHERE ?? = ?';
-    var inserts = [tableName, 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
+    var sql = 'SELECT * FROM ?? ORDER BY ?? ASC; SELECT ?? FROM ?? WHERE ?? = ?';
+    var inserts = [tableName, 'id', 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
-            throw err;
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
+        function renderPage(results) {
+            context.dataRows = results[0];
+            context.dataColumns = results[1];
+            res.render('viewTable', context);
+        }
     });
-    function renderPage(results) {
-        context.dataRows = results[0];
-        context.dataColumns = results[1];
-        res.render('viewTable', context);
-    }
 });
 
 //ADD FORM work_orders
@@ -513,7 +730,12 @@ app.get('/addWorkOrder', function(req, res, next) {
     var inserts = ['Column_name', 'Data_type', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
-            throw err;
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
@@ -547,14 +769,45 @@ app.post('/addWorkOrder', function(req, res, next){
     var inserts = [req.body.repair_order_id, req.body.work_task_id, req.body.mechanic_id, req.body.start_date, req.body.end_date];
     mysql.pool.query(sql, inserts,function(err, results){
         if(err){
-            next(err);
-            return;
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
         function renderPage(results) {
             context.idAdded = results.insertId;
             res.render('add',context);
+        }
+    });
+});
+
+//DELETE work_orders
+app.get('/deleteWorkOrder', function(req, res, next){
+    context = {};
+    context.title = 'Work Order';
+    context.viewHref = '/workOrders';
+    var deleteId = req.query.id;
+    context.deleteId = deleteId;
+    var sql = 'DELETE FROM work_orders WHERE id = ?';
+    var inserts = [deleteId];
+    mysql.pool.query(sql, inserts, function(err, results) {
+        if(err){
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
+        }else {
+            renderPage(results);
+        }
+        function renderPage(results) {
+            context.affectedRows = results.affectedRows;
+            res.render('delete', context);
         }
     });
 });
