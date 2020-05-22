@@ -193,130 +193,6 @@ app.get('/deleteCustomer', function(req, res, next){
 });
 
 /**************************************************************
- * Cars
- * ************************************************************/
-
-//View cars
-app.get('/cars', function(req, res, next) {
-    var context = {};
-    var tableName = 'cars';
-    context.addHref = '/addCar';
-    context.deleteHref = '/deleteCar';
-    context.title = 'Cars';
-    var sql = 'SELECT * FROM ?? ORDER BY ?? ASC; SELECT ?? FROM ?? WHERE ?? = ?';
-    var inserts = [tableName, 'id', 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
-    mysql.pool.query(sql, inserts, function(err, results){
-        if(err){
-            if(err.sqlMessage){
-                context.errorMessage = err.sqlMessage;
-                res.render('errors', context);
-            }else {
-                throw err;
-            }
-        }else {
-            renderPage(results);
-        }
-    });
-    function renderPage(results) {
-        context.dataRows = results[0];
-        context.dataColumns = results[1];
-        res.render('viewTable', context);
-    }
-});
-
-//ADD cars
-app.get('/addCar', function(req, res, next) {
-    var context = {};
-    var tableName = 'cars';
-    context.postHref = '\addCar';
-    context.title = 'Car';
-    var sql = 'SELECT ??, ?? FROM ?? WHERE ?? = ?';
-    var inserts = ['Column_name', 'Data_type', 'Information_schema.columns', 'Table_name', tableName];
-    mysql.pool.query(sql, inserts, function(err, results){
-        if(err){
-            if(err.sqlMessage){
-                context.errorMessage = err.sqlMessage;
-                res.render('errors', context);
-            }else {
-                throw err;
-            }
-        }else {
-            renderPage(results);
-        }
-    });
-    function renderPage(results) {
-        results.forEach(getInputType);
-        function getInputType(item) {
-            if(item.Column_name != 'id') {
-                item.notId = 1;
-            }
-            if(item.Data_type == 'int') {
-                item.Data_type = 'number';
-                item.min = '0';
-            }
-            else if(item.Data_type == 'varchar') {
-                item.Data_type = 'text';
-            }
-        }
-        context.dataColumns = results;
-        res.render('add', context);
-    }
-});
-
-//INSERT Cars
-app.post('/addCar', function(req, res, next){
-    context = {};
-    context.title = 'Car';
-    context.addHref = '/addCar';
-    context.viewHref= '/cars';
-    var sql = 'INSERT INTO cars (customer_id, license_plate, make, model_name, model_year) VALUES (?, ?, ?, ?, ?)';
-    var inserts = [req.body.customer_id, req.body.license_plate, req.body.make, req.body.model_name, req.body.model_year];
-    mysql.pool.query(sql, inserts,function(err, results){
-        if(err){
-            if(err.sqlMessage){
-                context.errorMessage = err.sqlMessage;
-                res.render('errors', context);
-            }else {
-                throw err;
-            }
-        }else {
-            renderPage(results);
-        }
-        function renderPage(results) {
-            context.idAdded = results.insertId;
-            res.render('add',context);
-        }
-    });
-});
-
-//DELETE cars
-app.get('/deleteCar', function(req, res, next){
-    context = {};
-    context.title = 'Car';
-    context.viewHref = '/cars';
-    var deleteId = req.query.id;
-    context.deleteId = deleteId;
-    var sql = 'DELETE FROM cars WHERE id = ?';
-    var inserts = [deleteId];
-    mysql.pool.query(sql, inserts, function(err, results) {
-        if(err){
-            if(err.sqlMessage){
-                context.errorMessage = err.sqlMessage;
-                res.render('errors', context);
-            }else {
-                throw err;
-            }
-        }else {
-            renderPage(results);
-        }
-        function renderPage(results) {
-            context.affectedRows = results.affectedRows;
-            res.render('delete', context);
-        }
-    });
-});
-
-/**************************************************************
  * Mechanics
  * ************************************************************/
 
@@ -565,6 +441,135 @@ app.get('/deleteWorkTask', function(req, res, next){
 });
 
 /**************************************************************
+ * Cars
+ * ************************************************************/
+
+//View cars
+app.get('/cars', function(req, res, next) {
+    var context = {};
+    var tableName = 'cars';
+    context.addHref = '/addCar';
+    context.deleteHref = '/deleteCar';
+    context.title = 'Cars';
+    //first query for table records
+    var sql = 'SELECT ??, CONCAT(??, ": ", ??, " ", ??) as ?, ??, ??, ??, ?? FROM ?? LEFT JOIN ?? ON ?? = ??  ORDER BY ?? ASC; ';
+    var inserts = ['cars.id', 'customer_id', 'f_name', 'l_name', 'customer_name', 'license_plate', 'make', 'model_name', 'model_year', 'cars', 'customers', 'customer_id', 'customers.id', 'cars.id'];
+    //second quert for table column names
+    sql += 'SELECT ?? FROM ?? WHERE ?? = ?';
+    inserts.push('Column_name', 'Information_schema.columns', 'Table_name', tableName);
+    mysql.pool.query(sql, inserts, function(err, results){
+        if(err){
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
+        }else {
+            renderPage(results);
+        }
+    });
+    function renderPage(results) {
+        context.dataRows = results[0];
+        context.dataColumns = results[1];
+        res.render('viewTable', context);
+    }
+});
+
+//ADD cars
+app.get('/addCar', function(req, res, next) {
+    var context = {};
+    var tableName = 'cars';
+    context.postHref = '\addCar';
+    context.title = 'Car';
+    var sql = 'SELECT ??, ?? FROM ?? WHERE ?? = ?';
+    var inserts = ['Column_name', 'Data_type', 'Information_schema.columns', 'Table_name', tableName];
+    mysql.pool.query(sql, inserts, function(err, results){
+        if(err){
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
+        }else {
+            renderPage(results);
+        }
+    });
+    function renderPage(results) {
+        results.forEach(getInputType);
+        function getInputType(item) {
+            if(item.Column_name != 'id') {
+                item.notId = 1;
+            }
+            if(item.Data_type == 'int') {
+                item.Data_type = 'number';
+                item.min = '0';
+            }
+            else if(item.Data_type == 'varchar') {
+                item.Data_type = 'text';
+            }
+        }
+        context.dataColumns = results;
+        res.render('add', context);
+    }
+});
+
+//INSERT Cars
+app.post('/addCar', function(req, res, next){
+    context = {};
+    context.title = 'Car';
+    context.addHref = '/addCar';
+    context.viewHref= '/cars';
+    var sql = 'INSERT INTO cars (??, ??, ??, ??, ??) VALUES (?, ?, ?, ?, ?)';
+    var inserts = ['customer_id', 'license_plate', 'make', 'model_name', 'model_year'];
+    inserts.push(req.body.customer_id, req.body.license_plate, req.body.make, req.body.model_name, req.body.model_year);
+    mysql.pool.query(sql, inserts,function(err, results){
+        if(err){
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
+        }else {
+            renderPage(results);
+        }
+        function renderPage(results) {
+            context.idAdded = results.insertId;
+            res.render('add',context);
+        }
+    });
+});
+
+//DELETE cars
+app.get('/deleteCar', function(req, res, next){
+    context = {};
+    context.title = 'Car';
+    context.viewHref = '/cars';
+    var deleteId = req.query.id;
+    context.deleteId = deleteId;
+    var sql = 'DELETE FROM cars WHERE id = ?';
+    var inserts = [deleteId];
+    mysql.pool.query(sql, inserts, function(err, results) {
+        if(err){
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
+        }else {
+            renderPage(results);
+        }
+        function renderPage(results) {
+            context.affectedRows = results.affectedRows;
+            res.render('delete', context);
+        }
+    });
+});
+
+/**************************************************************
  * Repair Orders
  * ************************************************************/
 
@@ -575,8 +580,12 @@ app.get('/repairOrders', function(req, res, next) {
     context.addHref = '/addRepairOrder'
     context.deleteHref = '/deleteRepairOrder'
     context.title = 'Repair Orders';
-    var sql = 'SELECT * FROM ?? ORDER BY ?? ASC; SELECT ?? FROM ?? WHERE ?? = ?';
-    var inserts = [tableName, 'id', 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
+    //first query for table records
+    var sql = 'SELECT ??, CONCAT(??, ": ", ??, " ", ??, " ", ??) as ?, ??, ?? FROM ?? LEFT JOIN ?? ON ?? = ??  ORDER BY ?? ASC; ';
+    var inserts = ['repair_orders.id', 'car_id', 'make', 'model_name', 'model_year', 'car_description', 'date_received', 'date_completed', 'repair_orders', 'cars', 'car_id', 'cars.id', 'repair_orders.id'];
+    //second quert for table column names
+    sql += 'SELECT ?? FROM ?? WHERE ?? = ?';
+    inserts.push('Column_name', 'Information_schema.columns', 'Table_name', tableName);
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
             if(err.sqlMessage){
