@@ -24,6 +24,7 @@ UNIQUE (f_name, l_name)
 );
 -- --------------------- CUSTOMERS------------------------
 
+-- NULLABLE RELATIONSHIP
 -- ----------------------- CARS---------------------------
 CREATE TABLE cars(
 id INT AUTO_INCREMENT UNIQUE NOT NULL,
@@ -32,8 +33,8 @@ license_plate VARCHAR(255) NOT NULL,
 make VARCHAR(255) NOT NULL,
 model_name VARCHAR(255) NOT NULL,
 model_year YEAR NOT NULL,
-PRIMARY KEY (id),
-FOREIGN KEY (customer_id) REFERENCES customers(id)
+PRIMARY KEY (id)-- ,
+-- FOREIGN KEY (customer_id) REFERENCES customers(id)
 );
 -- ----------------------- CARS---------------------------
 

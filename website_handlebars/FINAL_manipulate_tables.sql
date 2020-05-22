@@ -88,7 +88,7 @@ DELETE FROM mechanics WHERE id =
 (SELECT id FROM mechanics WHERE f_name = ::f_name_input AND l_name = l_name_input);
 
 
---------------------MANIPULATE WORK_ORDERS---------------------
+-- ------------------MANIPULATE WORK_ORDERS---------------------
 -- select all row from MANY to MANY table
 SELECT * FROM work_orders;
 

@@ -452,7 +452,7 @@ app.get('/cars', function(req, res, next) {
     context.deleteHref = '/deleteCar';
     context.title = 'Cars';
     //first query for table records
-    var sql = 'SELECT ??, CONCAT(??, ": ", ??, " ", ??) as ?, ??, ??, ??, ?? FROM ?? LEFT JOIN ?? ON ?? = ??  ORDER BY ?? ASC; ';
+    var sql = 'SELECT ??, CONCAT(??, " { ", ??, " ", ??, " }") as ?, ??, ??, ??, ?? FROM ?? LEFT JOIN ?? ON ?? = ??  ORDER BY ?? ASC; ';
     var inserts = ['cars.id', 'customer_id', 'f_name', 'l_name', 'customer_name', 'license_plate', 'make', 'model_name', 'model_year', 'cars', 'customers', 'customer_id', 'customers.id', 'cars.id'];
     //second quert for table column names
     sql += 'SELECT ?? FROM ?? WHERE ?? = ?';
@@ -581,7 +581,7 @@ app.get('/repairOrders', function(req, res, next) {
     context.deleteHref = '/deleteRepairOrder'
     context.title = 'Repair Orders';
     //first query for table records
-    var sql = 'SELECT ??, CONCAT(??, ": ", ??, " ", ??, " ", ??) as ?, ??, ?? FROM ?? LEFT JOIN ?? ON ?? = ??  ORDER BY ?? ASC; ';
+    var sql = 'SELECT ??, CONCAT(??, " { ", ??, " ", ??, " ", ??, " } ") as ?, ??, ?? FROM ?? LEFT JOIN ?? ON ?? = ??  ORDER BY ?? ASC; ';
     var inserts = ['repair_orders.id', 'car_id', 'make', 'model_name', 'model_year', 'car_description', 'date_received', 'date_completed', 'repair_orders', 'cars', 'car_id', 'cars.id', 'repair_orders.id'];
     //second quert for table column names
     sql += 'SELECT ?? FROM ?? WHERE ?? = ?';
