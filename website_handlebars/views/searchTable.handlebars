@@ -1,6 +1,6 @@
 <div class = 'container'>
     <h3>{{title}} 
-        <a class="btn btn-outline-success my-2 my-sm-0" href={{addHref}} role="button">Add</a>
+        <a class="btn btn-outline-success my-2 my-sm-0" href={{backHref}} role="button">back</a>
     </h3>
     <br><h6>
         {{directions}}
@@ -32,12 +32,7 @@
             <tr id= "{{this.id}}">
                 {{#each this}}
                     <td>{{.}}</td>
-                {{/each}}
-                <td>
-                    <a class="btn btn-outline-danger my-2 my-sm-0" href={{../deleteHref}}?id={{this.id}} role="button">Delete</a>
-                    <a class="btn btn-outline-warning my-2 my-sm-0" href=?id={{this.id}} role="button">Update</a>
-                </td>
-                    
+                {{/each}}                
             </tr>
             {{/each}}
         </tbody>
