@@ -435,11 +435,12 @@ app.get('/cars', function(req, res, next) {
     context.deleteHref = '/deleteCar';
     context.title = 'Cars';
     //first query for table records
-    var sql = 'SELECT ??, CONCAT(??, " { ", ??, " ", ??, " }") as ?, ??, ??, ??, ?? FROM ?? LEFT JOIN ?? ON ?? = ??  ORDER BY ?? ASC; ';
-    var inserts = ['cars.id', 'customer_id', 'f_name', 'l_name', 'customer_name', 'license_plate', 'model_year', 'model_name', 'model_name', 'cars', 'customers', 'customer_id', 'customers.id', 'cars.id'];
-    //second quert for table column names
+    var sql = 'SELECT cars.id, CONCAT(customer_id, " { ", f_name, " ", l_name, " }") as customer_name, '
+        + 'license_plate, make, model_year, model_name '
+        + 'FROM cars LEFT JOIN customers ON customer_id = customers.id  ORDER BY cars.id ASC; ';
+    //second query for table column names
     sql += 'SELECT ?? FROM ?? WHERE ?? = ?';
-    inserts.push('Column_name', 'Information_schema.columns', 'Table_name', tableName);
+    var inserts = ['Column_name', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
             if(err.sqlMessage){
@@ -564,11 +565,14 @@ app.get('/repairOrders', function(req, res, next) {
     context.deleteHref = '/deleteRepairOrder'
     context.title = 'Repair Orders';
     //first query for table records
-    var sql = 'SELECT ??, CONCAT(??, " { ", ??, " ", ??, " ", ??, " } ") as ?, ??, ?? FROM ?? LEFT JOIN ?? ON ?? = ??  ORDER BY ?? ASC; ';
-    var inserts = ['repair_orders.id', 'car_id', 'model_year', 'model_name', 'model_name', 'car_description', 'date_received', 'date_completed', 'repair_orders', 'cars', 'car_id', 'cars.id', 'repair_orders.id'];
+    var sql = 'SELECT repair_orders.id, '
+        + 'CONCAT(car_id, " { ", model_year, " ", make, " ", model_name, " } ") as car_description, '
+        + 'date_received, date_completed '
+        + 'FROM repair_orders LEFT JOIN cars ON car_id = cars.id  '
+        + 'ORDER BY repair_orders.id ASC; ';
     //second quert for table column names
     sql += 'SELECT ?? FROM ?? WHERE ?? = ?';
-    inserts.push('Column_name', 'Information_schema.columns', 'Table_name', tableName);
+    var inserts =['Column_name', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
             if(err.sqlMessage){
@@ -692,7 +696,17 @@ app.get('/workOrders', function(req, res, next) {
     context.deleteHref = '/deleteWorkOrder'
     context.title = 'Work Orders';
     //work_order records
-    var sql = 'SELECT work_orders.id, CONCAT(repair_order_id, " {", model_year, " ", make, " ", model_name, "} ") AS repair, CONCAT(work_task_id, " {", name, "} ") AS task, CONCAT(mechanic_id, " {", f_name, " ", l_name, "} ") AS mechanic, start_date, end_date FROM work_orders LEFT JOIN repair_orders ON repair_order_id = repair_orders.id LEFT JOIN cars ON repair_orders.car_id = cars.id LEFT JOIN work_tasks ON work_task_id = work_tasks.id LEFT JOIN mechanics ON mechanic_id = mechanics.id ORDER BY work_orders.id ASC;';
+    var sql = 'SELECT work_orders.id, '
+        + 'CONCAT(repair_order_id, " {", model_year, " ", make, " ", model_name, "} ") AS repair, '
+        + 'CONCAT(work_task_id, " {", name, "} ") AS task, '
+        + 'CONCAT(mechanic_id, " {", f_name, " ", l_name, "} ") AS mechanic, '
+        + 'start_date, end_date '
+        + 'FROM work_orders '
+        + 'LEFT JOIN repair_orders ON repair_order_id = repair_orders.id '
+        + 'LEFT JOIN cars ON repair_orders.car_id = cars.id '
+        + 'LEFT JOIN work_tasks ON work_task_id = work_tasks.id '
+        + 'LEFT JOIN mechanics ON mechanic_id = mechanics.id '
+        + 'ORDER BY work_orders.id ASC;';
     //column_names
     sql += 'SELECT ?? FROM ?? WHERE ?? = ?;';
     var inserts = ['Column_name', 'Information_schema.columns', 'Table_name', tableName];
