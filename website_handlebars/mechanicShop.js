@@ -12,49 +12,32 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
-
 /**************************************************************
- * Dashboard
- * ************************************************************/
-/*
-app.get('/home', function(req, res, next) {
-    var context = {};
-    context.title = 'Dashboard';
-    res.render('home', context);
-});
-*/
-
-/**************************************************************
- * Dashboard - CHRIS ATEMPT
+ * Dashboard- no functionality, just overview of current work tasks
  * ************************************************************/
 
 app.get('/home', function(req, res, next) {
     var context = {};
-    //var tableName = 'customers'; 
     context.addHref = '/home';
     context.title = 'Dashboard';
-    var conc_cust = "CONCAT(customers.f_name, ' ', customers.l_name)";
-    var conc_car = "CONCAT(cars.make, ' ', cars.model_name, ' ', cars.model_year)";
-    var conc_mech = "CONCAT(mechanics.f_name, ' ', mechanics.l_name)";
-    var sql = "SELECT CONCAT(customers.f_name, ' ', customers.l_name) AS customer_name, CONCAT(cars.make, ' ', cars.model_name, ' ', cars.model_year) AS car_description, work_tasks.name AS work_task, work_tasks.id AS work_task_id, work_orders.start_date AS start_date, CONCAT(mechanics.f_name, ' ', mechanics.l_name) AS mechanic_name FROM repair_orders JOIN cars ON repair_orders.car_id = cars.id JOIN customers ON cars.customer_id = customers.id JOIN work_orders ON repair_orders.id = work_orders.repair_order_id AND work_orders.end_date IS NULL JOIN work_tasks ON work_orders.work_task_id = work_tasks.id JOIN mechanics ON work_orders.mechanic_id = mechanics.id GROUP BY work_orders.start_date DESC, customers.f_name, work_tasks.id";
-/*
-    var sql = 'SELECT ' + conc_cust + ' AS customer_name,' +
-    conc_car + ' AS car_description, ' +
-    'work_tasks.name AS work_task, work_tasks.id AS work_task_id, work_orders.start_date' +' AS start_date, ' + 
-    conc_mech + ' AS mechanic_name ' +
-    'FROM repair_orders JOIN cars ON repair_orders.car_id = cars.id' +
-    'JOIN customers ON cars.customer_id = customers.id' +
-    'JOIN work_orders ON repair_orders.id = work_orders.repair_order_id ' +
-    'AND work_orders.end_date IS NULL' +
-    'JOIN work_tasks ON work_orders.work_task_id = work_tasks.id' +
-    'JOIN mechanics ON work_orders.mechanic_id = mechanics.id' +
-    'GROUP BY work_orders.start_date DESC, customers.f_name, work_tasks.id;' +
-    //var inserts = [tableName, 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
-    */
+    var sql = "SELECT CONCAT(customers.f_name, ' ', customers.l_name) AS customer_name, "
+            + "CONCAT(cars.make, ' ', cars.model_name, ' ', cars.model_year) AS car_description, "
+            + "work_tasks.name AS work_task, work_orders.start_date AS start_date, "
+            + "CONCAT(mechanics.f_name, ' ', mechanics.l_name) AS mechanic_name "
+            + "FROM repair_orders JOIN cars ON repair_orders.car_id = cars.id "
+            + "JOIN customers ON cars.customer_id = customers.id "
+            + "JOIN work_orders ON repair_orders.id = work_orders.repair_order_id AND work_orders.end_date IS NULL "
+            + "JOIN work_tasks ON work_orders.work_task_id = work_tasks.id "
+            + "JOIN mechanics ON work_orders.mechanic_id = mechanics.id "
+            + "GROUP BY work_orders.start_date DESC, customers.f_name, work_tasks.id;";
     mysql.pool.query(sql, function(err, results){
-        
         if(err){
-            throw err;
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
@@ -453,7 +436,7 @@ app.get('/cars', function(req, res, next) {
     context.title = 'Cars';
     //first query for table records
     var sql = 'SELECT ??, CONCAT(??, " { ", ??, " ", ??, " }") as ?, ??, ??, ??, ?? FROM ?? LEFT JOIN ?? ON ?? = ??  ORDER BY ?? ASC; ';
-    var inserts = ['cars.id', 'customer_id', 'f_name', 'l_name', 'customer_name', 'license_plate', 'make', 'model_name', 'model_year', 'cars', 'customers', 'customer_id', 'customers.id', 'cars.id'];
+    var inserts = ['cars.id', 'customer_id', 'f_name', 'l_name', 'customer_name', 'license_plate', 'model_year', 'model_name', 'model_name', 'cars', 'customers', 'customer_id', 'customers.id', 'cars.id'];
     //second quert for table column names
     sql += 'SELECT ?? FROM ?? WHERE ?? = ?';
     inserts.push('Column_name', 'Information_schema.columns', 'Table_name', tableName);
@@ -582,7 +565,7 @@ app.get('/repairOrders', function(req, res, next) {
     context.title = 'Repair Orders';
     //first query for table records
     var sql = 'SELECT ??, CONCAT(??, " { ", ??, " ", ??, " ", ??, " } ") as ?, ??, ?? FROM ?? LEFT JOIN ?? ON ?? = ??  ORDER BY ?? ASC; ';
-    var inserts = ['repair_orders.id', 'car_id', 'make', 'model_name', 'model_year', 'car_description', 'date_received', 'date_completed', 'repair_orders', 'cars', 'car_id', 'cars.id', 'repair_orders.id'];
+    var inserts = ['repair_orders.id', 'car_id', 'model_year', 'model_name', 'model_name', 'car_description', 'date_received', 'date_completed', 'repair_orders', 'cars', 'car_id', 'cars.id', 'repair_orders.id'];
     //second quert for table column names
     sql += 'SELECT ?? FROM ?? WHERE ?? = ?';
     inserts.push('Column_name', 'Information_schema.columns', 'Table_name', tableName);
@@ -708,8 +691,11 @@ app.get('/workOrders', function(req, res, next) {
     context.addHref = '/addWorkOrder';
     context.deleteHref = '/deleteWorkOrder'
     context.title = 'Work Orders';
-    var sql = 'SELECT * FROM ?? ORDER BY ?? ASC; SELECT ?? FROM ?? WHERE ?? = ?';
-    var inserts = [tableName, 'id', 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
+    //work_order records
+    var sql = 'SELECT work_orders.id, CONCAT(repair_order_id, " {", model_year, " ", make, " ", model_name, "} ") AS repair, CONCAT(work_task_id, " {", name, "} ") AS task, CONCAT(mechanic_id, " {", f_name, " ", l_name, "} ") AS mechanic, start_date, end_date FROM work_orders LEFT JOIN repair_orders ON repair_order_id = repair_orders.id LEFT JOIN cars ON repair_orders.car_id = cars.id LEFT JOIN work_tasks ON work_task_id = work_tasks.id LEFT JOIN mechanics ON mechanic_id = mechanics.id ORDER BY work_orders.id ASC;';
+    //column_names
+    sql += 'SELECT ?? FROM ?? WHERE ?? = ?;';
+    var inserts = ['Column_name', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
             if(err.sqlMessage){

@@ -125,7 +125,7 @@ INSERT INTO repair_orders(car_id, date_received) VALUES
 -- -------------------- WORK_TASKS-------------------------
 INSERT INTO work_tasks(name) VALUES 
 ('Diagnosis'), ('Customer Approval'), ('Order Parts'), 
-('Repair'), ('Test Drive'), ('Contact     Customer');
+('Repair'), ('Test Drive'), ('Contact Customer');
 
 
 -- --------------------- MECHANICS-------------------------
@@ -158,7 +158,7 @@ AND l_name = 'Tiger'),'2020-05-02', NULL
 ((SELECT id FROM repair_orders WHERE car_id = 1),
 (SELECT id FROM work_tasks WHERE name = 'Customer Approval'),
 (SELECT id FROM mechanics WHERE f_name = 'Pam' 
-AND l_name = 'Simpson'),'2020-05-04', NULL
+AND l_name = 'Simpson'),'2020-05-04', '2020-05-04'
 ),
 ((SELECT id FROM repair_orders WHERE car_id = 1),
 (SELECT id FROM work_tasks WHERE name = 'Repair'),
