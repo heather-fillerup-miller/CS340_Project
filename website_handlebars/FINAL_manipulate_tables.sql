@@ -1,7 +1,7 @@
 -- ------------------------------------------------------------------------------------
 -- Below is the special character data manipulation 
 -- queries.  Included at the end of this document
--- are the actual sql commands for the manipulation
+-- are the sql commands for testing
 -- if you would like to try it out on mariaDB.
 -- ------------------------------------------------------------------------------------
 
@@ -124,6 +124,7 @@ AND repair_order_id = ::repair_order_id_input;
 
 
 -- ------------------------------------------------------------------------------------
+-- FOR TESTING - NOT PART OF GRADING REQUIREMENTS
 -- Below are the queries with no special characters, 
 -- copy / paste these blocks in mariaDB to see them in action in MariaDB
 -- ------------------------------------------------------------------------------------
