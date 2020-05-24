@@ -32,28 +32,20 @@ app.get('/home', function(req, res, next) {
     var context = {};
     context.addHref = '/home';
     context.title = 'Dashboard';
+    context.directions = 'current repair orders of cars in the shop'
     var conc_cust = "CONCAT(customers.f_name, ' ', customers.l_name)";
     var conc_car = "CONCAT(cars.make, ' ', cars.model_name, ' ', cars.model_year)";
     var conc_mech = "CONCAT(mechanics.f_name, ' ', mechanics.l_name)";
     var sql = "SELECT CONCAT(customers.f_name, ' ', customers.l_name) AS customer_name, CONCAT(cars.make, ' ', cars.model_name, ' ', cars.model_year) AS car_description, work_tasks.name AS work_task, work_tasks.id AS work_task_id, work_orders.start_date AS start_date, CONCAT(mechanics.f_name, ' ', mechanics.l_name) AS mechanic_name FROM repair_orders JOIN cars ON repair_orders.car_id = cars.id JOIN customers ON cars.customer_id = customers.id JOIN work_orders ON repair_orders.id = work_orders.repair_order_id AND work_orders.end_date IS NULL JOIN work_tasks ON work_orders.work_task_id = work_tasks.id JOIN mechanics ON work_orders.mechanic_id = mechanics.id GROUP BY work_orders.start_date DESC, customers.f_name, work_tasks.id";
-/*
-    var sql = 'SELECT ' + conc_cust + ' AS customer_name,' +
-    conc_car + ' AS car_description, ' +
-    'work_tasks.name AS work_task, work_tasks.id AS work_task_id, work_orders.start_date' +' AS start_date, ' + 
-    conc_mech + ' AS mechanic_name ' +
-    'FROM repair_orders JOIN cars ON repair_orders.car_id = cars.id' +
-    'JOIN customers ON cars.customer_id = customers.id' +
-    'JOIN work_orders ON repair_orders.id = work_orders.repair_order_id ' +
-    'AND work_orders.end_date IS NULL' +
-    'JOIN work_tasks ON work_orders.work_task_id = work_tasks.id' +
-    'JOIN mechanics ON work_orders.mechanic_id = mechanics.id' +
-    'GROUP BY work_orders.start_date DESC, customers.f_name, work_tasks.id;' +
-    //var inserts = [tableName, 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
-    */
+
     mysql.pool.query(sql, function(err, results){
-        
         if(err){
-            throw err;
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
@@ -76,8 +68,10 @@ app.get('/customers', function(req, res, next) {
     var tableName = 'customers'; 
     context.addHref = '/addCustomer';
     context.deleteHref = '/deleteCustomer';
+    context.searchHref = '/searchCustomers';
     //context.updateHref = '/updateCustomer';
     context.title = 'Customers';
+    context.directions = 'Search, Add, Delete or Update a customer using this table';
     var sql = 'SELECT * FROM ?? ORDER BY ?? ASC; SELECT ?? FROM ?? WHERE ?? = ?';
     var inserts = [tableName, 'id', 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
@@ -191,6 +185,41 @@ app.get('/deleteCustomer', function(req, res, next){
     });
 });
 
+
+//search customers
+app.get('/searchCustomers', function(req, res, next) {
+    var context = {};
+
+    //set up the search substring
+    var data = "%";
+    data += req.query.search;
+    data += "%";
+    
+    context.backHref = '/customers';
+    context.title = 'Customers - filtered';
+    var sql = 'SELECT * FROM customers WHERE (id LIKE ? OR f_name LIKE ? OR l_name LIKE ? OR contact_no LIKE ? OR email_address LIKE ?);';
+    var inserts = [data,data,data,data,data];
+    sql += 'SELECT ?? FROM ?? WHERE ?? = ?';
+    inserts.push('Column_name', 'Information_schema.columns', 'Table_name', 'customers');
+    mysql.pool.query(sql, inserts, function(err, results){
+        if(err){
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
+        }else {
+            renderPage(results);
+        }
+    });
+    function renderPage(results) {
+        context.dataRows = results[0];
+        context.dataColumns = results[1];
+        res.render('searchTable', context);
+    }
+});
+
 /**************************************************************
  * Cars
  * ************************************************************/
@@ -201,7 +230,9 @@ app.get('/cars', function(req, res, next) {
     var tableName = 'cars';
     context.addHref = '/addCar';
     context.deleteHref = '/deleteCar';
+    context.searchHref = '/searchCars';
     context.title = 'Cars';
+    context.directions = 'Search, Add, Delete or Update a car using this table';
     var sql = 'SELECT * FROM ?? ORDER BY ?? ASC; SELECT ?? FROM ?? WHERE ?? = ?';
     var inserts = [tableName, 'id', 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
@@ -315,6 +346,40 @@ app.get('/deleteCar', function(req, res, next){
     });
 });
 
+
+//search cars
+app.get('/searchCars', function(req, res, next) {
+    var context = {};
+
+    //set up the search substring
+    var data = "%";
+    data += req.query.search;
+    data += "%";
+    context.backHref = '/cars';
+    context.title = 'Cars - filtered';
+    var sql = 'SELECT * FROM cars WHERE (id LIKE ? OR customer_id LIKE ? OR license_plate LIKE ? OR make LIKE ? OR model_name LIKE ? OR model_year LIKE ?);';
+    var inserts = [data,data,data,data,data, data];
+    sql += 'SELECT ?? FROM ?? WHERE ?? = ?';
+    inserts.push('Column_name', 'Information_schema.columns', 'Table_name', 'cars');
+    mysql.pool.query(sql, inserts, function(err, results){
+        if(err){
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
+        }else {
+            renderPage(results);
+        }
+    });
+    function renderPage(results) {
+        context.dataRows = results[0];
+        context.dataColumns = results[1];
+        res.render('searchTable', context);
+    }
+});
+
 /**************************************************************
  * Mechanics
  * ************************************************************/
@@ -325,7 +390,9 @@ app.get('/mechanics', function(req, res, next) {
     var tableName = 'mechanics';
     context.addHref = '/addMechanic';
     context.deleteHref = '/deleteMechanic';
+    context.searchHref = '/searchMechanics';
     context.title = 'Mechanics';
+    context.directions = 'Search, Add, Delete or Update a mechanic using this table';
     var sql = 'SELECT * FROM ?? ORDER BY ?? ASC; SELECT ?? FROM ?? WHERE ?? = ?';
     var inserts = [tableName, 'id', 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
@@ -439,6 +506,40 @@ app.get('/deleteMechanic', function(req, res, next){
     });
 });
 
+
+//search mechanics
+app.get('/searchMechanics', function(req, res, next) {
+    var context = {};
+
+    //set up the search substring
+    var data = "%";
+    data += req.query.search;
+    data += "%";
+    context.backHref = '/mechanics';
+    context.title = 'Mechanics - filtered';
+    var sql = 'SELECT * FROM mechanics WHERE (id LIKE ? OR f_name LIKE ? OR l_name LIKE ?);';
+    var inserts = [data,data,data];
+    sql += 'SELECT ?? FROM ?? WHERE ?? = ?';
+    inserts.push('Column_name', 'Information_schema.columns', 'Table_name', 'mechanics');
+    mysql.pool.query(sql, inserts, function(err, results){
+        if(err){
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
+        }else {
+            renderPage(results);
+        }
+    });
+    function renderPage(results) {
+        context.dataRows = results[0];
+        context.dataColumns = results[1];
+        res.render('searchTable', context);
+    }
+});
+
 /**************************************************************
  * Work Tasks
  * ************************************************************/
@@ -449,7 +550,9 @@ app.get('/deleteMechanic', function(req, res, next){
     var tableName = 'work_tasks';
     context.addHref = '/addWorkTask';
     context.deleteHref = '/deleteWorkTask';
+    context.searchHref = '/searchWorkTasks';
     context.title = 'Work Tasks';
+    context.directions = 'Search, Add, Delete or Update a work task using this table';
     var sql = 'SELECT * FROM ??  ORDER BY ?? ASC; SELECT ?? FROM ?? WHERE ?? = ?';
     var inserts = [tableName, 'id', 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
@@ -514,6 +617,7 @@ app.get('/addWorkTask', function(req, res, next) {
 app.post('/addWorkTask', function(req, res, next){
     context = {};
     context.title = 'Work Task';
+    context.directions = 'Search, Add, Delete or Update a work task using this table';
     context.addHref = '/addWorkTask';
     context.viewHref= '/workTasks';
     var sql = 'INSERT INTO work_tasks (name) VALUES (?)';
@@ -563,6 +667,39 @@ app.get('/deleteWorkTask', function(req, res, next){
     });
 });
 
+
+app.get('/searchWorkTasks', function(req, res, next) {
+    var context = {};
+
+    //set up the search substring
+    var data = "%";
+    data += req.query.search;
+    data += "%";
+    context.backHref = '/workTasks';
+    context.title = 'Work Tasks - filtered';
+    var sql = 'SELECT * FROM work_tasks WHERE (id LIKE ? OR name LIKE ?);';
+    var inserts = [data,data];
+    sql += 'SELECT ?? FROM ?? WHERE ?? = ?';
+    inserts.push('Column_name', 'Information_schema.columns', 'Table_name', 'work_tasks');
+    mysql.pool.query(sql, inserts, function(err, results){
+        if(err){
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
+        }else {
+            renderPage(results);
+        }
+    });
+    function renderPage(results) {
+        context.dataRows = results[0];
+        context.dataColumns = results[1];
+        res.render('searchTable', context);
+    }
+});
+
 /**************************************************************
  * Repair Orders
  * ************************************************************/
@@ -572,8 +709,10 @@ app.get('/repairOrders', function(req, res, next) {
     var context = {};
     var tableName = 'repair_orders';
     context.addHref = '/addRepairOrder'
+    context.searchHref = '/searchRepairOrders'
     context.deleteHref = '/deleteRepairOrder'
     context.title = 'Repair Orders';
+    context.directions = 'Search, Add, Delete or Update a repair order using this table';
     var sql = 'SELECT * FROM ?? ORDER BY ?? ASC; SELECT ?? FROM ?? WHERE ?? = ?';
     var inserts = [tableName, 'id', 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
@@ -687,6 +826,38 @@ app.get('/deleteRepairOrder', function(req, res, next){
     });
 });
 
+app.get('/searchRepairOrders', function(req, res, next) {
+    var context = {};
+
+    //set up the search substring
+    var data = "%";
+    data += req.query.search;
+    data += "%";
+    context.backHref = '/repairOrders';
+    context.title = 'Repair Orders - filtered';
+    var sql = 'SELECT * FROM repair_orders WHERE (id LIKE ? OR car_id LIKE ? OR date_received LIKE ? OR date_completed LIKE ?);';
+    var inserts = [data,data, data, data];
+    sql += 'SELECT ?? FROM ?? WHERE ?? = ?';
+    inserts.push('Column_name', 'Information_schema.columns', 'Table_name', 'repair_orders');
+    mysql.pool.query(sql, inserts, function(err, results){
+        if(err){
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
+        }else {
+            renderPage(results);
+        }
+    });
+    function renderPage(results) {
+        context.dataRows = results[0];
+        context.dataColumns = results[1];
+        res.render('searchTable', context);
+    }
+});
+
 /**************************************************************
  * Work Orders
  * ************************************************************/
@@ -697,6 +868,7 @@ app.get('/workOrders', function(req, res, next) {
     var tableName = 'work_orders';
     context.addHref = '/addWorkOrder';
     context.deleteHref = '/deleteWorkOrder'
+    context.searchHref = "/searchWorkOrders";
     context.title = 'Work Orders';
     var sql = 'SELECT * FROM ?? ORDER BY ?? ASC; SELECT ?? FROM ?? WHERE ?? = ?';
     var inserts = [tableName, 'id', 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
@@ -810,6 +982,39 @@ app.get('/deleteWorkOrder', function(req, res, next){
         }
     });
 });
+
+app.get('/searchWorkOrders', function(req, res, next) {
+    var context = {};
+
+    //set up the search substring
+    var data = "%";
+    data += req.query.search;
+    data += "%";
+    context.backHref = '/workOrders';
+    context.title = 'Work Orders - filtered';
+    var sql = 'SELECT * FROM work_orders WHERE (id LIKE ? OR repair_order_id LIKE ? OR work_task_id LIKE ? OR mechanic_id LIKE ? OR start_date LIKE ? OR end_date LIKE ?);';
+    var inserts = [data,data,data,data,data,data];
+    sql += 'SELECT ?? FROM ?? WHERE ?? = ?';
+    inserts.push('Column_name', 'Information_schema.columns', 'Table_name', 'work_orders');
+    mysql.pool.query(sql, inserts, function(err, results){
+        if(err){
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
+        }else {
+            renderPage(results);
+        }
+    });
+    function renderPage(results) {
+        context.dataRows = results[0];
+        context.dataColumns = results[1];
+        res.render('searchTable', context);
+    }
+});
+
 
 /**************************************************************
  * Error Handling
