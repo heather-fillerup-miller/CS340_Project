@@ -39,9 +39,13 @@ app.get('/home', function(req, res, next) {
     var sql = "SELECT CONCAT(customers.f_name, ' ', customers.l_name) AS customer_name, CONCAT(cars.make, ' ', cars.model_name, ' ', cars.model_year) AS car_description, work_tasks.name AS work_task, work_tasks.id AS work_task_id, work_orders.start_date AS start_date, CONCAT(mechanics.f_name, ' ', mechanics.l_name) AS mechanic_name FROM repair_orders JOIN cars ON repair_orders.car_id = cars.id JOIN customers ON cars.customer_id = customers.id JOIN work_orders ON repair_orders.id = work_orders.repair_order_id AND work_orders.end_date IS NULL JOIN work_tasks ON work_orders.work_task_id = work_tasks.id JOIN mechanics ON work_orders.mechanic_id = mechanics.id GROUP BY work_orders.start_date DESC, customers.f_name, work_tasks.id";
 
     mysql.pool.query(sql, function(err, results){
-        
         if(err){
-            throw err;
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
@@ -193,18 +197,25 @@ app.get('/searchCustomers', function(req, res, next) {
     
     context.backHref = '/customers';
     context.title = 'Customers - filtered';
-    var sql = 'SELECT * FROM customers WHERE (id LIKE ? OR f_name LIKE ? OR l_name LIKE ? OR contact_no LIKE ? OR email_address LIKE ?)';
+    var sql = 'SELECT * FROM customers WHERE (id LIKE ? OR f_name LIKE ? OR l_name LIKE ? OR contact_no LIKE ? OR email_address LIKE ?);';
     var inserts = [data,data,data,data,data];
+    sql += 'SELECT ?? FROM ?? WHERE ?? = ?';
+    inserts.push('Column_name', 'Information_schema.columns', 'Table_name', 'customers');
     mysql.pool.query(sql, inserts, function(err, results){
-        
         if(err){
-            throw err;
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
     });
     function renderPage(results) {
-        context.dataRows = results;
+        context.dataRows = results[0];
+        context.dataColumns = results[1];
         res.render('searchTable', context);
     }
 });
@@ -346,18 +357,25 @@ app.get('/searchCars', function(req, res, next) {
     data += "%";
     context.backHref = '/cars';
     context.title = 'Cars - filtered';
-    var sql = 'SELECT * FROM cars WHERE (id LIKE ? OR customer_id LIKE ? OR license_plate LIKE ? OR make LIKE ? OR model_name LIKE ?)';
-    var inserts = [data,data,data,data,data];
+    var sql = 'SELECT * FROM cars WHERE (id LIKE ? OR customer_id LIKE ? OR license_plate LIKE ? OR make LIKE ? OR model_name LIKE ? OR model_year LIKE ?);';
+    var inserts = [data,data,data,data,data, data];
+    sql += 'SELECT ?? FROM ?? WHERE ?? = ?';
+    inserts.push('Column_name', 'Information_schema.columns', 'Table_name', 'cars');
     mysql.pool.query(sql, inserts, function(err, results){
-        
         if(err){
-            throw err;
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
     });
     function renderPage(results) {
-        context.dataRows = results;
+        context.dataRows = results[0];
+        context.dataColumns = results[1];
         res.render('searchTable', context);
     }
 });
@@ -499,18 +517,25 @@ app.get('/searchMechanics', function(req, res, next) {
     data += "%";
     context.backHref = '/mechanics';
     context.title = 'Mechanics - filtered';
-    var sql = 'SELECT * FROM mechanics WHERE (id LIKE ? OR f_name LIKE ? OR l_name LIKE ?)';
+    var sql = 'SELECT * FROM mechanics WHERE (id LIKE ? OR f_name LIKE ? OR l_name LIKE ?);';
     var inserts = [data,data,data];
+    sql += 'SELECT ?? FROM ?? WHERE ?? = ?';
+    inserts.push('Column_name', 'Information_schema.columns', 'Table_name', 'mechanics');
     mysql.pool.query(sql, inserts, function(err, results){
-        
         if(err){
-            throw err;
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
     });
     function renderPage(results) {
-        context.dataRows = results;
+        context.dataRows = results[0];
+        context.dataColumns = results[1];
         res.render('searchTable', context);
     }
 });
@@ -652,18 +677,25 @@ app.get('/searchWorkTasks', function(req, res, next) {
     data += "%";
     context.backHref = '/workTasks';
     context.title = 'Work Tasks - filtered';
-    var sql = 'SELECT * FROM work_tasks WHERE (id LIKE ? OR name LIKE ?)';
+    var sql = 'SELECT * FROM work_tasks WHERE (id LIKE ? OR name LIKE ?);';
     var inserts = [data,data];
+    sql += 'SELECT ?? FROM ?? WHERE ?? = ?';
+    inserts.push('Column_name', 'Information_schema.columns', 'Table_name', 'work_tasks');
     mysql.pool.query(sql, inserts, function(err, results){
-        
         if(err){
-            throw err;
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
     });
     function renderPage(results) {
-        context.dataRows = results;
+        context.dataRows = results[0];
+        context.dataColumns = results[1];
         res.render('searchTable', context);
     }
 });
@@ -803,18 +835,25 @@ app.get('/searchRepairOrders', function(req, res, next) {
     data += "%";
     context.backHref = '/repairOrders';
     context.title = 'Repair Orders - filtered';
-    var sql = 'SELECT * FROM repair_orders WHERE (id LIKE ? OR car_id LIKE ? OR date_received LIKE ? OR date_completed LIKE ?)';
+    var sql = 'SELECT * FROM repair_orders WHERE (id LIKE ? OR car_id LIKE ? OR date_received LIKE ? OR date_completed LIKE ?);';
     var inserts = [data,data, data, data];
+    sql += 'SELECT ?? FROM ?? WHERE ?? = ?';
+    inserts.push('Column_name', 'Information_schema.columns', 'Table_name', 'repair_orders');
     mysql.pool.query(sql, inserts, function(err, results){
-        
         if(err){
-            throw err;
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
     });
     function renderPage(results) {
-        context.dataRows = results;
+        context.dataRows = results[0];
+        context.dataColumns = results[1];
         res.render('searchTable', context);
     }
 });
@@ -953,18 +992,25 @@ app.get('/searchWorkOrders', function(req, res, next) {
     data += "%";
     context.backHref = '/workOrders';
     context.title = 'Work Orders - filtered';
-    var sql = 'SELECT * FROM work_orders WHERE (id LIKE ? OR repair_order_id LIKE ? OR work_task_id LIKE ? OR mechanic_id LIKE ? OR start_date LIKE ? OR end_date LIKE ?)';
+    var sql = 'SELECT * FROM work_orders WHERE (id LIKE ? OR repair_order_id LIKE ? OR work_task_id LIKE ? OR mechanic_id LIKE ? OR start_date LIKE ? OR end_date LIKE ?);';
     var inserts = [data,data,data,data,data,data];
+    sql += 'SELECT ?? FROM ?? WHERE ?? = ?';
+    inserts.push('Column_name', 'Information_schema.columns', 'Table_name', 'work_orders');
     mysql.pool.query(sql, inserts, function(err, results){
-        
         if(err){
-            throw err;
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
         }else {
             renderPage(results);
         }
     });
     function renderPage(results) {
-        context.dataRows = results;
+        context.dataRows = results[0];
+        context.dataColumns = results[1];
         res.render('searchTable', context);
     }
 });

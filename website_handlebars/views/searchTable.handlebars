@@ -14,14 +14,7 @@
                     {{#each this}}
                     <th scope="col">{{.}}</th>
                     {{/each}}
-                
                 {{/each}}
-                <th scope="col" colspan= "2">
-                <form class="form-inline" action={{searchHref}} method="get">
-                    <input class="form-control mr-sm-2" type="search" aria-label="Search" name="search">
-                    <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
-                </form>
-                </th>
             </tr>
             {{/if}}
         </thead>
