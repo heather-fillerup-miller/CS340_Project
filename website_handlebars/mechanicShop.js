@@ -21,21 +21,19 @@ handlebars.handlebars.registerHelper("formatDate", function(date) {
 
 handlebars.handlebars.registerHelper("checkDate", function(value) {
 
-    /*console.log(typeof(value));
+    console.log(typeof(value));
     console.log(value);
-    console.log("break");*/
-
-    
-       if(typeof(value) == 'object')
-       {
-        if(value == null)
-        {
-            return "--/--/----";
-        }
-        new_date = value.toLocaleDateString();
-        return new_date;
-       }
-        return value;
+    console.log("break");
+    if(typeof(value) == 'object')
+    {
+    if(value == null)
+    {
+        return "--/--/----";
+    }
+    new_date = value.toLocaleDateString();
+    return new_date;
+    }
+    return value;
 });
 /**************************************************************
  * Dashboard- no functionality, just overview of current work tasks
