@@ -24,12 +24,6 @@ handlebars.handlebars.registerHelper("formatDate", function(date) {
 
 //check if value is NULL
  handlebars.handlebars.registerHelper("checkNull", function(value) {
-    /*
-    *testing messages
-        console.log(typeof(value));
-    console.log(value);
-    console.log("break");
-    */
     if(typeof(value) == 'object')
     {
     if(value == null)
@@ -43,7 +37,7 @@ handlebars.handlebars.registerHelper("formatDate", function(date) {
 });
 
 //Select option from dropdown list: reference: https://gist.github.com/LukeChannings/6173ab951d8b1dc4602e THANK YOU neeraj87!
-handlebars.handlebars.registerHelper("multiselect", function (selected, option){
+handlebars.handlebars.registerHelper("selectOption", function (selected, option){
     if(selected == undefined) {
         return '';
     }
@@ -99,6 +93,7 @@ app.get('/customers', function(req, res, next) {
     context.deleteHref = '/deleteCustomer';
     context.searchHref = '/searchCustomers';
     context.title = 'Customers';
+    context.relationship = '1:M OPTIONAL relationship with cars'
     context.directions = 'Search, Add, Delete or Update a customer using this table';
     var sql = 'SELECT * FROM ?? ORDER BY ?? ASC; SELECT ?? FROM ?? WHERE ?? = ?';
     var inserts = [tableName, 'id', 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
@@ -255,7 +250,8 @@ app.get('/searchCustomers', function(req, res, next) {
 //VIEW mechanics
 app.get('/mechanics', function(req, res, next) {
     var context = {};
-  context.directions = 'Search, Add, Delete or Update a mechanic using this table';
+    context.relationship = 'M:M relationship with repair_orders via composite entity work_orders'
+    context.directions = 'Search, Add, Delete or Update a mechanic using this table';
     var tableName = 'mechanics';
     context.addHref = '/addMechanic';
     context.deleteHref = '/deleteMechanic';
@@ -418,6 +414,7 @@ app.get('/searchMechanics', function(req, res, next) {
     context.addHref = '/addWorkTask';
     context.deleteHref = '/deleteWorkTask';
     context.searchHref = '/searchWorkTasks';
+    context.relationship = 'M:M relationship with repair_orders via composite entity work_orders'
     context.title = 'Work Tasks';
    context.directions = 'Search, Add, Delete or Update a work task using this table';
     var sql = 'SELECT * FROM ??  ORDER BY ?? ASC; SELECT ?? FROM ?? WHERE ?? = ?';
@@ -573,6 +570,7 @@ app.get('/searchWorkTasks', function(req, res, next) {
 //View cars
 app.get('/cars', function(req, res, next) {
     var context = {};
+    context.relationship = '1:M OPTIONAL relationship with customers; 1:M relationship with repair_orders';
     context.directions = 'Search (cannot search by data in {} ), Add, Delete or Update a car using this table';
     var tableName = 'cars';
     context.addHref = '/addCar';
@@ -581,7 +579,7 @@ app.get('/cars', function(req, res, next) {
     context.title = 'Cars';
     //first query for table records
     var sql = 'SELECT cars.id, CONCAT(customer_id, " { ", f_name, " ", l_name, " }") as customer_name, '
-        + 'license_plate, make, model_year, model_name '
+        + 'license_plate, model_year, make, model_name '
         + 'FROM cars LEFT JOIN customers ON customer_id = customers.id  ORDER BY cars.id ASC; ';
     //second query for table column names
     sql += 'SELECT ?? FROM ?? WHERE ?? = ?';
@@ -656,7 +654,6 @@ app.get('/addCar', function(req, res, next) {
 //INSERT Cars
 app.post('/addCar', function(req, res, next){
     context = {};
-    console.log(req.body.customer_id);
     context.directions = 'Search, Add, Delete or Update a car using this table';
     context.title = 'Car';
     context.addHref = '/addCar';
@@ -765,6 +762,7 @@ app.get('/repairOrders', function(req, res, next) {
     context.deleteHref = '/deleteRepairOrder'
     context.title = 'Repair Orders';
     context.directions = 'Search (cannot search by data in {} ), Add, Delete or Update a repair order using this table';
+    context.relationship = '1:M relationship with cars; M:M relationship with work_tasks via composite entity work_orders';
     //first query for table records
     var sql = 'SELECT repair_orders.id, '
         + 'CONCAT(car_id, " { ", license_plate, " : ", model_year, " ", make, " ", model_name, " } ") as car_description, '
@@ -845,7 +843,6 @@ app.post('/addRepairOrder', function(req, res, next){
     context.title = 'Repair Order';
     context.addHref = '/addRepairOrder';
     context.viewHref= '/repairOrders';
-    console.log("date completed:" + req.body.date_completed);
     var sql = 'INSERT INTO repair_orders (car_id, date_received, date_completed) VALUES (?';
     var inserts = [req.body.car_id];
     if(req.body.date_received === undefined || req.body.date_received == ""){
@@ -955,6 +952,7 @@ app.get('/workOrders', function(req, res, next) {
     context.deleteHref = '/deleteWorkOrder'
     context.searchHref = "/searchWorkOrders";
     context.title = 'Work Orders';
+    context.relationship = 'Composite entity: 1:M relationship with repair_orders; 1:M relationship with work_tasks; 1:M relationship with mechanics';
     context.directions = 'Search (cannot search by data in {} ), Add, Delete or Update a work order using this table';
     //work_order records
     var sql = 'SELECT work_orders.id, '
@@ -1048,7 +1046,6 @@ app.get('/addWorkOrder', function(req, res, next) {
             }
         }
         context.dataColumns = results[0];
-        console.log(results[2]);
         context.fk1 = results[1];
         context.fk2 = results[2];
         context.fk3 = results[3];

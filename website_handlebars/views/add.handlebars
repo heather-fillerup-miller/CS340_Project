@@ -7,21 +7,21 @@
                         {{#if this.notId}}
                             <label for="{{this.Column_name}}">{{this.Column_name}}</label>
                             {{#if this.isForeignKey1}}
-                                <select class="form-control" name="{{this.Column_name}}" id="{{this.Column_name}}" multiple>
+                                <select class="form-control" name="{{this.Column_name}}" id="{{this.Column_name}}">
                                 {{#each ../fk1}}
-                                    <option value="{{this.fk_id}}" {{{multiselect "ptb.{{../this.Column_name}}" "{{this.fk_id}}"}}}>{{this.fk_id}} ({{this.fk_name}})</option>
+                                    <option value="{{this.fk_id}}" {{{selectOption "ptb.{{../this.Column_name}}" "{{this.fk_id}}"}}}>{{this.fk_id}} ({{this.fk_name}})</option>
                                 {{/each}}
                                 </select>
                             {{else if this.isForeignKey2}}
-                                <select class="form-control" name="{{this.Column_name}}" id="{{this.Column_name}}" multiple>
+                                <select class="form-control" name="{{this.Column_name}}" id="{{this.Column_name}}">
                                 {{#each ../fk2}}
-                                    <option value="{{this.fk_id}}" {{{multiselect "ptb.{{../this.Column_name}}" "{{this.fk_id}}"}}}>{{this.fk_id}} ({{this.fk_name}})</option>
+                                    <option value="{{this.fk_id}}" {{{selectOption "ptb.{{../this.Column_name}}" "{{this.fk_id}}"}}}>{{this.fk_id}} ({{this.fk_name}})</option>
                                 {{/each}}
                                 </select>
                             {{else if this.isForeignKey3}}
-                                <select class="form-control" name="{{this.Column_name}}" id="{{this.Column_name}}" multiple>
+                                <select class="form-control" name="{{this.Column_name}}" id="{{this.Column_name}}">
                                 {{#each ../fk3}}
-                                    <option value="{{this.fk_id}}" {{{multiselect "ptb.{{../this.Column_name}}" "{{this.fk_id}}"}}}>{{this.fk_id}} ({{this.fk_name}})</option>
+                                    <option value="{{this.fk_id}}" {{{selectOption "ptb.{{../this.Column_name}}" "{{this.fk_id}}"}}}>{{this.fk_id}} ({{this.fk_name}})</option>
                                 {{/each}}
                                 </select>
                             {{else if this.min}}
