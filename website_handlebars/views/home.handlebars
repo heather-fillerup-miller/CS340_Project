@@ -22,10 +22,10 @@
         <tbody>
             {{#each dataRows}}
             <tr>
-                <td>{{this.customer_name}}</td>
+                <td>{{checkNull this.customer_name}}</td>
                 <td>{{this.car_description}}</td>
                 <td>{{this.current_task}}</td>
-                <td>{{formatDate this.start_date}}</td>
+                <td>{{checkNull this.start_date}}</td>
                 <td>{{this.mechanic_name}}</td>
             </tr>
             {{/each}}

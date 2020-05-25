@@ -16,22 +16,14 @@ app.use(express.static('public'));
  * Handlebars Helper Functions
  * ************************************************************/
 
- //format date
-handlebars.handlebars.registerHelper("formatDate", function(date) {
-    new_date = date.toISOString().substring(0, 10);
-    return new_date;
-});
-
-//check if value is NULL
+//check if value is NULL and return null or return date
  handlebars.handlebars.registerHelper("checkNull", function(value) {
-    if(typeof(value) == 'object')
-    {
-    if(value == null)
-    {
-        return "NULL";
-    }
-    new_date = value.toISOString().substring(0, 10);
-    return new_date;
+    if(typeof(value) == 'object'){
+        if(value == null){
+            return "NULL";
+        }
+        new_date = value.toISOString().substring(0, 10);
+        return new_date;
     }
     return value;
 });

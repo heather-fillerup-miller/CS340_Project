@@ -169,6 +169,11 @@ AND l_name = 'Simpson'),'2020-05-08', NULL
 (SELECT id FROM work_tasks WHERE name = 'Customer Approval'),
 (SELECT id FROM mechanics WHERE f_name = 'Rob' 
 AND l_name = 'Stump'),'2020-05-07', NULL
+),
+((SELECT id FROM repair_orders WHERE car_id = 9),
+(SELECT id FROM work_tasks WHERE name = 'Diagnosis'),
+(SELECT id FROM mechanics WHERE f_name = 'Rob' 
+AND l_name = 'Stump'),'2020-05-10', NULL
 ); 
 
 
