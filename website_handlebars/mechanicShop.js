@@ -12,13 +12,18 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
+/**************************************************************
+ * Handlebars Helper Functions
+ * ************************************************************/
+
+ //format date
 handlebars.handlebars.registerHelper("formatDate", function(date) {
     new_date = date.toLocaleDateString();
     return new_date;
 });
 
-
-handlebars.handlebars.registerHelper("checkNull", function(value) {
+//check if value is NULL
+ handlebars.handlebars.registerHelper("checkNull", function(value) {
     /*
     *testing messages
         console.log(typeof(value));
@@ -36,6 +41,15 @@ handlebars.handlebars.registerHelper("checkNull", function(value) {
     }
     return value;
 });
+
+//Select option from dropdown list: reference: https://gist.github.com/LukeChannings/6173ab951d8b1dc4602e THANK YOU neeraj87!
+handlebars.handlebars.registerHelper("multiselect", function (selected, option){
+    if(selected == undefined) {
+        return '';
+    }
+    return selected.indexOf(option) !== -1 ? 'selected' : '';
+});
+
 /**************************************************************
  * Dashboard- no functionality, just overview of current work tasks
  * ************************************************************/
@@ -44,7 +58,7 @@ app.get('/home', function(req, res, next) {
     var context = {};
     context.addHref = '/home';
     context.title = 'Dashboard';
-    context.directions = 'current repair orders of cars in the shop'
+    context.directions = 'Current work orders (completion date is  NULL) for cars in the shop'
     var sql = "SELECT CONCAT(customers.f_name, ' ', customers.l_name) AS customer_name, "
             + "CONCAT(cars.make, ' ', cars.model_name, ' ', cars.model_year) AS car_description, "
             + "work_tasks.name AS current_task, work_orders.start_date AS start_date, "
@@ -597,8 +611,11 @@ app.get('/addCar', function(req, res, next) {
     var tableName = 'cars';
     context.postHref = '\addCar';
     context.title = 'Car';
-    var sql = 'SELECT ??, ?? FROM ?? WHERE ?? = ?';
+    //results [0] to get column names
+    var sql = 'SELECT ??, ?? FROM ?? WHERE ?? = ?; ';
     var inserts = ['Column_name', 'Data_type', 'Information_schema.columns', 'Table_name', tableName];
+    //results [1] to get customers
+    sql += 'SELECT customers.id AS fk_id, CONCAT(f_name, " ", l_name) AS fk_name FROM customers ORDER BY customers.id ASC';
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
             if(err.sqlMessage){
@@ -612,10 +629,13 @@ app.get('/addCar', function(req, res, next) {
         }
     });
     function renderPage(results) {
-        results.forEach(getInputType);
+        results[0].forEach(getInputType);
         function getInputType(item) {
             if(item.Column_name != 'id') {
                 item.notId = 1;
+            }
+            if(item.Column_name == 'customer_id'){
+                item.isForeignKey1 = 1;
             }
             if(item.Data_type == 'int') {
                 item.Data_type = 'number';
@@ -625,7 +645,10 @@ app.get('/addCar', function(req, res, next) {
                 item.Data_type = 'text';
             }
         }
-        context.dataColumns = results;
+        context.dataColumns = results[0];
+        //add NULLABLE foreign key for customer_id
+        results[1].unshift({fk_id: 0, fk_name: 'NULL'});
+        context.fk1 = results[1];
         res.render('add', context);
     }
 });
@@ -633,6 +656,7 @@ app.get('/addCar', function(req, res, next) {
 //INSERT Cars
 app.post('/addCar', function(req, res, next){
     context = {};
+    console.log(req.body.customer_id);
     context.directions = 'Search, Add, Delete or Update a car using this table';
     context.title = 'Car';
     context.addHref = '/addCar';
@@ -743,11 +767,11 @@ app.get('/repairOrders', function(req, res, next) {
     context.directions = 'Search (cannot search by data in {} ), Add, Delete or Update a repair order using this table';
     //first query for table records
     var sql = 'SELECT repair_orders.id, '
-        + 'CONCAT(car_id, " { ", model_year, " ", make, " ", model_name, " } ") as car_description, '
+        + 'CONCAT(car_id, " { ", license_plate, " : ", model_year, " ", make, " ", model_name, " } ") as car_description, '
         + 'date_received, date_completed '
         + 'FROM repair_orders LEFT JOIN cars ON car_id = cars.id  '
         + 'ORDER BY repair_orders.id ASC; ';
-    //second quert for table column names
+    //second query for table column names
     sql += 'SELECT ?? FROM ?? WHERE ?? = ?';
     var inserts =['Column_name', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
@@ -774,9 +798,12 @@ app.get('/addRepairOrder', function(req, res, next) {
     var context = {};
     var tableName = 'repair_orders';
     context.title = 'Repair Order';
-    context.postHref = '/addRepairOrder'
-    var sql = 'SELECT ??, ?? FROM ?? WHERE ?? = ?';
+    context.postHref = '/addRepairOrder';
+    //results[0] to get column names
+    var sql = 'SELECT ??, ?? FROM ?? WHERE ?? = ?; ';
     var inserts = ['Column_name', 'Data_type', 'Information_schema.columns', 'Table_name', tableName];
+    //results[1] to get customers
+    sql += 'SELECT cars.id AS fk_id, CONCAT(license_plate, " : ", model_year, " ", make, " ", model_name) AS fk_name FROM cars ORDER BY cars.id ASC';
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
             if(err.sqlMessage){
@@ -790,10 +817,13 @@ app.get('/addRepairOrder', function(req, res, next) {
         }
     });
     function renderPage(results) {
-        results.forEach(getInputType);
+        results[0].forEach(getInputType);
         function getInputType(item) {
             if(item.Column_name != 'id') {
                 item.notId = 1;
+            }
+            if(item.Column_name == 'car_id'){
+                item.isForeignKey1 = 1;
             }
             if(item.Data_type == 'int') {
                 item.Data_type = 'number';
@@ -803,7 +833,8 @@ app.get('/addRepairOrder', function(req, res, next) {
                 item.Data_type = 'text';
             }
         }
-        context.dataColumns = results;
+        context.dataColumns = results[0];
+        context.fk1 = results[1];
         res.render('add', context);
     }
 });
@@ -814,15 +845,16 @@ app.post('/addRepairOrder', function(req, res, next){
     context.title = 'Repair Order';
     context.addHref = '/addRepairOrder';
     context.viewHref= '/repairOrders';
+    console.log("date completed:" + req.body.date_completed);
     var sql = 'INSERT INTO repair_orders (car_id, date_received, date_completed) VALUES (?';
     var inserts = [req.body.car_id];
-    if(req.body.date_received === undefined){
+    if(req.body.date_received === undefined || req.body.date_received == ""){
         sql += ', NULL';
     }else {
         sql += ', ?';
         inserts.push(req.body.date_received);
     }
-    if(req.body.date_completed === undefined){
+    if(req.body.date_completed === undefined || req.body.date_completed == ""){
         sql += ', NULL)';
     }else {
         sql += ', ?)'
@@ -926,7 +958,7 @@ app.get('/workOrders', function(req, res, next) {
     context.directions = 'Search (cannot search by data in {} ), Add, Delete or Update a work order using this table';
     //work_order records
     var sql = 'SELECT work_orders.id, '
-        + 'CONCAT(repair_order_id, " {", model_year, " ", make, " ", model_name, "} ") AS repair, '
+        + 'CONCAT(repair_order_id, " {", license_plate, " : ", model_year, " ", make, " ", model_name, "} ") AS repair, '
         + 'CONCAT(work_task_id, " {", name, "} ") AS task, '
         + 'CONCAT(mechanic_id, " {", f_name, " ", l_name, "} ") AS mechanic, '
         + 'start_date, end_date '
@@ -964,8 +996,22 @@ app.get('/addWorkOrder', function(req, res, next) {
     var tableName = 'work_orders';
     context.title = 'Work Order';
     context.postHref = "/addWorkOrder";
-    var sql = 'SELECT ??, ?? FROM ?? WHERE ?? = ?';
+    //results[0] to get column naes
+    var sql = 'SELECT ??, ?? FROM ?? WHERE ?? = ?; ';
     var inserts = ['Column_name', 'Data_type', 'Information_schema.columns', 'Table_name', tableName];
+    //results[1] to get repair orders
+    sql += 'SELECT repair_orders.id AS fk_id, CONCAT(license_plate, " : ", model_year, " ", make, " ", model_name) AS fk_name '
+        + 'FROM repair_orders '
+        + 'LEFT JOIN cars ON repair_orders.car_id = cars.id '
+        + 'ORDER BY repair_orders.id ASC; ';
+    //results[2] to get work tasks
+    sql += 'SELECT work_tasks.id AS fk_id, name AS fk_name '
+        + 'FROM work_tasks '
+        + 'ORDER BY work_tasks.id; ';
+    //results[3] to get mechanics
+    sql += 'SELECT mechanics.id AS fk_id, CONCAT(f_name, " ", l_name) AS fk_name '
+        + 'FROM mechanics '
+        + 'ORDER BY mechanics.id ';
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
             if(err.sqlMessage){
@@ -979,10 +1025,19 @@ app.get('/addWorkOrder', function(req, res, next) {
         }
     });
     function renderPage(results) {
-        results.forEach(getInputType);
+        results[0].forEach(getInputType);
         function getInputType(item) {
             if(item.Column_name != 'id') {
                 item.notId = 1;
+            }
+            if(item.Column_name == 'repair_order_id'){
+                item.isForeignKey1 = 1;
+            }
+            if(item.Column_name == 'work_task_id'){
+                item.isForeignKey2 = 1;
+            }
+            if(item.Column_name == 'mechanic_id'){
+                item.isForeignKey3 = 1;
             }
             if(item.Data_type == 'int') {
                 item.Data_type = 'number';
@@ -991,8 +1046,12 @@ app.get('/addWorkOrder', function(req, res, next) {
             else if(item.Data_type == 'varchar') {
                 item.Data_type = 'text';
             }
-         }
-        context.dataColumns = results;
+        }
+        context.dataColumns = results[0];
+        console.log(results[2]);
+        context.fk1 = results[1];
+        context.fk2 = results[2];
+        context.fk3 = results[3];
         res.render('add', context);
     }
 });
@@ -1006,14 +1065,14 @@ app.post('/addWorkOrder', function(req, res, next){
     var sql = 'INSERT INTO work_orders (repair_order_id, work_task_id, mechanic_id, start_date, end_date) VALUES (?, ?, ?, ';
     var inserts = [req.body.repair_order_id, req.body.work_task_id, req.body.mechanic_id];
     //check if start date was not entered
-    if (req.body.start_date == "") {
+    if (req.body.start_date === undefined|| req.body.start_date == "") {
         sql += 'NULL, ';
     } else {
         sql += '?, '
         inserts.push(req.body.start_date);
     }
     //check if end date was not entered
-    if (req.body.end_date == "") {
+    if (req.body.end_date === undefined || req.body.end_date == "") {
         sql += 'NULL)';
     } else {
         sql += '?)'
@@ -1075,7 +1134,7 @@ app.get('/searchWorkOrders', function(req, res, next) {
     context.backHref = '/workOrders';
     context.title = 'Work Orders - filtered';
     var sql = 'SELECT work_orders.id, '
-    + 'CONCAT(repair_order_id, " {", model_year, " ", make, " ", model_name, "} ") AS repair, '
+    + 'CONCAT(repair_order_id, " {", license_plate, " : ", model_year, " ", make, " ", model_name, "} ") AS repair, '
     + 'CONCAT(work_task_id, " {", name, "} ") AS task, '
     + 'CONCAT(mechanic_id, " {", f_name, " ", l_name, "} ") AS mechanic, '
     + 'start_date, end_date '

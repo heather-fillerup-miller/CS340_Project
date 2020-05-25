@@ -5,11 +5,29 @@
                 {{#each dataColumns}}
                     <div class="form-group">
                         {{#if this.notId}}
-                            <label for={{this.Column_name}}>{{this.Column_name}}</label>
-                            {{#if this.min}}
+                            <label for="{{this.Column_name}}">{{this.Column_name}}</label>
+                            {{#if this.isForeignKey1}}
+                                <select class="form-control" name="{{this.Column_name}}" id="{{this.Column_name}}" multiple>
+                                {{#each ../fk1}}
+                                    <option value="{{this.fk_id}}" {{{multiselect "ptb.{{../this.Column_name}}" "{{this.fk_id}}"}}}>{{this.fk_id}} ({{this.fk_name}})</option>
+                                {{/each}}
+                                </select>
+                            {{else if this.isForeignKey2}}
+                                <select class="form-control" name="{{this.Column_name}}" id="{{this.Column_name}}" multiple>
+                                {{#each ../fk2}}
+                                    <option value="{{this.fk_id}}" {{{multiselect "ptb.{{../this.Column_name}}" "{{this.fk_id}}"}}}>{{this.fk_id}} ({{this.fk_name}})</option>
+                                {{/each}}
+                                </select>
+                            {{else if this.isForeignKey3}}
+                                <select class="form-control" name="{{this.Column_name}}" id="{{this.Column_name}}" multiple>
+                                {{#each ../fk3}}
+                                    <option value="{{this.fk_id}}" {{{multiselect "ptb.{{../this.Column_name}}" "{{this.fk_id}}"}}}>{{this.fk_id}} ({{this.fk_name}})</option>
+                                {{/each}}
+                                </select>
+                            {{else if this.min}}
                                 <input type={{this.Data_type}} min={{this.min}} class="form-control" id={{this.Column_name}} name={{this.Column_name}} placeholder="Enter {{this.Column_name}}">
                             {{else}}
-                                <input type={{this.Data_type}} class="form-control" id={{this.Column_name}} name={{this.Column_name}} placeholder="Enter {{this.Column_name}}">
+                                <input type={{this.Data_type}} class="form-control" id="{{this.Column_name}}" name="{{this.Column_name}}" placeholder="Enter {{this.Column_name}}">
                             {{/if}}
                         {{/if}}
                     </div>
