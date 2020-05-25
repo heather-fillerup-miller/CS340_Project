@@ -30,11 +30,11 @@ CREATE TABLE cars(
 id INT AUTO_INCREMENT UNIQUE NOT NULL,
 customer_id INT,
 license_plate VARCHAR(255) NOT NULL,
+model_year YEAR NOT NULL,
 make VARCHAR(255) NOT NULL,
 model_name VARCHAR(255) NOT NULL,
-model_year YEAR NOT NULL,
 PRIMARY KEY (id)-- ,
--- FOREIGN KEY (customer_id) REFERENCES customers(id)
+-- FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE
 );
 -- ----------------------- CARS---------------------------
 
