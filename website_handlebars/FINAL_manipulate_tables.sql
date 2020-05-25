@@ -117,7 +117,7 @@ AND l_name = ::l_name_input), :start_date_input
 -- update a row in our MANY to MANY
 UPDATE work_orders SET end_date = ::start_date_input WHERE id = :id_input;
 
---d elete MANY to MANY 
+-- delete MANY to MANY 
 DELETE FROM work_orders WHERE work_task_id = ::work_taks_id_input  
 AND repair_order_id = ::repair_order_id_input;
 
