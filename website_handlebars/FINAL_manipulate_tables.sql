@@ -1,7 +1,7 @@
 -- ------------------------------------------------------------------------------------
 -- Below is the special character data manipulation 
 -- queries.  Included at the end of this document
--- are the actual sql commands for the manipulation
+-- are the sql commands for testing
 -- if you would like to try it out on mariaDB.
 -- ------------------------------------------------------------------------------------
 
@@ -24,8 +24,10 @@ DELETE FROM customers WHERE id = ::id_input;
 
 
 -- ---------------------MANIPULATE CARS------------------------
--- select all rows from cars
-SELECT * FROM cars;
+-- select rows from cars
+SELECT cars.id, CONCAT(customer_id, " { ", f_name, " ", l_name, " }") as customer_name,
+        license_plate, make, model_year, model_name
+    FROM cars LEFT JOIN customers ON customer_id = customers.id  ORDER BY cars.id ASC;
 
 --1  to MANY NULLABLE customer_id
 INSERT INTO cars(customer_id, license_plate, make, model_name, model_year) VALUES 
@@ -41,8 +43,11 @@ DELETE FROM cars WHERE id = ::id_input;
 
 
 -- ------------------MANIPULATE REPAIR_ORDERS---------------------
--- select all rows from repair_orders
-SELECT * FROM repair_orders;
+-- select rows from repair_orders
+SELECT repair_orders.id, CONCAT(car_id, " { ", model_year, " ", make, " ", model_name, " } ") as car_description,
+        date_received, date_completed
+    FROM repair_orders LEFT JOIN cars ON car_id = cars.id
+    ORDER BY repair_orders.id ASC;
 
 -- insert into repair_orders table
 INSERT INTO repair_orders(car_id, date_received) VALUES
@@ -88,9 +93,18 @@ DELETE FROM mechanics WHERE id =
 (SELECT id FROM mechanics WHERE f_name = ::f_name_input AND l_name = l_name_input);
 
 
---------------------MANIPULATE WORK_ORDERS---------------------
--- select all row from MANY to MANY table
-SELECT * FROM work_orders;
+-- ------------------MANIPULATE WORK_ORDERS---------------------
+-- select from MANY to MANY table
+SELECT CONCAT(customers.f_name, ' ', customers.l_name) AS customer_name,
+            CONCAT(cars.make, ' ', cars.model_name, ' ', cars.model_year) AS car_description,
+            work_tasks.name AS work_task, work_orders.start_date AS start_date,
+            CONCAT(mechanics.f_name, ' ', mechanics.l_name) AS mechanic_name
+    FROM repair_orders JOIN cars ON repair_orders.car_id = cars.id
+        JOIN customers ON cars.customer_id = customers.id
+        JOIN work_orders ON repair_orders.id = work_orders.repair_order_id AND work_orders.end_date IS NULL
+        JOIN work_tasks ON work_orders.work_task_id = work_tasks.id
+        JOIN mechanics ON work_orders.mechanic_id = mechanics.id
+    GROUP BY work_orders.start_date DESC, customers.f_name, work_tasks.id;
 
 -- insert into MANY to MANY 
 INSERT INTO work_orders(repair_order_id, work_task_id, mechanic_id, start_date) VALUE
@@ -110,8 +124,9 @@ AND repair_order_id = ::repair_order_id_input;
 
 
 -- ------------------------------------------------------------------------------------
--- Below are the actual queries with no special characters, 
--- copy / paste these blocks in mariaDB to see them in action
+-- FOR TESTING - NOT PART OF GRADING REQUIREMENTS
+-- Below are the queries with no special characters, 
+-- copy / paste these blocks in mariaDB to see them in action in MariaDB
 -- ------------------------------------------------------------------------------------
 
 
