@@ -31,7 +31,7 @@
             {{#each dataRows}}
             <tr id= "{{this.id}}">
                 {{#each this}}
-                    <td>{{checkDate .}}</td>
+                    <td>{{checkNull .}}</td>
                 {{/each}}
                 <td>
                     <a class="btn btn-outline-danger my-2 my-sm-0" href={{../deleteHref}}?id={{this.id}} role="button">Delete</a>

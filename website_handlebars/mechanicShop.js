@@ -18,7 +18,7 @@ handlebars.handlebars.registerHelper("formatDate", function(date) {
 });
 
 
-handlebars.handlebars.registerHelper("checkDate", function(value) {
+handlebars.handlebars.registerHelper("checkNull", function(value) {
     /*
     *testing messages
         console.log(typeof(value));
@@ -29,7 +29,7 @@ handlebars.handlebars.registerHelper("checkDate", function(value) {
     {
     if(value == null)
     {
-        return "--/--/----";
+        return "NULL";
     }
     new_date = value.toLocaleDateString();
     return new_date;
@@ -639,7 +639,13 @@ app.post('/addCar', function(req, res, next){
     context.viewHref= '/cars';
     var sql = 'INSERT INTO cars (??, ??, ??, ??, ??) VALUES (?, ?, ?, ?, ?)';
     var inserts = ['customer_id', 'license_plate', 'make', 'model_name', 'model_year'];
-    inserts.push(req.body.customer_id, req.body.license_plate, req.body.make, req.body.model_name, req.body.model_year);
+    //manage when no customer is entered
+    if (req.body.customer_id == 0){
+        inserts.push('NULL');
+    } else {
+        inserts.push(req.body.customer_id);
+    }
+    inserts.push(req.body.license_plate, req.body.make, req.body.model_name, req.body.model_year);
     mysql.pool.query(sql, inserts,function(err, results){
         if(err){
             if(err.sqlMessage){
