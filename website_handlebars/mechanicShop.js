@@ -51,8 +51,7 @@ handlebars.handlebars.registerHelper("selectOption", function (selected, option)
 app.get('/home', function(req, res, next) {
     var context = {};
     context.addHref = '/home';
-    context.title = 'Dashboard';
-    context.directions = 'Current work orders (completion date is  NULL) for cars in the shop'
+    context.title = 'Mahinui Auto Shop';
     var sql = "SELECT CONCAT(customers.f_name, ' ', customers.l_name) AS customer_name, "
             + "CONCAT(cars.model_year, ' ', cars.make, ' ', cars.model_name ) AS car_description, "
             + "work_tasks.name AS current_task, work_orders.start_date AS start_date, "
@@ -94,7 +93,6 @@ app.get('/customers', function(req, res, next) {
     context.searchHref = '/searchCustomers';
     context.title = 'Customers';
     context.relationship = '1:M OPTIONAL relationship with cars'
-    context.directions = 'Search, Add, Delete or Update a customer using this table';
     var sql = 'SELECT * FROM ?? ORDER BY ?? ASC; SELECT ?? FROM ?? WHERE ?? = ?';
     var inserts = [tableName, 'id', 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
@@ -251,7 +249,6 @@ app.get('/searchCustomers', function(req, res, next) {
 app.get('/mechanics', function(req, res, next) {
     var context = {};
     context.relationship = 'M:M relationship with repair_orders via composite entity work_orders'
-    context.directions = 'Search, Add, Delete or Update a mechanic using this table';
     var tableName = 'mechanics';
     context.addHref = '/addMechanic';
     context.deleteHref = '/deleteMechanic';
@@ -416,7 +413,6 @@ app.get('/searchMechanics', function(req, res, next) {
     context.searchHref = '/searchWorkTasks';
     context.relationship = 'M:M relationship with repair_orders via composite entity work_orders'
     context.title = 'Work Tasks';
-   context.directions = 'Search, Add, Delete or Update a work task using this table';
     var sql = 'SELECT * FROM ??  ORDER BY ?? ASC; SELECT ?? FROM ?? WHERE ?? = ?';
     var inserts = [tableName, 'id', 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
@@ -571,7 +567,6 @@ app.get('/searchWorkTasks', function(req, res, next) {
 app.get('/cars', function(req, res, next) {
     var context = {};
     context.relationship = '1:M OPTIONAL relationship with customers; 1:M relationship with repair_orders';
-    context.directions = 'Search (cannot search by data in {} ), Add, Delete or Update a car using this table';
     var tableName = 'cars';
     context.addHref = '/addCar';
     context.deleteHref = '/deleteCar';
@@ -654,7 +649,6 @@ app.get('/addCar', function(req, res, next) {
 //INSERT Cars
 app.post('/addCar', function(req, res, next){
     context = {};
-    context.directions = 'Search, Add, Delete or Update a car using this table';
     context.title = 'Car';
     context.addHref = '/addCar';
     context.viewHref= '/cars';
@@ -761,7 +755,6 @@ app.get('/repairOrders', function(req, res, next) {
     context.searchHref = '/searchRepairOrders'
     context.deleteHref = '/deleteRepairOrder'
     context.title = 'Repair Orders';
-    context.directions = 'Search (cannot search by data in {} ), Add, Delete or Update a repair order using this table';
     context.relationship = '1:M relationship with cars; M:M relationship with work_tasks via composite entity work_orders';
     //first query for table records
     var sql = 'SELECT repair_orders.id, '
@@ -953,7 +946,6 @@ app.get('/workOrders', function(req, res, next) {
     context.searchHref = "/searchWorkOrders";
     context.title = 'Work Orders';
     context.relationship = 'Composite entity: 1:M relationship with repair_orders; 1:M relationship with work_tasks; 1:M relationship with mechanics';
-    context.directions = 'Search (cannot search by data in {} ), Add, Delete or Update a work order using this table';
     //work_order records
     var sql = 'SELECT work_orders.id, '
         + 'CONCAT(repair_order_id, " {", license_plate, " : ", model_year, " ", make, " ", model_name, "} ") AS repair, '

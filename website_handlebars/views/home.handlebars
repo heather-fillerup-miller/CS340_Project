@@ -1,33 +1,36 @@
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <h1 class="display-4">{{title}}</h1>
+    <hr class="my-4">
+    <p>This page displays the current work orders assigned to cars that have a NULL task end date</p>
+  </div>
+</div>
 <div class='container'>
-<h3>{{title}}</h3>
-<br><h6>
-        {{directions}}
-</h6><br>
-<table class="table table-bordered table-hover">
-    <thead>
-        <tr>
-            <th scope="col">Customer Name</th>
-            <th scope="col">Car Description</th>
-            <th scope="col">Current Task</th>
-            <th scope="col">Task Start Date</th>
-            <th scope="col">Mechanic</th>
-            </th>
-        </tr>
-    </thead>
+    <table class="table table-bordered table-hover table-striped">
+        <thead class= 'thead-dark'>
+            <tr>
+                <th scope="col">Customer Name</th>
+                <th scope="col">Car Description</th>
+                <th scope="col">Current Task</th>
+                <th scope="col">Task Start Date</th>
+                <th scope="col">Mechanic</th>
+                </th>
+            </tr>
+        </thead>
 
-    {{#if dataRows}}
-    <tbody>
-        {{#each dataRows}}
-        <tr>
-            <td>{{this.customer_name}}</td>
-            <td>{{this.car_description}}</td>
-            <td>{{this.current_task}}</td>
-            <td>{{formatDate this.start_date}}</td>
-            <td>{{this.mechanic_name}}</td>
-        </tr>
-        {{/each}}
-    </tbody>
-    {{/if}}
-</table>
+        {{#if dataRows}}
+        <tbody>
+            {{#each dataRows}}
+            <tr>
+                <td>{{this.customer_name}}</td>
+                <td>{{this.car_description}}</td>
+                <td>{{this.current_task}}</td>
+                <td>{{formatDate this.start_date}}</td>
+                <td>{{this.mechanic_name}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+        {{/if}}
+    </table>
 <br>
 </div>

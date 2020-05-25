@@ -1,16 +1,14 @@
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <h1 class="display-4">{{title}} <a class="btn btn-outline-success my-2 my-sm-0" href={{addHref}} role="button">Add</a></h1>
+    <p class="lead">{{relationship}}</p>
+    <hr class="my-4">
+    <p>Add, Delete, Update or Search (cannot search data in {} ) {{title}} using this page</p>
+  </div>
+</div>
 <div class = 'container'>
-    <h3>{{title}} 
-        <a class="btn btn-outline-success my-2 my-sm-0" href={{addHref}} role="button">Add</a>
-    </h3>
-    <br><h6>
-        {{relationship}}
-    </h6>
-    <br><h6>
-        {{directions}}
-    </h6><br>
-
-    <table class="table table-bordered table-hover">
-        <thead class= 'thead-light'>
+    <table class="table table-bordered table-hover table-striped">
+        <thead class= 'thead-dark'>
             {{#if dataColumns}}
             <tr>
                 {{#each dataColumns}}
