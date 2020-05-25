@@ -96,7 +96,7 @@ DELETE FROM mechanics WHERE id =
 -- ------------------MANIPULATE WORK_ORDERS---------------------
 -- select from MANY to MANY table
 SELECT CONCAT(customers.f_name, ' ', customers.l_name) AS customer_name,
-            CONCAT(cars.make, ' ', cars.model_name, ' ', cars.model_year) AS car_description,
+            CONCAT(cars.model_year, ' ', cars.model_name, ' ', cars.make) AS car_description,
             work_tasks.name AS work_task, work_orders.start_date AS start_date,
             CONCAT(mechanics.f_name, ' ', mechanics.l_name) AS mechanic_name
     FROM repair_orders JOIN cars ON repair_orders.car_id = cars.id
