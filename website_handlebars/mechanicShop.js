@@ -18,7 +18,7 @@ app.use(express.static('public'));
 
  //format date
 handlebars.handlebars.registerHelper("formatDate", function(date) {
-    new_date = date.toLocaleDateString();
+    new_date = date.toISOString().substring(0, 10);
     return new_date;
 });
 
@@ -30,7 +30,7 @@ handlebars.handlebars.registerHelper("formatDate", function(date) {
     {
         return "NULL";
     }
-    new_date = value.toLocaleDateString();
+    new_date = value.toISOString().substring(0, 10);
     return new_date;
     }
     return value;
