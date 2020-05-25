@@ -12,8 +12,6 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
-
-
 handlebars.handlebars.registerHelper("formatDate", function(date) {
 
     new_date = date.toLocaleDateString();
@@ -40,18 +38,7 @@ handlebars.handlebars.registerHelper("checkDate", function(value) {
         return value;
 });
 /**************************************************************
- * Dashboard
- * ************************************************************/
-/*
-app.get('/home', function(req, res, next) {
-    var context = {};
-    context.title = 'Dashboard';
-    res.render('home', context);
-});
-*/
-
-/**************************************************************
- * Dashboard - CHRIS ATEMPT
+ * Dashboard- no functionality, just overview of current work tasks
  * ************************************************************/
 
 app.get('/home', function(req, res, next) {
@@ -59,11 +46,16 @@ app.get('/home', function(req, res, next) {
     context.addHref = '/home';
     context.title = 'Dashboard';
     context.directions = 'current repair orders of cars in the shop'
-    var conc_cust = "CONCAT(customers.f_name, ' ', customers.l_name)";
-    var conc_car = "CONCAT(cars.make, ' ', cars.model_name, ' ', cars.model_year)";
-    var conc_mech = "CONCAT(mechanics.f_name, ' ', mechanics.l_name)";
-    var sql = "SELECT CONCAT(customers.f_name, ' ', customers.l_name) AS customer_name, CONCAT(cars.make, ' ', cars.model_name, ' ', cars.model_year) AS car_description, work_tasks.name AS work_task, work_tasks.id AS work_task_id, work_orders.start_date AS start_date, CONCAT(mechanics.f_name, ' ', mechanics.l_name) AS mechanic_name FROM repair_orders JOIN cars ON repair_orders.car_id = cars.id JOIN customers ON cars.customer_id = customers.id JOIN work_orders ON repair_orders.id = work_orders.repair_order_id AND work_orders.end_date IS NULL JOIN work_tasks ON work_orders.work_task_id = work_tasks.id JOIN mechanics ON work_orders.mechanic_id = mechanics.id GROUP BY work_orders.start_date DESC, customers.f_name, work_tasks.id";
-
+    var sql = "SELECT CONCAT(customers.f_name, ' ', customers.l_name) AS customer_name, "
+            + "CONCAT(cars.make, ' ', cars.model_name, ' ', cars.model_year) AS car_description, "
+            + "work_tasks.name AS work_task, work_orders.start_date AS start_date, "
+            + "CONCAT(mechanics.f_name, ' ', mechanics.l_name) AS mechanic_name "
+            + "FROM repair_orders JOIN cars ON repair_orders.car_id = cars.id "
+            + "JOIN customers ON cars.customer_id = customers.id "
+            + "JOIN work_orders ON repair_orders.id = work_orders.repair_order_id AND work_orders.end_date IS NULL "
+            + "JOIN work_tasks ON work_orders.work_task_id = work_tasks.id "
+            + "JOIN mechanics ON work_orders.mechanic_id = mechanics.id "
+            + "GROUP BY work_orders.start_date DESC, customers.f_name, work_tasks.id;";
     mysql.pool.query(sql, function(err, results){
         if(err){
             if(err.sqlMessage){
@@ -95,7 +87,6 @@ app.get('/customers', function(req, res, next) {
     context.addHref = '/addCustomer';
     context.deleteHref = '/deleteCustomer';
     context.searchHref = '/searchCustomers';
-    //context.updateHref = '/updateCustomer';
     context.title = 'Customers';
     context.directions = 'Search, Add, Delete or Update a customer using this table';
     var sql = 'SELECT * FROM ?? ORDER BY ?? ASC; SELECT ?? FROM ?? WHERE ?? = ?';
@@ -247,178 +238,17 @@ app.get('/searchCustomers', function(req, res, next) {
 });
 
 /**************************************************************
- * Cars
- * ************************************************************/
-
-//View cars
-app.get('/cars', function(req, res, next) {
-    var context = {};
-    var tableName = 'cars';
-    context.addHref = '/addCar';
-    context.deleteHref = '/deleteCar';
-    context.searchHref = '/searchCars';
-    context.title = 'Cars';
-    context.directions = 'Search, Add, Delete or Update a car using this table';
-    var sql = 'SELECT * FROM ?? ORDER BY ?? ASC; SELECT ?? FROM ?? WHERE ?? = ?';
-    var inserts = [tableName, 'id', 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
-    mysql.pool.query(sql, inserts, function(err, results){
-        if(err){
-            if(err.sqlMessage){
-                context.errorMessage = err.sqlMessage;
-                res.render('errors', context);
-            }else {
-                throw err;
-            }
-        }else {
-            renderPage(results);
-        }
-    });
-    function renderPage(results) {
-        context.dataRows = results[0];
-        context.dataColumns = results[1];
-        res.render('viewTable', context);
-    }
-});
-
-//ADD cars
-app.get('/addCar', function(req, res, next) {
-    var context = {};
-    var tableName = 'cars';
-    context.postHref = '\addCar';
-    context.title = 'Car';
-    var sql = 'SELECT ??, ?? FROM ?? WHERE ?? = ?';
-    var inserts = ['Column_name', 'Data_type', 'Information_schema.columns', 'Table_name', tableName];
-    mysql.pool.query(sql, inserts, function(err, results){
-        if(err){
-            if(err.sqlMessage){
-                context.errorMessage = err.sqlMessage;
-                res.render('errors', context);
-            }else {
-                throw err;
-            }
-        }else {
-            renderPage(results);
-        }
-    });
-    function renderPage(results) {
-        results.forEach(getInputType);
-        function getInputType(item) {
-            if(item.Column_name != 'id') {
-                item.notId = 1;
-            }
-            if(item.Data_type == 'int') {
-                item.Data_type = 'number';
-                item.min = '0';
-            }
-            else if(item.Data_type == 'varchar') {
-                item.Data_type = 'text';
-            }
-        }
-        context.dataColumns = results;
-        res.render('add', context);
-    }
-});
-
-//INSERT Cars
-app.post('/addCar', function(req, res, next){
-    context = {};
-    context.title = 'Car';
-    context.addHref = '/addCar';
-    context.viewHref= '/cars';
-    var sql = 'INSERT INTO cars (customer_id, license_plate, make, model_name, model_year) VALUES (?, ?, ?, ?, ?)';
-    var inserts = [req.body.customer_id, req.body.license_plate, req.body.make, req.body.model_name, req.body.model_year];
-    mysql.pool.query(sql, inserts,function(err, results){
-        if(err){
-            if(err.sqlMessage){
-                context.errorMessage = err.sqlMessage;
-                res.render('errors', context);
-            }else {
-                throw err;
-            }
-        }else {
-            renderPage(results);
-        }
-        function renderPage(results) {
-            context.idAdded = results.insertId;
-            res.render('add',context);
-        }
-    });
-});
-
-//DELETE cars
-app.get('/deleteCar', function(req, res, next){
-    context = {};
-    context.title = 'Car';
-    context.viewHref = '/cars';
-    var deleteId = req.query.id;
-    context.deleteId = deleteId;
-    var sql = 'DELETE FROM cars WHERE id = ?';
-    var inserts = [deleteId];
-    mysql.pool.query(sql, inserts, function(err, results) {
-        if(err){
-            if(err.sqlMessage){
-                context.errorMessage = err.sqlMessage;
-                res.render('errors', context);
-            }else {
-                throw err;
-            }
-        }else {
-            renderPage(results);
-        }
-        function renderPage(results) {
-            context.affectedRows = results.affectedRows;
-            res.render('delete', context);
-        }
-    });
-});
-
-
-//search cars
-app.get('/searchCars', function(req, res, next) {
-    var context = {};
-
-    //set up the search substring
-    var data = "%";
-    data += req.query.search;
-    data += "%";
-    context.backHref = '/cars';
-    context.title = 'Cars - filtered';
-    var sql = 'SELECT * FROM cars WHERE (id LIKE ? OR customer_id LIKE ? OR license_plate LIKE ? OR make LIKE ? OR model_name LIKE ? OR model_year LIKE ?);';
-    var inserts = [data,data,data,data,data, data];
-    sql += 'SELECT ?? FROM ?? WHERE ?? = ?';
-    inserts.push('Column_name', 'Information_schema.columns', 'Table_name', 'cars');
-    mysql.pool.query(sql, inserts, function(err, results){
-        if(err){
-            if(err.sqlMessage){
-                context.errorMessage = err.sqlMessage;
-                res.render('errors', context);
-            }else {
-                throw err;
-            }
-        }else {
-            renderPage(results);
-        }
-    });
-    function renderPage(results) {
-        context.dataRows = results[0];
-        context.dataColumns = results[1];
-        res.render('searchTable', context);
-    }
-});
-
-/**************************************************************
  * Mechanics
  * ************************************************************/
 
 //VIEW mechanics
 app.get('/mechanics', function(req, res, next) {
     var context = {};
+  context.directions = 'Search, Add, Delete or Update a mechanic using this table';
     var tableName = 'mechanics';
     context.addHref = '/addMechanic';
     context.deleteHref = '/deleteMechanic';
-    context.searchHref = '/searchMechanics';
     context.title = 'Mechanics';
-    context.directions = 'Search, Add, Delete or Update a mechanic using this table';
     var sql = 'SELECT * FROM ?? ORDER BY ?? ASC; SELECT ?? FROM ?? WHERE ?? = ?';
     var inserts = [tableName, 'id', 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
@@ -533,20 +363,20 @@ app.get('/deleteMechanic', function(req, res, next){
 });
 
 
-//search mechanics
-app.get('/searchMechanics', function(req, res, next) {
+//search cars
+app.get('/searchCars', function(req, res, next) {
     var context = {};
 
     //set up the search substring
     var data = "%";
     data += req.query.search;
     data += "%";
-    context.backHref = '/mechanics';
-    context.title = 'Mechanics - filtered';
-    var sql = 'SELECT * FROM mechanics WHERE (id LIKE ? OR f_name LIKE ? OR l_name LIKE ?);';
-    var inserts = [data,data,data];
+    context.backHref = '/cars';
+    context.title = 'Cars - filtered';
+    var sql = 'SELECT * FROM cars WHERE (id LIKE ? OR customer_id LIKE ? OR license_plate LIKE ? OR make LIKE ? OR model_name LIKE ? OR model_year LIKE ?);';
+    var inserts = [data,data,data,data,data, data];
     sql += 'SELECT ?? FROM ?? WHERE ?? = ?';
-    inserts.push('Column_name', 'Information_schema.columns', 'Table_name', 'mechanics');
+    inserts.push('Column_name', 'Information_schema.columns', 'Table_name', 'cars');
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
             if(err.sqlMessage){
@@ -576,9 +406,8 @@ app.get('/searchMechanics', function(req, res, next) {
     var tableName = 'work_tasks';
     context.addHref = '/addWorkTask';
     context.deleteHref = '/deleteWorkTask';
-    context.searchHref = '/searchWorkTasks';
     context.title = 'Work Tasks';
-    context.directions = 'Search, Add, Delete or Update a work task using this table';
+   context.directions = 'Search, Add, Delete or Update a work task using this table';
     var sql = 'SELECT * FROM ??  ORDER BY ?? ASC; SELECT ?? FROM ?? WHERE ?? = ?';
     var inserts = [tableName, 'id', 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
@@ -643,7 +472,6 @@ app.get('/addWorkTask', function(req, res, next) {
 app.post('/addWorkTask', function(req, res, next){
     context = {};
     context.title = 'Work Task';
-    context.directions = 'Search, Add, Delete or Update a work task using this table';
     context.addHref = '/addWorkTask';
     context.viewHref= '/workTasks';
     var sql = 'INSERT INTO work_tasks (name) VALUES (?)';
@@ -674,6 +502,172 @@ app.get('/deleteWorkTask', function(req, res, next){
     var deleteId = req.query.id;
     context.deleteId = deleteId;
     var sql = 'DELETE FROM work_tasks WHERE id = ?';
+    var inserts = [deleteId];
+    mysql.pool.query(sql, inserts, function(err, results) {
+        if(err){
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
+        }else {
+            renderPage(results);
+        }
+        function renderPage(results) {
+            context.affectedRows = results.affectedRows;
+            res.render('delete', context);
+        }
+    });
+});
+
+
+//search mechanics
+app.get('/searchMechanics', function(req, res, next) {
+    var context = {};
+
+    //set up the search substring
+    var data = "%";
+    data += req.query.search;
+    data += "%";
+    context.backHref = '/mechanics';
+    context.title = 'Mechanics - filtered';
+    var sql = 'SELECT * FROM mechanics WHERE (id LIKE ? OR f_name LIKE ? OR l_name LIKE ?);';
+    var inserts = [data,data,data];
+    sql += 'SELECT ?? FROM ?? WHERE ?? = ?';
+    inserts.push('Column_name', 'Information_schema.columns', 'Table_name', 'mechanics');
+    mysql.pool.query(sql, inserts, function(err, results){
+        if(err){
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
+        }else {
+            renderPage(results);
+        }
+    });
+    function renderPage(results) {
+        context.dataRows = results[0];
+        context.dataColumns = results[1];
+        res.render('searchTable', context);
+    }
+});
+
+/**************************************************************
+ * Cars
+ * ************************************************************/
+
+//View cars
+app.get('/cars', function(req, res, next) {
+    var context = {};
+    context.directions = 'Search, Add, Delete or Update a car using this table';
+    var tableName = 'cars';
+    context.addHref = '/addCar';
+    context.deleteHref = '/deleteCar';
+    context.title = 'Cars';
+    //first query for table records
+    var sql = 'SELECT cars.id, CONCAT(customer_id, " { ", f_name, " ", l_name, " }") as customer_name, '
+        + 'license_plate, make, model_year, model_name '
+        + 'FROM cars LEFT JOIN customers ON customer_id = customers.id  ORDER BY cars.id ASC; ';
+    //second query for table column names
+    sql += 'SELECT ?? FROM ?? WHERE ?? = ?';
+    var inserts = ['Column_name', 'Information_schema.columns', 'Table_name', tableName];
+    mysql.pool.query(sql, inserts, function(err, results){
+        if(err){
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
+        }else {
+            renderPage(results);
+        }
+    });
+    function renderPage(results) {
+        context.dataRows = results[0];
+        context.dataColumns = results[1];
+        res.render('viewTable', context);
+    }
+});
+
+//ADD cars
+app.get('/addCar', function(req, res, next) {
+    var context = {};
+    var tableName = 'cars';
+    context.postHref = '\addCar';
+    context.title = 'Car';
+    var sql = 'SELECT ??, ?? FROM ?? WHERE ?? = ?';
+    var inserts = ['Column_name', 'Data_type', 'Information_schema.columns', 'Table_name', tableName];
+    mysql.pool.query(sql, inserts, function(err, results){
+        if(err){
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
+        }else {
+            renderPage(results);
+        }
+    });
+    function renderPage(results) {
+        results.forEach(getInputType);
+        function getInputType(item) {
+            if(item.Column_name != 'id') {
+                item.notId = 1;
+            }
+            if(item.Data_type == 'int') {
+                item.Data_type = 'number';
+                item.min = '0';
+            }
+            else if(item.Data_type == 'varchar') {
+                item.Data_type = 'text';
+            }
+        }
+        context.dataColumns = results;
+        res.render('add', context);
+    }
+});
+
+//INSERT Cars
+app.post('/addCar', function(req, res, next){
+    context = {};
+    context.directions = 'Search, Add, Delete or Update a car using this table';
+    context.title = 'Car';
+    context.addHref = '/addCar';
+    context.viewHref= '/cars';
+    var sql = 'INSERT INTO cars (??, ??, ??, ??, ??) VALUES (?, ?, ?, ?, ?)';
+    var inserts = ['customer_id', 'license_plate', 'make', 'model_name', 'model_year'];
+    inserts.push(req.body.customer_id, req.body.license_plate, req.body.make, req.body.model_name, req.body.model_year);
+    mysql.pool.query(sql, inserts,function(err, results){
+        if(err){
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
+        }else {
+            renderPage(results);
+        }
+        function renderPage(results) {
+            context.idAdded = results.insertId;
+            res.render('add',context);
+        }
+    });
+});
+
+//DELETE cars
+app.get('/deleteCar', function(req, res, next){
+    context = {};
+    context.title = 'Car';
+    context.viewHref = '/cars';
+    var deleteId = req.query.id;
+    context.deleteId = deleteId;
+    var sql = 'DELETE FROM cars WHERE id = ?';
     var inserts = [deleteId];
     mysql.pool.query(sql, inserts, function(err, results) {
         if(err){
@@ -739,8 +733,15 @@ app.get('/repairOrders', function(req, res, next) {
     context.deleteHref = '/deleteRepairOrder'
     context.title = 'Repair Orders';
     context.directions = 'Search, Add, Delete or Update a repair order using this table';
-    var sql = 'SELECT * FROM ?? ORDER BY ?? ASC; SELECT ?? FROM ?? WHERE ?? = ?';
-    var inserts = [tableName, 'id', 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
+    //first query for table records
+    var sql = 'SELECT repair_orders.id, '
+        + 'CONCAT(car_id, " { ", model_year, " ", make, " ", model_name, " } ") as car_description, '
+        + 'date_received, date_completed '
+        + 'FROM repair_orders LEFT JOIN cars ON car_id = cars.id  '
+        + 'ORDER BY repair_orders.id ASC; ';
+    //second quert for table column names
+    sql += 'SELECT ?? FROM ?? WHERE ?? = ?';
+    var inserts =['Column_name', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
             if(err.sqlMessage){
@@ -901,8 +902,21 @@ app.get('/workOrders', function(req, res, next) {
     context.deleteHref = '/deleteWorkOrder'
     context.searchHref = "/searchWorkOrders";
     context.title = 'Work Orders';
-    var sql = 'SELECT * FROM ?? ORDER BY ?? ASC; SELECT ?? FROM ?? WHERE ?? = ?';
-    var inserts = [tableName, 'id', 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
+    //work_order records
+    var sql = 'SELECT work_orders.id, '
+        + 'CONCAT(repair_order_id, " {", model_year, " ", make, " ", model_name, "} ") AS repair, '
+        + 'CONCAT(work_task_id, " {", name, "} ") AS task, '
+        + 'CONCAT(mechanic_id, " {", f_name, " ", l_name, "} ") AS mechanic, '
+        + 'start_date, end_date '
+        + 'FROM work_orders '
+        + 'LEFT JOIN repair_orders ON repair_order_id = repair_orders.id '
+        + 'LEFT JOIN cars ON repair_orders.car_id = cars.id '
+        + 'LEFT JOIN work_tasks ON work_task_id = work_tasks.id '
+        + 'LEFT JOIN mechanics ON mechanic_id = mechanics.id '
+        + 'ORDER BY work_orders.id ASC;';
+    //column_names
+    sql += 'SELECT ?? FROM ?? WHERE ?? = ?;';
+    var inserts = ['Column_name', 'Information_schema.columns', 'Table_name', tableName];
     mysql.pool.query(sql, inserts, function(err, results){
         if(err){
             if(err.sqlMessage){
