@@ -734,7 +734,7 @@ app.get('/repairOrders', function(req, res, next) {
     context.searchHref = '/searchRepairOrders'
     context.deleteHref = '/deleteRepairOrder'
     context.title = 'Repair Orders';
-    context.directions = 'Search, Add, Delete or Update a repair order using this table';
+    context.directions = 'Search (cannot search by data in {} ), Add, Delete or Update a repair order using this table';
     //first query for table records
     var sql = 'SELECT repair_orders.id, '
         + 'CONCAT(car_id, " { ", model_year, " ", make, " ", model_name, " } ") as car_description, '
@@ -910,6 +910,7 @@ app.get('/workOrders', function(req, res, next) {
     context.deleteHref = '/deleteWorkOrder'
     context.searchHref = "/searchWorkOrders";
     context.title = 'Work Orders';
+    context.directions = 'Search (cannot search by data in {} ), Add, Delete or Update a work order using this table';
     //work_order records
     var sql = 'SELECT work_orders.id, '
         + 'CONCAT(repair_order_id, " {", model_year, " ", make, " ", model_name, "} ") AS repair, '
