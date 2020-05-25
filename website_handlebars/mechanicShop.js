@@ -23,9 +23,9 @@ handlebars.handlebars.registerHelper("formatDate", function(date) {
 
 handlebars.handlebars.registerHelper("checkDate", function(value) {
 
-    console.log(typeof(value));
+    /*console.log(typeof(value));
     console.log(value);
-    console.log("break");
+    console.log("break");*/
 
     
        if(typeof(value) == 'object')
@@ -805,8 +805,13 @@ app.post('/addRepairOrder', function(req, res, next){
     context.title = 'Repair Order';
     context.addHref = '/addRepairOrder';
     context.viewHref= '/repairOrders';
-    var sql = 'INSERT INTO repair_orders (car_id, date_received, date_completed) VALUES (?, ?, ?)';
-    var inserts = [req.body.car_id, req.body.date_received, req.body.date_completed];
+    if(req.body_completed === undefined){
+        var sql = 'INSERT INTO repair_orders (car_id, date_received, date_completed) VALUES (?, ?, NULL)';
+        var inserts = [req.body.car_id, req.body.date_received];
+    }else {
+        var sql = 'INSERT INTO repair_orders (car_id, date_received, date_completed) VALUES (?, ?, ?)';
+        var inserts = [req.body.car_id, req.body.date_received, req.body.date_completed];
+    }
     mysql.pool.query(sql, inserts,function(err, results){
         if(err){
             if(err.sqlMessage){
@@ -962,8 +967,14 @@ app.post('/addWorkOrder', function(req, res, next){
     context.title = 'Work Order';
     context.addHref = '/addWorkOrder';
     context.viewHref= '/workOrders';
-    var sql = 'INSERT INTO work_orders (repair_order_id, work_task_id, mechanic_id, start_date, end_date) VALUES (?, ?, ?, ?, ?)';
-    var inserts = [req.body.repair_order_id, req.body.work_task_id, req.body.mechanic_id, req.body.start_date, req.body.end_date];
+    console.log('end date = ' + req.body.end_date);
+    if (req.body.end_date == "") {
+        var sql = 'INSERT INTO work_orders (repair_order_id, work_task_id, mechanic_id, start_date, end_date) VALUES (?, ?, ?, ?, NULL)';
+    var inserts = [req.body.repair_order_id, req.body.work_task_id, req.body.mechanic_id, req.body.start_date];
+    } else {
+        var sql = 'INSERT INTO work_orders (repair_order_id, work_task_id, mechanic_id, start_date, end_date) VALUES (?, ?, ?, ?, ?)';
+        var inserts = [req.body.repair_order_id, req.body.work_task_id, req.body.mechanic_id, req.body.start_date, req.body.end_date];
+    }
     mysql.pool.query(sql, inserts,function(err, results){
         if(err){
             if(err.sqlMessage){

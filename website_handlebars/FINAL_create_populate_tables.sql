@@ -41,7 +41,7 @@ FOREIGN KEY (customer_id) REFERENCES customers(id)
 CREATE TABLE repair_orders(
 id INT AUTO_INCREMENT UNIQUE NOT NULL,
 car_id INT,
-date_received DATE,
+date_received DATE NOT NULL,
 date_completed DATE,
 PRIMARY KEY (id),
 FOREIGN KEY (car_id) REFERENCES cars(id)
@@ -73,7 +73,7 @@ id INT AUTO_INCREMENT UNIQUE NOT NULL,
 repair_order_id INT NOT NULL,
 work_task_id INT NOT NULL,
 mechanic_id INT NOT NULL,
-start_date DATE,
+start_date DATE NOT NULL,
 end_date DATE,
 PRIMARY KEY (id),
 FOREIGN KEY (repair_order_id) REFERENCES repair_orders(id),
