@@ -559,7 +559,7 @@ app.get('/searchWorkTasks', function(req, res, next) {
 //View cars
 app.get('/cars', function(req, res, next) {
     var context = {};
-    context.directions = 'Search, Add, Delete or Update a car using this table';
+    context.directions = 'Search (cannot search by data in {} ), Add, Delete or Update a car using this table';
     var tableName = 'cars';
     context.addHref = '/addCar';
     context.deleteHref = '/deleteCar';
