@@ -755,7 +755,7 @@ app.get('/repairOrders', function(req, res, next) {
     context.searchHref = '/searchRepairOrders'
     context.deleteHref = '/deleteRepairOrder'
     context.title = 'Repair Orders';
-    context.relationship = '1:M relationship with cars; M:M relationship with work_tasks via composite entity work_orders';
+    context.relationship = 'M:M relationship with work_tasks via composite entity work_orders; 1:M relationship with cars; ';
     //first query for table records
     var sql = 'SELECT repair_orders.id, '
         + 'CONCAT(car_id, " { ", license_plate, " : ", model_year, " ", make, " ", model_name, " } ") as car_description, '
