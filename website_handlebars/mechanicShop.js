@@ -13,17 +13,18 @@ app.use(bodyParser.json());
 app.use(express.static('public'));
 
 handlebars.handlebars.registerHelper("formatDate", function(date) {
-
     new_date = date.toLocaleDateString();
     return new_date;
 });
 
 
 handlebars.handlebars.registerHelper("checkDate", function(value) {
-
-    console.log(typeof(value));
+    /*
+    *testing messages
+        console.log(typeof(value));
     console.log(value);
     console.log("break");
+    */
     if(typeof(value) == 'object')
     {
     if(value == null)
@@ -1051,7 +1052,18 @@ app.get('/searchWorkOrders', function(req, res, next) {
     data += "%";
     context.backHref = '/workOrders';
     context.title = 'Work Orders - filtered';
-    var sql = 'SELECT * FROM work_orders WHERE (id LIKE ? OR repair_order_id LIKE ? OR work_task_id LIKE ? OR mechanic_id LIKE ? OR start_date LIKE ? OR end_date LIKE ?);';
+    var sql = 'SELECT work_orders.id, '
+    + 'CONCAT(repair_order_id, " {", model_year, " ", make, " ", model_name, "} ") AS repair, '
+    + 'CONCAT(work_task_id, " {", name, "} ") AS task, '
+    + 'CONCAT(mechanic_id, " {", f_name, " ", l_name, "} ") AS mechanic, '
+    + 'start_date, end_date '
+    + 'FROM work_orders '
+    + 'LEFT JOIN repair_orders ON repair_order_id = repair_orders.id '
+    + 'LEFT JOIN cars ON repair_orders.car_id = cars.id '
+    + 'LEFT JOIN work_tasks ON work_task_id = work_tasks.id '
+    + 'LEFT JOIN mechanics ON mechanic_id = mechanics.id '
+    + 'WHERE (work_orders.id LIKE ? OR repair_order_id LIKE ? OR work_task_id LIKE ? OR mechanic_id LIKE ? OR start_date LIKE ? OR end_date LIKE ?) '
+    + 'ORDER BY work_orders.id ASC ;';
     var inserts = [data,data,data,data,data,data];
     sql += 'SELECT ?? FROM ?? WHERE ?? = ?';
     inserts.push('Column_name', 'Information_schema.columns', 'Table_name', 'work_orders');
