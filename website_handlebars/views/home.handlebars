@@ -23,10 +23,10 @@
             {{#each dataRows}}
             <tr>
                 <td>{{checkNull this.customer_name}}</td>
-                <td>{{this.car_description}}</td>
-                <td>{{this.current_task}}</td>
+                <td>{{checkNull this.car_description}}</td>
+                <td>{{checkNull this.current_task}}</td>
                 <td>{{checkNull this.start_date}}</td>
-                <td>{{this.mechanic_name}}</td>
+                <td>{{checkNull this.mechanic_name}}</td>
             </tr>
             {{/each}}
         </tbody>
