@@ -13,6 +13,32 @@ app.use(bodyParser.json());
 app.use(express.static('public'));
 
 
+
+handlebars.handlebars.registerHelper("formatDate", function(date) {
+
+    new_date = date.toLocaleDateString();
+    return new_date;
+});
+
+
+handlebars.handlebars.registerHelper("checkDate", function(value) {
+
+    console.log(typeof(value));
+    console.log(value);
+    console.log("break");
+
+    
+       if(typeof(value) == 'object')
+       {
+        if(value == null)
+        {
+            return "--/--/----";
+        }
+        new_date = value.toLocaleDateString();
+        return new_date;
+       }
+        return value;
+});
 /**************************************************************
  * Dashboard
  * ************************************************************/
@@ -1040,3 +1066,4 @@ app.use(function(err, req, res, next) {
 app.listen(app.get('port'), function() {
     console.log('Express started on port: ' + app.get('port') + '; press Ctrl-C to terminate');
 });
+
