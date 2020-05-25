@@ -38,17 +38,6 @@ PRIMARY KEY (id)-- ,
 );
 -- ----------------------- CARS---------------------------
 
--- ------------------ REPAIR ORDERS------------------------
-CREATE TABLE repair_orders(
-id INT AUTO_INCREMENT UNIQUE NOT NULL,
-car_id INT,
-date_received DATE NOT NULL,
-date_completed DATE,
-PRIMARY KEY (id),
-FOREIGN KEY (car_id) REFERENCES cars(id)
-);
--- ------------------ REPAIR ORDERS------------------------
-
 -- -------------------- WORK_TASKS-------------------------
 CREATE TABLE work_tasks(
 id INT AUTO_INCREMENT UNIQUE NOT NULL,
@@ -68,6 +57,17 @@ UNIQUE (f_name, l_name)
 );
 -- --------------------- MECHANICS-------------------------
 
+-- ------------------ REPAIR ORDERS------------------------
+CREATE TABLE repair_orders(
+id INT AUTO_INCREMENT UNIQUE NOT NULL,
+car_id INT,
+date_received DATE NOT NULL,
+date_completed DATE DEFAULT NULL,
+PRIMARY KEY (id),
+FOREIGN KEY (car_id) REFERENCES cars(id)
+);
+-- ------------------ REPAIR ORDERS------------------------
+
 -- -------------------- WORK_ORDERS------------------------
 CREATE TABLE work_orders(
 id INT AUTO_INCREMENT UNIQUE NOT NULL, 
@@ -75,7 +75,7 @@ repair_order_id INT NOT NULL,
 work_task_id INT NOT NULL,
 mechanic_id INT NOT NULL,
 start_date DATE NOT NULL,
-end_date DATE,
+end_date DATE DEFAULT NULL,
 PRIMARY KEY (id),
 FOREIGN KEY (repair_order_id) REFERENCES repair_orders(id),
 FOREIGN KEY (work_task_id) REFERENCES work_tasks(id),

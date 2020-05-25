@@ -47,7 +47,7 @@ app.get('/home', function(req, res, next) {
     context.directions = 'current repair orders of cars in the shop'
     var sql = "SELECT CONCAT(customers.f_name, ' ', customers.l_name) AS customer_name, "
             + "CONCAT(cars.make, ' ', cars.model_name, ' ', cars.model_year) AS car_description, "
-            + "work_tasks.name AS work_task, work_orders.start_date AS start_date, "
+            + "work_tasks.name AS current_task, work_orders.start_date AS start_date, "
             + "CONCAT(mechanics.f_name, ' ', mechanics.l_name) AS mechanic_name "
             + "FROM repair_orders JOIN cars ON repair_orders.car_id = cars.id "
             + "JOIN customers ON cars.customer_id = customers.id "
@@ -808,12 +808,19 @@ app.post('/addRepairOrder', function(req, res, next){
     context.title = 'Repair Order';
     context.addHref = '/addRepairOrder';
     context.viewHref= '/repairOrders';
-    if(req.body_completed === undefined){
-        var sql = 'INSERT INTO repair_orders (car_id, date_received, date_completed) VALUES (?, ?, NULL)';
-        var inserts = [req.body.car_id, req.body.date_received];
+    var sql = 'INSERT INTO repair_orders (car_id, date_received, date_completed) VALUES (?';
+    var inserts = [req.body.car_id];
+    if(req.body.date_received === undefined){
+        sql += ', NULL';
     }else {
-        var sql = 'INSERT INTO repair_orders (car_id, date_received, date_completed) VALUES (?, ?, ?)';
-        var inserts = [req.body.car_id, req.body.date_received, req.body.date_completed];
+        sql += ', ?';
+        inserts.push(req.body.date_received);
+    }
+    if(req.body.date_completed === undefined){
+        sql += ', NULL)';
+    }else {
+        sql += ', ?)'
+        inserts.push(req.body.date_completed);
     }
     mysql.pool.query(sql, inserts,function(err, results){
         if(err){
@@ -990,13 +997,21 @@ app.post('/addWorkOrder', function(req, res, next){
     context.title = 'Work Order';
     context.addHref = '/addWorkOrder';
     context.viewHref= '/workOrders';
-    console.log('end date = ' + req.body.end_date);
-    if (req.body.end_date == "") {
-        var sql = 'INSERT INTO work_orders (repair_order_id, work_task_id, mechanic_id, start_date, end_date) VALUES (?, ?, ?, ?, NULL)';
-    var inserts = [req.body.repair_order_id, req.body.work_task_id, req.body.mechanic_id, req.body.start_date];
+    var sql = 'INSERT INTO work_orders (repair_order_id, work_task_id, mechanic_id, start_date, end_date) VALUES (?, ?, ?, ';
+    var inserts = [req.body.repair_order_id, req.body.work_task_id, req.body.mechanic_id];
+    //check if start date was not entered
+    if (req.body.start_date == "") {
+        sql += 'NULL, ';
     } else {
-        var sql = 'INSERT INTO work_orders (repair_order_id, work_task_id, mechanic_id, start_date, end_date) VALUES (?, ?, ?, ?, ?)';
-        var inserts = [req.body.repair_order_id, req.body.work_task_id, req.body.mechanic_id, req.body.start_date, req.body.end_date];
+        sql += '?, '
+        inserts.push(req.body.start_date);
+    }
+    //check if end date was not entered
+    if (req.body.end_date == "") {
+        sql += 'NULL)';
+    } else {
+        sql += '?)'
+        inserts.push(req.body.end_date);
     }
     mysql.pool.query(sql, inserts,function(err, results){
         if(err){
