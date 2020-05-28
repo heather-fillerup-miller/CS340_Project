@@ -29,7 +29,7 @@
                                 {{/each}}
                                 </select>
                             {{else if this.min}}
-                                <input type={{this.Data_type}} min={{this.min}} class="form-control" id={{this.Column_name}} name={{this.Column_name}} placeholder="Enter {{this.Column_name}}">
+                                <input type={{this.Data_type}} min={{this.min}} class="form-control" id="{{this.Column_name}}" name="{{this.Column_name}}" placeholder="Enter {{this.Column_name}}">
                             {{else}}
                                 <input type={{this.Data_type}} class="form-control" id="{{this.Column_name}}" name="{{this.Column_name}}" placeholder="Enter {{this.Column_name}}">
                             {{/if}}
@@ -39,7 +39,7 @@
                 <button type='submit'class="btn btn-primary">Submit</button>
         </form>
     {{else if idAdded}}
-        <h3>{{title}} Added: ID = {{idAdded}}</h3>
+        <h3>{{title}} Successfully Added: ID = {{idAdded}}</h3>
         <a class="btn btn-outline-primary my-2 my-sm-0" href={{viewHref}} role="button">View {{title}}s</a>
         <a class="btn btn-outline-success my-2 my-sm-0" href={{addHref}} role="button">Add {{title}}</a>
     {{else}}

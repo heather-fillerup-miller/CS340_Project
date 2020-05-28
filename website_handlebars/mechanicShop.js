@@ -84,6 +84,7 @@ app.get('/customers', function(req, res, next) {
     context.addHref = '/addCustomer';
     context.deleteHref = '/deleteCustomer';
     context.searchHref = '/searchCustomers';
+    context.updateHref = 'updateCustomer';
     context.title = 'Customers';
     context.relationship = '1:M OPTIONAL relationship with cars'
     var sql = 'SELECT * FROM ?? ORDER BY ?? ASC; SELECT ?? FROM ?? WHERE ?? = ?';
@@ -168,6 +169,98 @@ app.post('/addCustomer', function(req, res, next){
         function renderPage(results) {
             context.idAdded = results.insertId;
             res.render('add',context);
+        }
+    });
+});
+
+//UPDATE FORM customers
+app.get('/updateCustomer', function(req, res, next){
+    context = {};
+    var tableName = 'customers';
+    context.title = 'Customer';
+    context.postHref = '/updateCustomer';
+    context.viewHref = '/customers';
+    //results[0] to get column names
+    var sql = 'SELECT ??, ?? FROM ?? WHERE ?? = ?; ';
+    var inserts = ['Column_name', 'Data_type', 'Information_schema.columns', 'Table_name', tableName];
+   //results[1] to get current data in record
+    sql += 'SELECT id, f_name, l_name, contact_no, email_address FROM customers WHERE id = ?';
+    inserts.push(req.query.id);
+    mysql.pool.query(sql, inserts, function(err, results){
+        if(err){
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
+        }else {
+            renderPage(results);
+        }
+    });
+    function renderPage(results) {
+        //format input and values for each column
+        results[0].forEach(getInputType);
+        function getInputType(item) {
+            //add current record values to columns
+            results[1].forEach(getValue);
+            function getValue(record){
+                if(item.Column_name =='id'){
+                    item.value = record.id;
+                }
+                else if(item.Column_name == 'f_name'){
+                    item.value = record.f_name;
+                }
+                else if(item.Column_name == 'l_name'){
+                    item.value = record.l_name;
+                }
+                else if(item.Column_name == 'contact_no'){
+                    item.value = record.contact_no;
+                }
+                else if(item.Column_name == 'email_address'){
+                    item.value = record.email_address;
+                }
+            }
+            //add input types to columns
+            if(item.Column_name != 'id') {
+                item.notId = 1;
+            }
+            if(item.Data_type == 'int' && item.Column_name != 'id') {
+                item.Data_type = 'number';
+                item.min = '0';
+            }
+            else if(item.Data_type == 'varchar') {
+                item.Data_type = 'text';
+            }
+        }
+        context.dataColumns = results[0];
+        res.render('update', context);
+    }
+});
+
+//UPDATE customer
+app.post('/updateCustomer', function(req, res, next){
+    var context = {};
+    context.title = "Customer";
+    context.viewHref = '/customers';
+    var idUpdated = req.body.id;
+    context.idUpdated = idUpdated;
+    var sql = 'UPDATE customers SET f_name = ?, l_name = ?, contact_no = ?, email_address = ? WHERE id = ?'; 
+    var inserts = [req.body.f_name, req.body.l_name, req.body.contact_no, req.body.email_address, idUpdated];
+    mysql.pool.query(sql, inserts, function(err, results) {
+        if(err){
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
+        }else {
+            renderPage(results);
+        }
+        function renderPage(results) {
+            context.changedRows = results.changedRows;
+            res.render('update', context);
         }
     });
 });
