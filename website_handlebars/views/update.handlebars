@@ -1,33 +1,38 @@
-<div class="jumbotron jumbotron-fluid">
-    <div class="container">
-        <h1 class="display-4">Update {{title}}</h1>
-    </div>
-</div>
-<div class = 'container'>
-    {{#if dataColumns}}
-        <form action={{postHref}} method='post'>
-            {{#each dataColumns}}
-                <div class="form-group">
-                    {{#if this.notId}}
-                        <label for="{{this.Column_name}}">{{this.Column_name}}</label>
-                        {{#if this.min}}
-                            <input type={{this.Data_type}} min={{this.min}} class="form-control" id="{{this.Column_name}}" name="{{this.Column_name}}" value="{{this.value}}">
-                        {{else}}
-                            <input type={{this.Data_type}} class="form-control" id="{{this.Column_name}}" name="{{this.Column_name}}"  value="{{this.value}}">
-                        {{/if}}
-                    {{else}}
-                        <input type="hidden" class="form-control" id="{{this.Column_name}}" name="{{this.Column_name}}" value="{{this.value}}">
-                    {{/if}}
-                </div>
-            {{/each}}
-            <button type='submit'class="btn btn-primary">Submit</button>
-        </form>
-    {{/if}}
-
-    {{#if changedRows}}
-        <h3>{{title}} Successfully Updated: ID = {{idUpdated}}</h3>
+{{#if containsNull}}
+    <div class='container'>
+        '{{nullName}}'' cannot be null<br>
         <a class="btn btn-outline-primary my-2 my-sm-0" href={{viewHref}} role="button">View {{title}}s</a>
-    {{else}}
-        <h3>Could not add new {{title}}</h3>
-    {{/if}}
-</div>
+    </div>
+{{else}}
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1 class="display-4">Update {{title}}</h1>
+        </div>
+    </div>
+    <div class = 'container'>
+        {{#if dataColumns}}
+            <form action={{postHref}} method='post'>
+                {{#each dataColumns}}
+                    <div class="form-group">
+                        {{#if this.notId}}
+                            <label for="{{this.Column_name}}">{{this.Column_name}}</label>
+                            {{#if this.min}}
+                                <input type={{this.Data_type}} min={{this.min}} class="form-control" id="{{this.Column_name}}" name="{{this.Column_name}}" value="{{this.value}}">
+                            {{else}}
+                                <input type={{this.Data_type}} class="form-control" id="{{this.Column_name}}" name="{{this.Column_name}}"  value="{{this.value}}">
+                            {{/if}}
+                        {{else}}
+                            <input type="hidden" class="form-control" id="{{this.Column_name}}" name="{{this.Column_name}}" value="{{this.value}}">
+                        {{/if}}
+                    </div>
+                {{/each}}
+                <button type='submit'class="btn btn-primary">Submit</button>
+            </form>
+        {{/if}}
+
+        {{#if changedRows}}
+            <h3>{{title}} Successfully Updated: ID = {{idUpdated}}</h3>
+            <a class="btn btn-outline-primary my-2 my-sm-0" href={{viewHref}} role="button">View {{title}}s</a>
+        {{/if}}
+    </div>
+{{/if}}

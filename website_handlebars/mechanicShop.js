@@ -46,6 +46,17 @@ function makeNull(obj){
     return obj;
 }
 
+function endUpdate(obj){
+    var end = {};
+    Object.keys(obj).forEach((key,index) => {
+        if(obj[key] == null){
+            end.status = 1;
+            end.nullName = key;
+        }
+    });
+    return end;
+}
+
 /**************************************************************
  * Dashboard- no functionality, just overview of current work tasks
  * ************************************************************/
@@ -258,24 +269,33 @@ app.post('/updateCustomer', function(req, res, next){
     context.viewHref = '/customers';
     var idUpdated = req.body.id;
     context.idUpdated = idUpdated;
-    var sql = 'UPDATE customers SET f_name = ?, l_name = ?, contact_no = ?, email_address = ? WHERE id = ?'; 
-    var inserts = [req.body.f_name, req.body.l_name, req.body.contact_no, req.body.email_address, idUpdated];
-    mysql.pool.query(sql, inserts, function(err, results) {
-        if(err){
-            if(err.sqlMessage){
-                context.errorMessage = err.sqlMessage;
-                res.render('errors', context);
+    var updateRecord = makeNull(req.body); //check for possible null values
+    var cancel = endUpdate(updateRecord);
+    if(cancel.status){
+        context.containsNull = 1;
+        context.nullName = cancel.nullName;
+        res.render('update', context);
+    }else{
+        var sql = 'UPDATE customers SET f_name = ?, l_name = ?, contact_no = ?, email_address = ? WHERE id = ?'; 
+        var inserts = [updateRecord.f_name, updateRecord.l_name, updateRecord.contact_no, updateRecord.email_address, idUpdated];
+        mysql.pool.query(sql, inserts, function(err, results) {
+            if(err){
+                if(err.sqlMessage){
+                    context.errorMessage = err.sqlMessage;
+                    res.render('errors', context);
+                }else {
+                    throw err;
+                }
             }else {
-                throw err;
+                renderPage(results);
             }
-        }else {
-            renderPage(results);
-        }
-        function renderPage(results) {
-            context.changedRows = results.changedRows;
-            res.render('update', context);
-        }
-    });
+            function renderPage(results) {
+                console.log(results);
+                context.changedRows = results.changedRows;
+                res.render('update', context);
+            }
+        });
+    }
 });
 
 //DELETE customers
