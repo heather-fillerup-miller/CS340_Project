@@ -11,7 +11,8 @@ app.set('port', process.argv[2]);
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(express.static('public'));
-
+//app.use(express.static('images'))
+app.use('/images', express.static('images'))
 /**************************************************************
  * Handlebars Helper Functions
  * ************************************************************/
@@ -109,7 +110,8 @@ app.get('/customers', function(req, res, next) {
     context.searchHref = '/searchCustomers';
     context.updateHref = 'updateCustomer';
     context.title = 'Customers';
-    context.update = '1'; //adds update button to view
+    context.update = '1'; //adds update button to view 
+    context.custimg = '1';//jumbotron image
     context.relationship = '1:M OPTIONAL relationship with cars'
     var sql = 'SELECT * FROM ?? ORDER BY ?? ASC; SELECT ?? FROM ?? WHERE ?? = ?';
     var inserts = [tableName, 'id', 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
@@ -374,6 +376,7 @@ app.get('/mechanics', function(req, res, next) {
     context.addHref = '/addMechanic';
     context.deleteHref = '/deleteMechanic';
     context.searchHref = '/searchMechanics';
+    context.mechimg = '1'; //jumbotron image
     context.updateHref = 'updateMechanic';
     context.update = '1';
     context.title = 'Mechanics';
@@ -630,6 +633,7 @@ app.get('/searchMechanics', function(req, res, next) {
     var tableName = 'work_tasks';
     context.addHref = '/addWorkTask';
     context.deleteHref = '/deleteWorkTask';
+    context.taskimg = '1'; //jumbotron image
     context.searchHref = '/searchWorkTasks';
     context.relationship = 'M:M relationship with repair_orders via composite entity work_orders'
     context.title = 'Work Tasks';
@@ -793,6 +797,7 @@ app.get('/cars', function(req, res, next) {
     context.deleteHref = '/deleteCar';
     context.searchHref = '/searchCars';
     context.updateHref = 'updateCar';
+    context.carimg = '1'; //jumbotron image
     context.update = '1'; //adds update button to view
     context.title = 'Cars';
     //first query for table records
@@ -1087,6 +1092,7 @@ app.get('/repairOrders', function(req, res, next) {
     context.addHref = '/addRepairOrder'
     context.searchHref = '/searchRepairOrders'
     context.deleteHref = '/deleteRepairOrder'
+    context.repimg = '1'; //jumbotron image
     context.title = 'Repair Orders';
     context.relationship = 'M:M relationship with work_tasks via composite entity work_orders; 1:M relationship with cars; ';
     //first query for table records
@@ -1381,6 +1387,7 @@ app.get('/workOrders', function(req, res, next) {
     context.addHref = '/addWorkOrder';
     context.deleteHref = '/deleteWorkOrder'
     context.searchHref = "/searchWorkOrders";
+    context.workimg = '1'; //jumbotron image
     context.title = 'Work Orders';
     context.relationship = 'Composite entity: 1:M relationship with repair_orders; 1:M relationship with work_tasks; 1:M relationship with mechanics';
     //work_order records
