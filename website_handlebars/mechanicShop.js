@@ -292,7 +292,7 @@ app.post('/updateCustomer', function(req, res, next){
                 renderPage(results);
             }
             function renderPage(results) {
-                console.log(results);
+                //console.log(results);
                 context.changedRows = results.changedRows;
                 res.render('update', context);
             }
@@ -374,6 +374,8 @@ app.get('/mechanics', function(req, res, next) {
     context.addHref = '/addMechanic';
     context.deleteHref = '/deleteMechanic';
     context.searchHref = '/searchMechanics';
+    context.updateHref = 'updateMechanic';
+    context.update = '1';
     context.title = 'Mechanics';
     var sql = 'SELECT * FROM ?? ORDER BY ?? ASC; SELECT ?? FROM ?? WHERE ?? = ?';
     var inserts = [tableName, 'id', 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
@@ -460,6 +462,102 @@ app.post('/addMechanic', function(req, res, next){
             res.render('add',context);
         }
     });
+});
+
+
+//UPDATE FORM mechanics
+app.get('/updateMechanic', function(req, res, next){
+    context = {};
+    var tableName = 'mechanics';
+    context.title = 'Mechanics';
+    context.postHref = '/updateMechanic';
+    context.viewHref = '/mechanics';
+    //results[0] to get column names
+    var sql = 'SELECT ??, ?? FROM ?? WHERE ?? = ?; ';
+    var inserts = ['Column_name', 'Data_type', 'Information_schema.columns', 'Table_name', tableName];
+   //results[1] to get current data in record
+    sql += 'SELECT id, f_name, l_name FROM mechanics WHERE id = ?';
+    inserts.push(req.query.id);
+    mysql.pool.query(sql, inserts, function(err, results){
+        if(err){
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
+        }else {
+            renderPage(results);
+        }
+    });
+    function renderPage(results) {
+        //format input and values for each column
+        results[0].forEach(getInputType);
+        function getInputType(item) {
+            //add current record values to columns
+            results[1].forEach(getValue);
+            function getValue(record){
+                if(item.Column_name =='id'){
+                    item.value = record.id;
+                }
+                else if(item.Column_name == 'f_name'){
+                    item.value = record.f_name;
+                }
+                else if(item.Column_name == 'l_name'){
+                    item.value = record.l_name;
+                }
+            }
+            //add input types to columns
+            if(item.Column_name != 'id') {
+                item.notId = 1;
+            }
+            if(item.Data_type == 'int' && item.Column_name != 'id') {
+                item.Data_type = 'number';
+                item.min = '0';
+            }
+            else if(item.Data_type == 'varchar') {
+                item.Data_type = 'text';
+            }
+        }
+        context.dataColumns = results[0];
+        res.render('update', context);
+    }
+});
+
+//UPDATE Mechanics
+app.post('/updateMechanic', function(req, res, next){
+    var context = {};
+    context.title = "Mechanics";
+    context.viewHref = '/mechanics';
+    var idUpdated = req.body.id;
+    context.idUpdated = idUpdated;
+    var updateRecord = makeNull(req.body); //check for possible null values
+    var cancel = endUpdate(updateRecord);
+    if(cancel.status){
+        context.containsNull = 1;
+        context.nullName = cancel.nullName;
+        res.render('update', context);
+    }else{
+        var sql = 'UPDATE mechanics SET f_name = ?, l_name = ? WHERE id = ?'; 
+        var inserts = [updateRecord.f_name, updateRecord.l_name, idUpdated];
+        mysql.pool.query(sql, inserts, function(err, results) {
+            if(err){
+                if(err.sqlMessage){
+                    context.errorMessage = err.sqlMessage;
+                    res.render('errors', context);
+                }else {
+                    throw err;
+                }
+            }else {
+                renderPage(results);
+            }
+            function renderPage(results) {
+                //console.log(results);
+                context.changedRows = results.changedRows;
+                res.render('update', context);
+            }
+        });
+    }
 });
 
 //DELETE mechanics
@@ -694,6 +792,8 @@ app.get('/cars', function(req, res, next) {
     context.addHref = '/addCar';
     context.deleteHref = '/deleteCar';
     context.searchHref = '/searchCars';
+    context.updateHref = 'updateCar';
+    context.update = '1'; //adds update button to view
     context.title = 'Cars';
     //first query for table records
     var sql = 'SELECT cars.id, CONCAT(customer_id, " { ", f_name, " ", l_name, " }") as customer_name, '
@@ -802,6 +902,115 @@ app.post('/addCar', function(req, res, next){
         }
     });
 });
+
+
+
+//UPDATE from cars
+app.get('/updateCar', function(req, res, next){
+    context = {};
+    var tableName = 'cars';
+    context.title = 'Car';
+    context.postHref = '/updateCar';
+    context.viewHref = '/cars';
+    //results[0] to get column names
+    var sql = 'SELECT ??, ?? FROM ?? WHERE ?? = ?; ';
+    var inserts = ['Column_name', 'Data_type', 'Information_schema.columns', 'Table_name', tableName];
+   //results[1] to get current data in record
+    sql += 'SELECT id, customer_id, license_plate, model_year, make, model_name FROM cars WHERE id = ?';
+    inserts.push(req.query.id);
+    mysql.pool.query(sql, inserts, function(err, results){
+        if(err){
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
+        }else {
+            renderPage(results);
+        }
+    });
+    function renderPage(results) {
+        //format input and values for each column
+        results[0].forEach(getInputType);
+        function getInputType(item) {
+            //add current record values to columns
+            results[1].forEach(getValue);
+            function getValue(record){
+                if(item.Column_name =='id'){
+                    item.value = record.id;
+                }
+                else if(item.Column_name == 'customer_id'){
+                    item.value = record.customer_id;
+                }
+                else if(item.Column_name == 'license_plate'){
+                    item.value = record.license_plate;
+                }
+                else if(item.Column_name == 'model_year'){
+                    item.value = record.model_year;
+                }
+                else if(item.Column_name == 'make'){
+                    item.value = record.make;
+                }
+                else if(item.Column_name == 'model_name'){
+                    item.value = record.model_name;
+                }
+            }
+            //add input types to columns
+            if(item.Column_name != 'id') {
+                item.notId = 1;
+            }
+            if(item.Data_type == 'int' && item.Column_name != 'id') {
+                item.Data_type = 'number';
+                item.min = '0';
+            }
+            else if(item.Data_type == 'varchar') {
+                item.Data_type = 'text';
+            }
+        }
+        context.dataColumns = results[0];
+        res.render('update', context);
+    }
+});
+
+//UPDATE car
+app.post('/updateCar', function(req, res, next){
+    var context = {};
+    context.title = "Car";
+    context.viewHref = '/cars';
+    var idUpdated = req.body.id;
+    context.idUpdated = idUpdated;
+    var record = req.body;
+    var updateRecord = makeNull(req.body); //check for possible null values
+    var cancel = endUpdate(updateRecord);
+    if(cancel.status){
+        context.containsNull = 1;
+        context.nullName = cancel.nullName;
+        res.render('update', context);
+    }else{
+        var sql = 'UPDATE cars SET license_plate = ?, model_year = ?, make = ?, model_name = ? WHERE id = ?'; 
+        var inserts = [updateRecord.license_plate, updateRecord.model_year, updateRecord.make, updateRecord.model_name, idUpdated];
+        mysql.pool.query(sql, inserts, function(err, results) {
+            if(err){
+                if(err.sqlMessage){
+                    context.errorMessage = err.sqlMessage;
+                    res.render('errors', context);
+                }else {
+                    throw err;
+                }
+            }else {
+                renderPage(results);
+            }
+            function renderPage(results) {
+                //console.log(results);
+                context.changedRows = results.changedRows;
+                res.render('update', context);
+            }
+        });
+    }
+});
+
+
 
 //DELETE cars
 app.get('/deleteCar', function(req, res, next){
@@ -992,6 +1201,109 @@ app.post('/addRepairOrder', function(req, res, next){
         }
     });
 });
+
+
+
+//UPDATE FORM customers
+app.get('/updateRepairOder', function(req, res, next){
+    context = {};
+    var tableName = 'repair_orders';
+    context.title = 'Repair Order';
+    context.postHref = '/updateRepairOrder';
+    context.viewHref = '/repair_orders';
+    //results[0] to get column names
+    var sql = 'SELECT ??, ?? FROM ?? WHERE ?? = ?; ';
+    var inserts = ['Column_name', 'Data_type', 'Information_schema.columns', 'Table_name', tableName];
+   //results[1] to get current data in record
+    sql += 'SELECT id, car_id, date_received, date_completed FROM repair_orders WHERE id = ?';
+    inserts.push(req.query.id);
+    mysql.pool.query(sql, inserts, function(err, results){
+        if(err){
+            if(err.sqlMessage){
+                context.errorMessage = err.sqlMessage;
+                res.render('errors', context);
+            }else {
+                throw err;
+            }
+        }else {
+            renderPage(results);
+        }
+    });
+    function renderPage(results) {
+        //format input and values for each column
+        results[0].forEach(getInputType);
+        function getInputType(item) {
+            //add current record values to columns
+            results[1].forEach(getValue);
+            function getValue(record){
+                if(item.Column_name =='id'){
+                    item.value = record.id;
+                }
+                else if(item.Column_name == 'car_id'){
+                    item.value = record.car_id;
+                }
+                else if(item.Column_name == 'date_received'){
+                    item.value = record.date_received;
+                }
+                else if(item.Column_name == 'date_completed'){
+                    item.value = record.date_completed;
+                }
+            }
+            //add input types to columns
+            if(item.Column_name != 'id') {
+                item.notId = 1;
+            }
+            if(item.Data_type == 'int' && item.Column_name != 'id') {
+                item.Data_type = 'number';
+                item.min = '0';
+            }
+            else if(item.Data_type == 'varchar') {
+                item.Data_type = 'text';
+            }
+        }
+        context.dataColumns = results[0];
+        res.render('update', context);
+    }
+});
+
+//UPDATE customer
+app.post('/updateRepairOrder', function(req, res, next){
+    var context = {};
+    context.title = "Repair Order";
+    context.viewHref = '/repair_orders';
+    var idUpdated = req.body.id;
+    context.idUpdated = idUpdated;
+    var updateRecord = makeNull(req.body); //check for possible null values
+    var cancel = endUpdate(updateRecord);
+    if(cancel.status){
+        context.containsNull = 1;
+        context.nullName = cancel.nullName;
+        res.render('update', context);
+    }else{
+        var sql = 'UPDATE customers SET car_id = ?, date_received = ?, date_completed = ?, WHERE id = ?'; 
+        var inserts = [updateRecord.car_id, updateRecord.date_received, updateRecord.date_completed, idUpdated];
+        mysql.pool.query(sql, inserts, function(err, results) {
+            if(err){
+                if(err.sqlMessage){
+                    context.errorMessage = err.sqlMessage;
+                    res.render('errors', context);
+                }else {
+                    throw err;
+                }
+            }else {
+                renderPage(results);
+            }
+            function renderPage(results) {
+                //console.log(results);
+                context.changedRows = results.changedRows;
+                res.render('update', context);
+            }
+        });
+    }
+});
+
+
+
 
 //DELETE repair_orders
 app.get('/deleteRepairOrder', function(req, res, next){
