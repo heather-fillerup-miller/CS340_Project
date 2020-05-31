@@ -36,7 +36,7 @@ handlebars.handlebars.registerHelper("selectOption", function (selected, option)
     return selected.indexOf(option) !== -1 ? 'selected' : '';
 });
 
-//check object for possible null values and replace with null
+//replaces any empty strings with null
 function makeNull(obj){
     Object.keys(obj).forEach((key,index) => {
         if(obj[key] == ""){
@@ -46,12 +46,14 @@ function makeNull(obj){
     return obj;
 }
 
+//checks for any null values and returns a status of true and name of property containing null value
 function endUpdate(obj){
     var end = {};
     Object.keys(obj).forEach((key,index) => {
         if(obj[key] == null){
             end.status = 1;
             end.nullName = key;
+            return end;
         }
     });
     return end;
