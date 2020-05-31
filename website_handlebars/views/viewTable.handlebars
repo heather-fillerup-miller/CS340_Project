@@ -3,7 +3,11 @@
     <h1 class="display-4">{{title}} <a class="btn btn-outline-success my-2 my-sm-0" href={{addHref}} role="button">Add</a></h1>
     <p class="lead">{{relationship}}</p>
     <hr class="my-4">
-    <p>Add, Delete, Update or Search (cannot search data in {} ) {{title}} using this page</p>
+    {{#if update}}
+        <p>Add, Delete, Update or Search (cannot search data in {} ) {{title}} using this page</p>
+    {{else}}
+        <p>Add, Delete or Search (cannot search data in {} ) {{title}} using this page</p>
+    {{/if}}
   </div>
 </div>
 <div class = 'container'>
@@ -36,7 +40,9 @@
                 {{/each}}
                 <td>
                     <a class="btn btn-outline-danger my-2 my-sm-0" href={{../deleteHref}}?id={{this.id}} role="button">Delete</a>
-                    <a class="btn btn-outline-warning my-2 my-sm-0" href={{../updateHref}}?id={{this.id}} role="button">Update</a>
+                    {{#if ../update}}
+                        <a class="btn btn-outline-warning my-2 my-sm-0" href={{../updateHref}}?id={{this.id}} role="button">Update</a>
+                    {{/if}}
                 </td>
                     
             </tr>

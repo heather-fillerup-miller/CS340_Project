@@ -36,6 +36,16 @@ handlebars.handlebars.registerHelper("selectOption", function (selected, option)
     return selected.indexOf(option) !== -1 ? 'selected' : '';
 });
 
+//check object for possible null values and replace with null
+function makeNull(obj){
+    Object.keys(obj).forEach((key,index) => {
+        if(obj[key] == ""){
+            obj[key] = null;
+        }
+    });
+    return obj;
+}
+
 /**************************************************************
  * Dashboard- no functionality, just overview of current work tasks
  * ************************************************************/
@@ -86,6 +96,7 @@ app.get('/customers', function(req, res, next) {
     context.searchHref = '/searchCustomers';
     context.updateHref = 'updateCustomer';
     context.title = 'Customers';
+    context.update = '1'; //adds update button to view
     context.relationship = '1:M OPTIONAL relationship with cars'
     var sql = 'SELECT * FROM ?? ORDER BY ?? ASC; SELECT ?? FROM ?? WHERE ?? = ?';
     var inserts = [tableName, 'id', 'Column_name', 'Information_schema.columns', 'Table_name', tableName];
@@ -152,9 +163,11 @@ app.post('/addCustomer', function(req, res, next){
     context = {};
     context.title = 'Customer';
     context.addHref = '/addCustomer';
-    context.viewHref= '/customers';
+    context.viewHref = '/customers';
+    context.update = '1';
+    var newRecord = makeNull(req.body); //check for possible null values
     var sql = 'INSERT INTO customers (f_name, l_name, contact_no, email_address) VALUES (?, ?, ?, ?)';
-    var inserts = [req.body.f_name, req.body.l_name, req.body.contact_no, req.body.email_address];
+    var inserts = [newRecord.f_name, newRecord.l_name, newRecord.contact_no, newRecord.email_address];
     mysql.pool.query(sql, inserts,function(err, results){
         if(err){
             if(err.sqlMessage){
@@ -406,8 +419,9 @@ app.post('/addMechanic', function(req, res, next){
     context.title = 'Mechanic';
     context.addHref = '/addMechanic';
     context.viewHref= '/mechanics';
+    var newRecord = makeNull(req.body); //check for possible null values
     var sql = 'INSERT INTO mechanics (f_name, l_name) VALUES (?, ?)';
-    var inserts = [req.body.f_name, req.body.l_name];
+    var inserts = [newRecord.f_name, newRecord.l_name];
     mysql.pool.query(sql, inserts,function(err, results){
         if(err){
             if(err.sqlMessage){
@@ -565,8 +579,9 @@ app.post('/addWorkTask', function(req, res, next){
     context.title = 'Work Task';
     context.addHref = '/addWorkTask';
     context.viewHref= '/workTasks';
+    var newRecord = makeNull(req.body);
     var sql = 'INSERT INTO work_tasks (name) VALUES (?)';
-    var inserts = [req.body.name];
+    var inserts = [newRecord.name];
     mysql.pool.query(sql, inserts,function(err, results){
         if(err){
             if(err.sqlMessage){
@@ -738,15 +753,16 @@ app.post('/addCar', function(req, res, next){
     context.title = 'Car';
     context.addHref = '/addCar';
     context.viewHref= '/cars';
+    var newRecord = makeNull(req.body); //check for possible null values
     var sql = 'INSERT INTO cars (??, ??, ??, ??, ??) VALUES (?, ?, ?, ?, ?)';
     var inserts = ['customer_id', 'license_plate', 'make', 'model_name', 'model_year'];
     //manage when no customer is entered
-    if (req.body.customer_id == 0){
+    if (newRecord.customer_id == 0){
         inserts.push('NULL');
     } else {
-        inserts.push(req.body.customer_id);
+        inserts.push(newRecord.customer_id);
     }
-    inserts.push(req.body.license_plate, req.body.make, req.body.model_name, req.body.model_year);
+    inserts.push(newRecord.license_plate, newRecord.make, newRecord.model_name, newRecord.model_year);
     mysql.pool.query(sql, inserts,function(err, results){
         if(err){
             if(err.sqlMessage){
@@ -922,19 +938,20 @@ app.post('/addRepairOrder', function(req, res, next){
     context.title = 'Repair Order';
     context.addHref = '/addRepairOrder';
     context.viewHref= '/repairOrders';
+    var newRecord = makeNull(req.body);
     var sql = 'INSERT INTO repair_orders (car_id, date_received, date_completed) VALUES (?';
-    var inserts = [req.body.car_id];
-    if(req.body.date_received === undefined || req.body.date_received == ""){
+    var inserts = [newRecord.car_id];
+    if(newRecord.date_received === undefined || newRecord.date_received == ""){
         sql += ', NULL';
     }else {
         sql += ', ?';
-        inserts.push(req.body.date_received);
+        inserts.push(newRecord.date_received);
     }
-    if(req.body.date_completed === undefined || req.body.date_completed == ""){
+    if(newRecord.date_completed === undefined || newRecord.date_completed == ""){
         sql += ', NULL)';
     }else {
         sql += ', ?)'
-        inserts.push(req.body.date_completed);
+        inserts.push(newRecord.date_completed);
     }
     mysql.pool.query(sql, inserts,function(err, results){
         if(err){
@@ -1137,22 +1154,9 @@ app.post('/addWorkOrder', function(req, res, next){
     context.title = 'Work Order';
     context.addHref = '/addWorkOrder';
     context.viewHref= '/workOrders';
-    var sql = 'INSERT INTO work_orders (repair_order_id, work_task_id, mechanic_id, start_date, end_date) VALUES (?, ?, ?, ';
-    var inserts = [req.body.repair_order_id, req.body.work_task_id, req.body.mechanic_id];
-    //check if start date was not entered
-    if (req.body.start_date === undefined|| req.body.start_date == "") {
-        sql += 'NULL, ';
-    } else {
-        sql += '?, '
-        inserts.push(req.body.start_date);
-    }
-    //check if end date was not entered
-    if (req.body.end_date === undefined || req.body.end_date == "") {
-        sql += 'NULL)';
-    } else {
-        sql += '?)'
-        inserts.push(req.body.end_date);
-    }
+    var newRecord = makeNull(req.body);
+    var sql = 'INSERT INTO work_orders (repair_order_id, work_task_id, mechanic_id, start_date, end_date) VALUES (?, ?, ?, ?, ?)';
+    var inserts = [newRecord.repair_order_id, newRecord.work_task_id, newRecord.mechanic_id, newRecord.start_date, newRecord.end_date];
     mysql.pool.query(sql, inserts,function(err, results){
         if(err){
             if(err.sqlMessage){
