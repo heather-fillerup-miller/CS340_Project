@@ -12,7 +12,7 @@ DROP TABLE IF EXISTS cars;
 DROP TABLE IF EXISTS customers;
 -- -------------------- DROP TABLES------------------------
 
--- --------------------- CUSTOMERS------------------------
+-- --------------------- CUSTOMERS 1:M optional with cars -------------------
 CREATE TABLE customers(
 id INT AUTO_INCREMENT UNIQUE NOT NULL,
 f_name VARCHAR(255) NOT NULL,
@@ -24,8 +24,7 @@ UNIQUE (f_name, l_name)
 );
 -- --------------------- CUSTOMERS------------------------
 
--- NULLABLE RELATIONSHIP
--- ----------------------- CARS---------------------------
+-- ----------------------- CARS M:1 NULLABLE with customers, 1:M optional with repair_orders------
 CREATE TABLE cars(
 id INT AUTO_INCREMENT UNIQUE NOT NULL,
 customer_id INT,
@@ -39,7 +38,7 @@ UNIQUE (license_plate)
 );
 -- ----------------------- CARS---------------------------
 
--- -------------------- WORK_TASKS-------------------------
+-- -------------------- WORK_TASKS M:M optional with repair_orders and mechanics--------------
 CREATE TABLE work_tasks(
 id INT AUTO_INCREMENT UNIQUE NOT NULL,
 name VARCHAR(255) NOT NULL,
@@ -48,7 +47,7 @@ PRIMARY KEY (id)
 -- -------------------- WORK_TASKS-------------------------
 
 
--- --------------------- MECHANICS-------------------------
+-- --------------------- MECHANICS M:M optional with repair_orders and work_tasks------------
 CREATE TABLE mechanics(
 id INT AUTO_INCREMENT UNIQUE NOT NULL,
 f_name VARCHAR(255) NOT NULL,
@@ -58,7 +57,7 @@ UNIQUE (f_name, l_name)
 );
 -- --------------------- MECHANICS-------------------------
 
--- ------------------ REPAIR ORDERS------------------------
+-- ------------------ REPAIR ORDERS M:1 required with cars, M:M optional with mechanics and work_tasks--
 CREATE TABLE repair_orders(
 id INT AUTO_INCREMENT UNIQUE NOT NULL,
 car_id INT,
@@ -69,7 +68,7 @@ FOREIGN KEY (car_id) REFERENCES cars(id)
 );
 -- ------------------ REPAIR ORDERS------------------------
 
--- -------------------- WORK_ORDERS------------------------
+-- -------------------- WORK_ORDERS Composite Entity required M:1 with mechanics, work_tasks and repair_orders----
 CREATE TABLE work_orders(
 id INT AUTO_INCREMENT UNIQUE NOT NULL, 
 repair_order_id INT NOT NULL,
