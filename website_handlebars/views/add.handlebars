@@ -36,7 +36,8 @@
                         {{/if}}
                     </div>
                 {{/each}}
-                <button type='submit'class="btn btn-primary">Submit</button>
+                <button type='submit'class="btn btn-outline-success my-2 my-sm-0">Submit</button>
+                <a class="btn btn-outline-primary my-2 my-sm-0" href={{viewHref}} role="button">Cancel</a>
         </form>
     {{else if idAdded}}
         <h3>{{title}} Successfully Added: ID = {{idAdded}}</h3>
