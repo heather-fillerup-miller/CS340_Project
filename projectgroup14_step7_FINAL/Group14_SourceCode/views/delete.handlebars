@@ -1,0 +1,8 @@
+<div class = 'container'>
+    {{#if affectedRows}}
+        <h3>{{title}} Deleted: ID = {{deleteId}}</h3>
+        <a class="btn btn-outline-primary my-2 my-sm-0" href={{viewHref}} role="button">View {{title}}s</a>
+    {{else}}
+        <h3>Could not delete {{title}} ID {{deleteId}}</h3>
+    {{/if}}
+</div>

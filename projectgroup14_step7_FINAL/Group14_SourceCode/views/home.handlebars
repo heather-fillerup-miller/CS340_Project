@@ -1,0 +1,37 @@
+<div class="jumbotron jumbotron-fluid" style="background-image: linear-gradient(to bottom, rgba(255,255,255,0.35) 0%,rgba(255,255,255,0.35) 100%), url(images/skyline1_BW.jpg); background-size: 100% 125%;" >
+  
+  <div class="container">
+    <h1 class="display-4">Mahinui Auto Shop</h1>
+    <p class="lead">Honolulu, HI</p>
+    <p>This page displays the current work orders assigned to cars that have a NULL end date</p>
+  </div>
+</div>
+<div class='container'>
+    <table class="table table-bordered table-hover table-striped">
+        <thead class= 'thead-dark'>
+            <tr>
+                <th scope="col">Customer Name</th>
+                <th scope="col">Car Description</th>
+                <th scope="col">Current Task</th>
+                <th scope="col">Task Start Date</th>
+                <th scope="col">Mechanic</th>
+                </th>
+            </tr>
+        </thead>
+
+        {{#if dataRows}}
+        <tbody>
+            {{#each dataRows}}
+            <tr>
+                <td>{{checkNull this.customer_name}}</td>
+                <td>{{checkNull this.car_description}}</td>
+                <td>{{checkNull this.current_task}}</td>
+                <td>{{checkNull this.start_date}}</td>
+                <td>{{checkNull this.mechanic_name}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+        {{/if}}
+    </table>
+<br>
+</div>
