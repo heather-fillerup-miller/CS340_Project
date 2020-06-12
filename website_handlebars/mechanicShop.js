@@ -432,6 +432,7 @@ app.get('/addCar', function(req, res, next) {
     var context = {};
     //page formatting
     context.postHref = '\addCar';
+    context.viewHref = '\cars';
     context.title = 'Car';
     context.carActive = 1;
 
